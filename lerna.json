@@ -3,6 +3,11 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent",
+  "packages": [
+    "packages/cra-template-typescript",
+    "packages/create-react-app",
+    "packages/dg-react"
+  ],
   "changelog": {
     "repo": "MS-DG/create-dg-react",
     "labels": {
