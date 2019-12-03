@@ -1,5 +1,5 @@
 {
-  "name": "dg-react",
+  "name": "@dragongate/react",
   "version": "3.2.2",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
@@ -25,6 +25,7 @@
   ],
   "bin": {
     "dg-react": "./bin/react-scripts.js",
+    "dg": "./bin/react-scripts.js",
     "react-scripts": "./bin/react-scripts.js"
   },
   "types": "./lib/react-app.d.ts",
