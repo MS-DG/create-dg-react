@@ -311,6 +311,10 @@ function createApp(
     }
   }
 
+  if (!template) {
+    template = 'dg-react';
+  }
+
   if (useYarn) {
     let yarnUsesDefaultRegistry = true;
     try {
