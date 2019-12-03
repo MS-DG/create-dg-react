@@ -1,6 +1,6 @@
 {
   "name": "@dragongate/react",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
