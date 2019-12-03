@@ -1,10 +1,10 @@
 {
   "lerna": "2.6.0",
   "npmClient": "yarn",
-  "useWorkspaces": true,
+  "useWorkspaces": false,
   "version": "independent",
   "packages": [
-    "packages/cra-template-typescript",
+    "packages/cra-template-dg-react",
     "packages/create-react-app",
     "packages/dg-react"
   ],
