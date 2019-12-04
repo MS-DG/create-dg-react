@@ -52,13 +52,12 @@ These packages can be found in the [`packages/`](https://github.com/facebook/cre
 
 ### Overview of directory structure
 
-```
+```sh
 packages/
-  babel-preset-react-app/
-  create-react-app/
-  eslint-config-react-app/
-  react-dev-utils/
-  react-scripts/
+  cra-template-dg-react/ # dg-react template
+  create-react-app/ # create-dg-react packages
+  eslint-config-react-app/ # @dragongate/eslint-config
+  react-scripts/  # @dragongate/react-scripts
 ```
 
 ### Package Descriptions

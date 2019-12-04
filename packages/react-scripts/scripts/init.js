@@ -154,7 +154,7 @@ module.exports = function(
   // Setup the eslint config
   appPackage.eslintConfig = Object.assign(
     {
-      extends: 'react-app',
+      extends: '@dragongate/eslint-config',
     },
     templateJson.eslintConfig
   );
