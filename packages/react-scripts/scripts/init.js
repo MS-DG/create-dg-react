@@ -261,7 +261,11 @@ module.exports = function(
     }
   }
 
-  if (args.find(arg => arg.includes('typescript'))) {
+  if (
+    args.find(arg => arg.includes('typescript')) ||
+    Object.assign({}, templateJson.dependencies, templateJson.devDependencies)
+      .typescript
+  ) {
     console.log();
     verifyTypeScriptSetup();
   }
