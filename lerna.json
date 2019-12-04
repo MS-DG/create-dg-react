@@ -6,7 +6,7 @@
   "packages": [
     "packages/cra-template-dg-react",
     "packages/create-react-app",
-    "packages/dg-react"
+    "packages/react-scripts"
   ],
   "changelog": {
     "repo": "MS-DG/create-dg-react",
