@@ -74,11 +74,13 @@ const program = new commander.Command(packageJson.name)
   .option('--info', 'print environment debug info')
   .option(
     '--scripts-version <alternative-package>',
-    'use a non-standard version of react-scripts'
+    'use a non-standard version of react-scripts',
+    '@dragongate/react-scripts'
   )
   .option(
     '--template <path-to-template>',
-    'specify a template for the created project'
+    'specify a template for the created project',
+    'dg-react'
   )
   .option('--use-npm')
   .option('--use-pnp')
@@ -309,10 +311,6 @@ function createApp(
     if (!template) {
       template = 'typescript';
     }
-  }
-
-  if (!template) {
-    template = 'dg-react';
   }
 
   if (useYarn) {

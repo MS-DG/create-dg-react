@@ -53,7 +53,7 @@ function tryGitInit(appPath) {
     didInit = true;
 
     execSync('git add -A', { stdio: 'ignore' });
-    execSync('git commit -m "Initial commit from Create React App"', {
+    execSync('git commit -m "Initial commit from Create DG-React App"', {
       stdio: 'ignore',
     });
     return true;
@@ -121,6 +121,8 @@ module.exports = function(
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
 
+  appPackage.devDependencies = templateJson.devDependencies;
+
   // Setup the script rules
   const templateScripts = templateJson.scripts || {};
   appPackage.scripts = Object.assign(
@@ -128,7 +130,7 @@ module.exports = function(
       start: 'react-scripts start',
       build: 'react-scripts build',
       test: 'react-scripts test',
-      eject: 'react-scripts eject',
+      // eject: 'react-scripts eject',
     },
     templateScripts
   );
