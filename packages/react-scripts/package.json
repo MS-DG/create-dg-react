@@ -1,5 +1,8 @@
 {
-  "name": "@dragongate/react",
+  "name": "@dragongate/react-scripts",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "3.2.3",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
