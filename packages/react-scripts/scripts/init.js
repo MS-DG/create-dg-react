@@ -118,6 +118,11 @@ module.exports = function(
     templateJson = require(templateJsonPath);
   }
 
+  // private
+  if (appPackage.private === undefined && templateJson.private) {
+    appPackage.private = true;
+  }
+
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
 

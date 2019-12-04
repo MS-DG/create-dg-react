@@ -1,4 +1,6 @@
 {
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/package.json",
+  "private": true,
   "dependencies": {
     "@testing-library/react": "^9.3.2",
     "@testing-library/jest-dom": "^4.2.4",
@@ -8,6 +10,10 @@
     "@types/jest": "^24.0.0"
   },
   "devDependencies": {
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "prettier": "latest"
+  },
+  "scripts": {
+    "preinstall": "npx better-vsts-npm-auth"
   }
 }
