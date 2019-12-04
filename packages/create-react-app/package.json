@@ -22,9 +22,7 @@
     "createReactApp.js",
     "yarn.lock.cached"
   ],
-  "bin": {
-    "create-dg-react": "./index.js"
-  },
+  "bin": "./index.js",
   "dependencies": {
     "chalk": "2.4.2",
     "commander": "2.20.0",
