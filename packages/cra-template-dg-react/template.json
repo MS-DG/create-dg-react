@@ -15,6 +15,6 @@
     "prettier": "1.19.1"
   },
   "scripts": {
-    "preinstall": "npx better-vsts-npm-auth"
+    "preinstall": "npx vsts-npm-auth -c .npmrc"
   }
 }
