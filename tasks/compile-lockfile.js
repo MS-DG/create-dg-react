@@ -49,6 +49,7 @@ try {
   fse.copySync(path.join(temp, 'yarn.lock'), lockfile);
 } catch (err) {
   console.error(err);
+  process.exit(1);
 } finally {
   fse.removeSync(temp);
 }
