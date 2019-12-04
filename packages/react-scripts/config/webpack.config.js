@@ -368,7 +368,7 @@ module.exports = function(webpackEnv) {
                     return eslintConfig;
                   } else {
                     return {
-                      extends: [require.resolve('eslint-config-react-app')],
+                      extends: [require.resolve('@dragongate/eslint-config')],
                     };
                   }
                 })(),
