@@ -10,8 +10,9 @@
     "@types/jest": "^24.0.0"
   },
   "devDependencies": {
-    "typescript": "~3.7.2",
-    "prettier": "latest"
+    "typescript": "^3.7.2",
+    "sass": "^1.23.7",
+    "prettier": "1.19.1"
   },
   "scripts": {
     "preinstall": "npx better-vsts-npm-auth"

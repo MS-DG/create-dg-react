@@ -1,7 +1,10 @@
 {
-  "name": "eslint-config-react-app",
+  "name": "@dragongate/eslint-config",
   "version": "5.0.2",
-  "description": "ESLint configuration used by Create React App",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "ESLint configuration update from Create React App",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/create-react-app.git",
@@ -19,7 +22,6 @@
     "@typescript-eslint/parser": "2.x",
     "babel-eslint": "10.x",
     "eslint": "6.x",
-    "eslint-plugin-flowtype": "3.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",

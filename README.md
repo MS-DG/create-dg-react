@@ -1,18 +1,16 @@
-# Create React App [![Build Status](https://dev.azure.com/facebook/create-react-app/_apis/build/status/facebook.create-react-app?branchName=master)](https://dev.azure.com/facebook/create-react-app/_build/latest?definitionId=1&branchName=master) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/blob/master/CONTRIBUTING.md)
+# [Create DG-React](https://github.com/MS-DG/create-dg-react) [![Build Status](https://dev.azure.com/facebook/create-react-app/_apis/build/status/facebook.create-react-app?branchName=master)](https://dev.azure.com/facebook/create-react-app/_build/latest?definitionId=1&branchName=master) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/blob/master/CONTRIBUTING.md)
 
 Create React apps with no build configuration.
 
 - [Creating an App](#creating-an-app) – How to create a new app.
 - [User Guide](https://facebook.github.io/create-react-app/) – How to develop apps bootstrapped with Create React App.
 
-Create React App works on macOS, Windows, and Linux.<br>
-If something doesn’t work, please [file an issue](https://github.com/facebook/create-react-app/issues/new).<br>
-If you have questions or need help, please ask in our [Spectrum](https://spectrum.chat/create-react-app) community.
+Create React App works on macOS, Windows, and Linux.
 
 ## Quick Overview
 
 ```sh
-npx create-react-app my-app
+npm create dg-react my-app
 cd my-app
 npm start
 ```
@@ -21,10 +19,6 @@ _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7
 
 Then open [http://localhost:3000/](http://localhost:3000/) to see your app.<br>
 When you’re ready to deploy to production, create a minified bundle with `npm run build`.
-
-<p align='center'>
-<img src='https://cdn.jsdelivr.net/gh/facebook/create-react-app@27b42ac7efa018f2541153ab30d63180f5fa39e0/screencast.svg' width='600' alt='npm start'>
-</p>
 
 ### Get Started Immediately
 
@@ -50,7 +44,7 @@ _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7
 ### npm
 
 ```sh
-npm init react-app my-app
+npm init dg-react my-app
 ```
 
 _`npm init <initializer>` is available in npm 6+_
@@ -58,7 +52,7 @@ _`npm init <initializer>` is available in npm 6+_
 ### Yarn
 
 ```sh
-yarn create react-app my-app
+yarn create dg-react my-app
 ```
 
 _`yarn create` is available in Yarn 0.25+_
@@ -77,13 +71,13 @@ my-app
 │   ├── index.html
 │   └── manifest.json
 └── src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
+    ├── App.scss
+    ├── App.tsx
+    ├── App.test.tsx
     ├── index.css
-    ├── index.js
+    ├── index.tsx
     ├── logo.svg
-    └── serviceWorker.js
+    └── serviceWorker.ts
 ```
 
 No configuration or complicated folder structures, only the files you need to build your app.<br>
@@ -181,20 +175,6 @@ Here are a few common cases where you might want to try something else:
 All of the above tools can work with little to no configuration.
 
 If you prefer configuring the build yourself, [follow this guide](https://reactjs.org/docs/add-react-to-an-existing-app.html).
-
-## React Native
-
-Looking for something similar, but for React Native?<br>
-Check out [Expo CLI](https://github.com/expo/expo-cli).
-
-## Contributing
-
-We'd love to have your helping hand on `create-react-app`! See [CONTRIBUTING.md](CONTRIBUTING.md) for more information on what we're looking for and how to get started.
-
-## Credits
-
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md).<br>
-<a href="https://github.com/facebook/create-react-app/graphs/contributors"><img src="https://opencollective.com/create-react-app/contributors.svg?width=890&button=false" /></a>
 
 ## Acknowledgements
 

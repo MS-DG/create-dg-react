@@ -28,7 +28,7 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  plugins: ['import', 'flowtype', 'jsx-a11y', 'react', 'react-hooks'],
+  plugins: ['import', 'jsx-a11y', 'react', 'react-hooks'],
 
   env: {
     browser: true,

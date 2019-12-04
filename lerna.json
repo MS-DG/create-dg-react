@@ -6,6 +6,7 @@
   "packages": [
     "packages/cra-template-dg-react",
     "packages/create-react-app",
+    "packages/eslint-config-react-app",
     "packages/react-scripts"
   ],
   "changelog": {
