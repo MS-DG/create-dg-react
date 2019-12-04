@@ -12,8 +12,8 @@ trigger:
   #   include: [ string ] # tag names which will trigger a build
   #   exclude: [ string ] # tag names which will not
   paths:
-    include: [web] # file paths which must match to trigger a build
-    # exclude: [ string ] # file paths which will not trigger a build
+    # include: [web] # file paths which must match to trigger a build
+    exclude: [.vscode] # file paths which will not trigger a build
 jobs:
   - job: web_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
     displayName: Build Static Website # friendly name to display in the UI
