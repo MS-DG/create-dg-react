@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.2.6",
+  "version": "3.2.7",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   "types": "./lib/react-app.d.ts",
   "dependencies": {
     "@babel/core": "7.7.4",
+    "@dragongate/eslint-config": "^5.0.3",
     "@svgr/webpack": "4.3.3",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
@@ -48,7 +49,6 @@
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
     "eslint": "^6.7.2",
-    "@dragongate/eslint-config": "^5.0.2",
     "eslint-loader": "3.0.2",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
