@@ -1,0 +1,67 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  batch: true # batch changes if true (the default); start a new build for every push if false
+  branches:
+    include: [master, prod] # branch names which will trigger a build
+    # exclude: [ string ] # branch names which will not
+  # tags:
+  #   include: [ string ] # tag names which will trigger a build
+  #   exclude: [ string ] # tag names which will not
+  paths:
+    include: [web] # file paths which must match to trigger a build
+    # exclude: [ string ] # file paths which will not trigger a build
+jobs:
+  - job: web_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
+    displayName: Build Static Website # friendly name to display in the UI
+    variables:
+      CI: true # react-scripts test need CI to be true
+      #   REACT_APP_API_ROOT: "/"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '10.x'
+        displayName: 'Install Node.js'
+
+      - script: npm install
+        displayName: 'npm install'
+
+      - script: npm run build --if-present
+        displayName: 'BUILD'
+
+      - script: npm test
+        displayName: 'TEST'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: drop'
+        inputs:
+          PathtoPublish: 'build'
+
+  - deployment: web_deployment # name of the deployment job, A-Z, a-z, 0-9, and underscore
+    displayName: Deploy web site to azure blob CDN # friendly name to display in the UI
+    pool: # see pool schema
+      vmImage: 'windows-2019'
+    dependsOn: web_build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    continueOnError: false # 'true' if future jobs should run even if this job fails; defaults to 'false'
+    timeoutInMinutes: 5 # how long to run the job before automatically cancelling
+    cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
+    variables: { NODE_ENV: production }
+    environment: custom-stickers-web # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureFileCopy@3
+              displayName: 'AzureBlob File Copy'
+              inputs:
+                SourcePath: '$(Agent.BuildDirectory)/drop'
+                azureSubscription: 'SUBSCRIPTION_NAME_AND_ID' # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
+                Destination: AzureBlob
+                storage: STORAGE_NAME
+                ContainerName: '$web'
