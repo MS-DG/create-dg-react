@@ -2,7 +2,7 @@
 
 Create DG React apps with no build configuration.
 
-> **You should login to the Microsoft Corp with your MSFT acount in your PC. When use the Default Template**
+> **You should login to the Microsoft Corp with your MSFT acount in your PC (ONLY WINDOWS NOW). When use the Default Template**
 
 - [Creating an App](#creating-an-app) – How to create a new app.
 - [User Guide](https://facebook.github.io/create-react-app/) – How to develop apps bootstrapped with Create React App.

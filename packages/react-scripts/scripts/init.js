@@ -342,7 +342,10 @@ module.exports = function(
   if (!tryOpenCode(cdpath)) {
     console.log(chalk.cyan('  cd'), cdpath);
   }
-  console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
+  console.log(
+    `  ${chalk.cyan(`${displayedCommand} start`)}  `,
+    chalk.gray('in ' + cdpath)
+  );
   if (readmeExists) {
     console.log();
     console.log(
