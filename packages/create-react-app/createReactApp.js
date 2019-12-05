@@ -428,8 +428,8 @@ function run(
     getInstallPackage(version, originalDirectory),
     getTemplateInstallPackage(template, originalDirectory),
   ]).then(([packageToInstall, templateToInstall]) => {
-    const allDependencies = ['react', 'react-dom', packageToInstall];
-    // const devDependencies = [packageToInstall];
+    const allDependencies = ['react', 'react-dom'];
+    const devDependencies = ['-D', packageToInstall];
 
     console.log('Installing packages. This might take a couple of minutes.');
 
@@ -476,7 +476,7 @@ function run(
 
         // TODO: Remove with next major release.
         if (!supportsTemplates && (template || '').includes('typescript')) {
-          allDependencies.push(
+          devDependencies.push(
             '@types/node',
             '@types/react',
             '@types/react-dom',
@@ -501,11 +501,15 @@ function run(
           allDependencies,
           verbose,
           isOnline
-        ).then(() => ({
-          packageInfo,
-          supportsTemplates,
-          templateInfo,
-        }));
+        )
+          .then(() =>
+            install(root, useYarn, usePnp, devDependencies, verbose, isOnline)
+          )
+          .then(() => ({
+            packageInfo,
+            supportsTemplates,
+            templateInfo,
+          }));
       })
       .then(async ({ packageInfo, supportsTemplates, templateInfo }) => {
         const packageName = packageInfo.name;
