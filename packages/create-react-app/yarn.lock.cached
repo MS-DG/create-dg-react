@@ -957,10 +957,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@dragongate/eslint-config@5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@dragongate/eslint-config/-/eslint-config-5.0.4.tgz#49feaa3f3b2fd0fb091c04b05d64c98024bd9ea5"
-  integrity sha512-Y7pmCqWyQ/C0c4IhVYNzhp7IOKtHWF9f9aXrMuDBDmHMAV2gBIMPpzxBUPJu4q/masbHqH64r4oshiZ2x5CrHg==
+"@dragongate/eslint-config@5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@dragongate/eslint-config/-/eslint-config-5.0.5.tgz#144a77467105c145525957a720a96640f19b1efb"
+  integrity sha512-nhrGu77wGp9s5wY+2Rl3pefR91vXjxT+kuSI+D6zx0TtWmoCd98HYKivEBRJ3uW86bKlszAJNqq3TWBAp518QA==
   dependencies:
     confusing-browser-globals "^1.0.9"
 
