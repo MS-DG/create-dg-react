@@ -36,9 +36,9 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 # Compile
-cd packages/react-error-overlay/
-npm run build:prod
-cd ../..
+# cd packages/react-error-overlay/
+# npm run build:prod
+# cd ../..
 
 # Get 2FA when not CI
 # otp=""
