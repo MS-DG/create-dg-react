@@ -130,11 +130,6 @@ module.exports = function(
     templateJson = require(templateJsonPath);
   }
 
-  // private
-  if (appPackage.private === undefined && templateJson.private) {
-    appPackage.private = true;
-  }
-
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
 
@@ -264,7 +259,9 @@ module.exports = function(
   // Install template dependencies, and react and react-dom if missing.
   if ((!isReactInstalled(appPackage) || templateName) && args.length > 1) {
     console.log();
-    console.log(`Installing template dependencies using ${command}...`);
+    console.log(
+      `Installing template(${templateName}) dependencies using ${command}...`
+    );
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -283,7 +280,7 @@ module.exports = function(
   }
 
   // Remove template
-  console.log(`Removing template package using ${command}...`);
+  console.log(`Removing template(${templateName}) package using ${command}...`);
   console.log();
 
   const proc = spawn.sync(command, [remove, templateName], {
