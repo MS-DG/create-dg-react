@@ -338,14 +338,14 @@ module.exports = function(
   // );
   console.log();
   console.log('We suggest that you begin by typing:');
-  console.log();
   if (!tryOpenCode(cdpath)) {
+    console.log();
     console.log(chalk.cyan('  cd'), cdpath);
+  } else {
+    console.log(chalk.gray(`run in ${cdpath})`));
+    console.log();
   }
-  console.log(
-    `  ${chalk.cyan(`${displayedCommand} start`)}  `,
-    chalk.gray('in ' + cdpath)
-  );
+  console.log(`  ${chalk.cyan(`${displayedCommand} start`)}  `);
   if (readmeExists) {
     console.log();
     console.log(
