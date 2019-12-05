@@ -7,12 +7,12 @@
   "description": "ESLint configuration update from Create React App",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/create-react-app.git",
+    "url": "https://github.com/MS-DG/create-dg-react.git",
     "directory": "packages/eslint-config-react-app"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/facebook/create-react-app/issues"
+    "url": "https://github.com/MS-DG/create-dg-react/issues"
   },
   "files": [
     "index.js"

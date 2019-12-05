@@ -149,7 +149,7 @@ const program = new commander.Command(packageJson.name)
     );
     console.log(
       `      ${chalk.cyan(
-        'https://github.com/facebook/create-react-app/issues/new'
+        'https://github.com/MS-DG/create-dg-react/issues/new'
       )}`
     );
     console.log();
