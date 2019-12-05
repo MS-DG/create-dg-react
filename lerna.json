@@ -1,14 +1,8 @@
 {
   "lerna": "2.6.0",
   "npmClient": "yarn",
-  "useWorkspaces": false,
+  "useWorkspaces": true,
   "version": "independent",
-  "packages": [
-    "packages/cra-template-dg-react",
-    "packages/create-react-app",
-    "packages/eslint-config-react-app",
-    "packages/react-scripts"
-  ],
   "changelog": {
     "repo": "MS-DG/create-dg-react",
     "labels": {
