@@ -42,7 +42,7 @@ jobs:
         inputs:
           PathtoPublish: 'build'
 
-  - deployment: web_deployment # name of the deployment job, A-Z, a-z, 0-9, and underscore
+  - deployment: web_deployment_master # name of the deployment job, A-Z, a-z, 0-9, and underscore
     displayName: Deploy web site to azure blob CDN # friendly name to display in the UI
     pool: # see pool schema
       vmImage: 'windows-2019'
@@ -61,7 +61,7 @@ jobs:
               displayName: 'AzureBlob File Copy'
               inputs:
                 SourcePath: '$(Agent.BuildDirectory)/drop'
-                azureSubscription: 'SUBSCRIPTION_NAME_AND_ID' # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
                 Destination: AzureBlob
-                storage: STORAGE_NAME
                 ContainerName: '$web'
+                azureSubscription: 'SUBSCRIPTION_NAME_AND_ID' # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
+                storage: STORAGE_NAME
