@@ -75,6 +75,18 @@ function tryGitInit(appPath) {
   }
 }
 
+/**
+ *
+ * @param {string} appPath
+ */
+function tryOpenCode(appPath) {
+  try {
+    execSync('code ' + appPath, { stdio: 'ignore' });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 module.exports = function(
   appPath,
   appName,
@@ -126,7 +138,7 @@ module.exports = function(
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
 
-  appPackage.devDependencies = templateJson.devDependencies;
+  // appPackage.devDependencies = templateJson.devDependencies;
 
   // Setup the script rules
   const templateScripts = templateJson.scripts || {};
@@ -327,7 +339,9 @@ module.exports = function(
   console.log();
   console.log('We suggest that you begin by typing:');
   console.log();
-  console.log(chalk.cyan('  cd'), cdpath);
+  if (!tryOpenCode(cdpath)) {
+    console.log(chalk.cyan('  cd'), cdpath);
+  }
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
   if (readmeExists) {
     console.log();
