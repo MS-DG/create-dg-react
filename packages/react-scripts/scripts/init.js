@@ -79,9 +79,9 @@ function tryGitInit(appPath) {
  *
  * @param {string} appPath
  */
-function tryOpenCode(appPath) {
+function tryOpenCode() {
   try {
-    execSync('code ' + appPath, { stdio: 'ignore' });
+    execSync('code .', { stdio: 'ignore' });
     return true;
   } catch (e) {
     return false;
