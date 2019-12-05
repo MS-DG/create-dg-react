@@ -313,6 +313,7 @@ module.exports = function(
   const displayedCommand = useYarn ? 'yarn' : 'npm';
 
   console.log();
+  console.log('='.repeat(79));
   console.log(`Success! Created ${appName} at ${appPath}`);
   console.log('Inside that directory, you can run several commands:');
   console.log();
@@ -342,7 +343,7 @@ module.exports = function(
     console.log();
     console.log(chalk.cyan('  cd'), cdpath);
   } else {
-    console.log(chalk.gray(`run in ${cdpath})`));
+    console.log(chalk.gray(`run in ${cdpath}`));
     console.log();
   }
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}  `);
@@ -356,6 +357,7 @@ module.exports = function(
   }
   console.log();
   console.log('Happy hacking!');
+  console.log('='.repeat(79));
 };
 
 function isReactInstalled(appPackage) {
