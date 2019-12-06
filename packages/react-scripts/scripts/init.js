@@ -334,7 +334,7 @@ module.exports = function(
   const displayedCommand = useYarn ? 'yarn' : 'npm';
 
   console.log();
-  console.log(chalk.green('='.repeat(80)));
+  console.log(chalk.green('='.repeat(60)));
   console.log(`Success! Created ${appName} at ${appPath}`);
   console.log('Inside that directory, you can run several commands:');
   console.log();
@@ -359,15 +359,21 @@ module.exports = function(
   //   '    and scripts into the app directory. If you do this, you can’t go back!'
   // );
   console.log();
-  console.log('We suggest that you begin by typing:');
-  if (!tryOpenCode(cdpath)) {
+  if (tryOpenCode(cdpath)) {
+    console.log(
+      chalk.gray(
+        `switch window to VSCode and run "${chalk.white.bold(
+          displayedCommand + ' start'
+        )}"`
+      )
+    );
+  } else {
+    console.log('We suggest that you begin by typing:');
     console.log();
     console.log(chalk.cyan('  cd'), cdpath);
-  } else {
-    console.log(chalk.gray(`run in ${cdpath}`));
-    console.log();
+    console.log(`  ${chalk.cyan(`${displayedCommand} start`)}  `);
   }
-  console.log(`  ${chalk.cyan(`${displayedCommand} start`)}  `);
+  console.log();
   if (readmeExists) {
     console.log();
     console.log(
@@ -378,7 +384,7 @@ module.exports = function(
   }
   console.log();
   console.log('Happy hacking!');
-  console.log(chalk.green('='.repeat(80)));
+  console.log(chalk.green('='.repeat(60)));
 };
 
 function isReactInstalled(appPackage) {
