@@ -131,11 +131,11 @@ You can find detailed instructions on using Create DG App and many tips in [Crea
 
 #### if you want to update current project (already exists)
 
-just update the dependency `@dragongate/react-scripts`.
+update the dependency `@dragongate/react-scripts` to lasted in your app project.
 
 #### if you want to create a new project
 
-just [create a app](#creating-an-app) without global install.
+[create a app](#creating-an-app) without global install.
 
 ## Philosophy
 
