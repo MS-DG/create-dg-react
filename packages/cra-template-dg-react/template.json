@@ -6,7 +6,7 @@
     "@testing-library/user-event": "latest",
     "rxjs": "latest",
     "i18next": "latest",
-    "i18next-react": "latest"
+    "react-i18next": "latest"
   },
   "devDependencies": {},
   "prettier": "@dragongate/eslint-config/prettier",
