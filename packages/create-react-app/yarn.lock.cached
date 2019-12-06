@@ -957,12 +957,13 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@dragongate/eslint-config@5.0.5":
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/@dragongate/eslint-config/-/eslint-config-5.0.5.tgz#144a77467105c145525957a720a96640f19b1efb"
-  integrity sha512-nhrGu77wGp9s5wY+2Rl3pefR91vXjxT+kuSI+D6zx0TtWmoCd98HYKivEBRJ3uW86bKlszAJNqq3TWBAp518QA==
+"@dragongate/eslint-config@5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@dragongate/eslint-config/-/eslint-config-5.0.6.tgz#8153eec3b77636231f8ab9114896c51f8c0abf6c"
+  integrity sha512-8uheYzsYQDRyh1XePqo0EGj/PoBfkMZtj8V+FbWPGxttHa1ge24zoDWS89F9pMe/IbXn5dMAjJl4v6ctpG0ixg==
   dependencies:
     confusing-browser-globals "^1.0.9"
+    eslint-config-prettier "^6.7.0"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -3699,6 +3700,13 @@ escodegen@^1.11.0, escodegen@^1.9.1:
   optionalDependencies:
     source-map "~0.6.1"
 
+eslint-config-prettier@^6.7.0:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.7.0.tgz#9a876952e12df2b284adbd3440994bf1f39dfbb9"
+  integrity sha512-FamQVKM3jjUVwhG4hEMnbtsq7xOIDm+SY5iBPfR8gKsJoAB2IQnNF+bk1+8Fy44Nq7PPJaLvkRxILYdJWoguKQ==
+  dependencies:
+    get-stdin "^6.0.0"
+
 eslint-import-resolver-node@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.2.tgz#58f15fb839b8d0576ca980413476aab2472db66a"
@@ -4463,6 +4471,11 @@ get-own-enumerable-property-symbols@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/get-own-enumerable-property-symbols/-/get-own-enumerable-property-symbols-3.0.1.tgz#6f7764f88ea11e0b514bd9bd860a132259992ca4"
   integrity sha512-09/VS4iek66Dh2bctjRkowueRJbY1JDGR1L/zRxO1Qk8Uxs6PnqaNSqalpizPT+CDjre3hnEsuzvhgomz9qYrA==
+
+get-stdin@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-6.0.0.tgz#9e09bf712b360ab9225e812048f71fde9c89657b"
+  integrity sha512-jp4tHawyV7+fkkSKyvjuLZswblUtz+SQKzSWnBbii16BuZksJlU1wuBYXY75r+duh/llF1ur6oNwi+2ZzjKZ7g==
 
 get-stream@^4.0.0:
   version "4.1.0"
