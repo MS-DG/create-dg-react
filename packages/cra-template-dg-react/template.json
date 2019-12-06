@@ -4,7 +4,10 @@
   "dependencies": {
     "@testing-library/react": "latest",
     "@testing-library/jest-dom": "latest",
-    "@testing-library/user-event": "latest"
+    "@testing-library/user-event": "latest",
+    "rxjs": "latest",
+    "i18next": "latest",
+    "i18next-react": "latest"
   },
   "devDependencies": {
     "prettier": "latest"
