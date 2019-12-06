@@ -11,6 +11,6 @@
   },
   "scripts": {
     "format": "prettier **/*.{ts,tsx,scss,yml} --write",
-    "preinstall": "npx vsts-npm-auth -c .npmrc"
+    "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
   }
 }

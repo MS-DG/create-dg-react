@@ -18,6 +18,7 @@
   "engines": {
     "node": ">=8.10"
   },
+  "author": "New Future",
   "bugs": {
     "url": "https://github.com/MS-DG/create-dg-react/issues"
   },

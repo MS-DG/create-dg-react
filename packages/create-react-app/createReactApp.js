@@ -476,9 +476,8 @@ function run(
 
         // TODO: Remove with next major release.
         if (
-          !supportsTemplates &&
-          ((template || '').includes('dg-react') ||
-            (template || '').includes('typescript'))
+          (!supportsTemplates && (template || '').includes('typescript')) ||
+          (template || '').includes('dg-react')
         ) {
           allDependencies.push(
             // '@types/node',
