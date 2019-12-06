@@ -15,7 +15,9 @@
     "url": "https://github.com/MS-DG/create-dg-react/issues"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "react.js",
+    "prettier.js"
   ],
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "2.x",

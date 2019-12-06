@@ -161,6 +161,14 @@ Your environment will have everything you need to build a modern single-page Rea
 
 The tradeoff is that **these tools are preconfigured to work in a specific way**. If your project needs more customization, you can ["eject"](https://facebook.github.io/create-react-app/docs/available-scripts#npm-run-eject) and customize it, but then you will need to maintain this configuration.
 
+## TODO
+
+- [ ] Git precommit hook (format check)
+- [ ] Stylint and prettier for css/scss files
+- [ ] Integration Test template
+- [ ] Multiple env config file
+- [ ] MacOS/Linux VSTS Auth
+
 ## License
 
 MIT
