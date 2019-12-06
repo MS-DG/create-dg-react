@@ -475,14 +475,18 @@ function run(
         }
 
         // TODO: Remove with next major release.
-        if (!supportsTemplates && (template || '').includes('typescript')) {
-          devDependencies.push(
+        if (
+          !supportsTemplates &&
+          ((template || '').includes('dg-react') ||
+            (template || '').includes('typescript'))
+        ) {
+          allDependencies.push(
             '@types/node',
             '@types/react',
             '@types/react-dom',
-            '@types/jest',
-            'typescript'
+            '@types/jest'
           );
+          devDependencies.push('typescript');
         }
 
         console.log(

@@ -229,40 +229,46 @@ module.exports = function(
   let command;
   let remove;
   let args;
+  let devArgs = [];
 
   if (useYarn) {
     command = 'yarnpkg';
     remove = 'remove';
     args = ['add'];
+    devArgs.push('add', '-D');
   } else {
     command = 'npm';
     remove = 'uninstall';
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    devArgs.push('install', '-D');
+    if (verbose) {
+      devArgs.push('--verbose');
+    }
   }
 
   // Install additional template dependencies, if present
-  const templateDependencies = templateJson.dependencies;
-  if (templateDependencies) {
-    args = args.concat(
-      Object.keys(templateDependencies).map(key => {
-        return `${key}@${templateDependencies[key]}`;
-      })
-    );
-  }
+  const templateDependencies = templateJson.dependencies || {};
+  const dependencies = Object.keys(templateDependencies).map(
+    key => `${key}@${templateDependencies[key]}`
+  );
+  const templateDevDependencies = templateJson.devDependencies || {};
+  const devDependencies = Object.keys(templateDevDependencies).map(
+    key => `${key}@${templateDevDependencies[key]}`
+  );
 
   // Install react and react-dom for backward compatibility with old CRA cli
   // which doesn't install react and react-dom along with react-scripts
   if (!isReactInstalled(appPackage)) {
-    args = args.concat(['react', 'react-dom']);
+    dependencies.push('react', 'react-dom');
   }
 
   // Install template dependencies, and react and react-dom if missing.
-  if ((!isReactInstalled(appPackage) || templateName) && args.length > 1) {
+  if (dependencies.length > 0) {
     console.log();
     console.log(
       `Installing template(${templateName}) dependencies using ${command}...`
     );
-
+    args = args.concat(dependencies);
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
       console.error(`\`${command} ${args.join(' ')}\` failed`);
@@ -270,10 +276,25 @@ module.exports = function(
     }
   }
 
+  // Install template dependencies, and react and react-dom if missing.
+  if (devDependencies.length > 0) {
+    console.log();
+    console.log(
+      `Installing template(${templateName}) devDependencies using ${command}...`
+    );
+    devArgs = devArgs.concat(devDependencies);
+    const proc = spawn.sync(command, devArgs.concat(devDependencies), {
+      stdio: 'inherit',
+    });
+    if (proc.status !== 0) {
+      console.error(`\`${command} ${devArgs.join(' ')}\` failed`);
+      return;
+    }
+  }
+
   if (
-    args.find(arg => arg.includes('typescript')) ||
-    Object.assign({}, templateJson.dependencies, templateJson.devDependencies)
-      .typescript
+    dependencies.find(arg => arg.includes('typescript')) ||
+    devDependencies.find(arg => arg.includes('typescript'))
   ) {
     console.log();
     verifyTypeScriptSetup();
