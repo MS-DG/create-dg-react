@@ -145,12 +145,12 @@ update the dependency `@dragongate/react-scripts` to lasted in your app project.
 
 ## What’s Included?
 
-Your environment will have everything you need to build a modern single-page React app:
+Your environment will have everything you need to build a modern single-page React app with git:
 
 - Integrated with Azure pipelines
 - Shared vscode (IDE) config and plugins
 - Force formatting
-- React, JSX, ES6, TypeScript and Flow syntax support.
+- React, JSX, ES6, TypeScript syntax support.
 - Language extras beyond ES6 like the object spread operator.
 - Autoprefixed CSS, so you don’t need `-webkit-` or other prefixes.
 - A fast interactive unit test runner with built-in support for coverage reporting.
