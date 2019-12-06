@@ -24,6 +24,10 @@ const scriptIndex = args.findIndex(
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
+if (process.env.TF_BUILD !== undefined && process.env.CI === undefined) {
+  process.env.CI = process.env.TF_BUILD;
+}
+
 if (['build', 'eject', 'start', 'test'].includes(script)) {
   const result = spawn.sync(
     'node',
