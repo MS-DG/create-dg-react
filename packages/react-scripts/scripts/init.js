@@ -81,7 +81,7 @@ function tryGitInit(appPath) {
  */
 function tryOpenCode() {
   try {
-    execSync('code .', { stdio: 'ignore' });
+    execSync('code . README.md', { stdio: 'ignore' });
     return true;
   } catch (e) {
     return false;
