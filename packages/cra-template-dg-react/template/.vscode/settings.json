@@ -1,20 +1,28 @@
 // overwrite default and user settings.
 {
-    "search.exclude": {
-        "node_modules": true,
-        "build": true,
-        ".vscode": true,
+  "search.exclude": {
+    "node_modules": true,
+    "build": true,
+    ".vscode": true,
+  },
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.validate.enable": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "typescript",
+      "autoFix": true
     },
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        {
-            "language": "typescript",
-            "autoFix": true
-        },
-        {
-            "language": "typescriptreact",
-            "autoFix": true
-        }
-    ]
+    {
+      "language": "typescriptreact",
+      "autoFix": true
+    }
+  ]
 }
