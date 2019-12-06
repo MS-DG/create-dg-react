@@ -166,6 +166,9 @@ module.exports = function(
     templateJson.eslintConfig
   );
 
+  // prettier
+  appPackage.prettier =
+    templateJson.prettier || '@dragongate/eslint-config/prettier';
   // Setup the browsers list
   appPackage.browserslist = defaultBrowsers;
 

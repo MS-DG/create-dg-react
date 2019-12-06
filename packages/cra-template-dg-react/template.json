@@ -1,6 +1,5 @@
 {
   "$schema": "https://schemastore.azurewebsites.net/schemas/json/package.json",
-  "private": true,
   "dependencies": {
     "@testing-library/react": "latest",
     "@testing-library/jest-dom": "latest",
@@ -9,9 +8,8 @@
     "i18next": "latest",
     "i18next-react": "latest"
   },
-  "devDependencies": {
-    "prettier": "latest"
-  },
+  "devDependencies": {},
+  "prettier": "@dragongate/eslint-config/prettier",
   "scripts": {
     "format": "prettier **/*.{ts,tsx,scss,yml} --write",
     "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
