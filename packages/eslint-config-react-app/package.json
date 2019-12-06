@@ -28,6 +28,7 @@
     "eslint-plugin-react-hooks": "1.x"
   },
   "dependencies": {
-    "confusing-browser-globals": "^1.0.9"
+    "confusing-browser-globals": "^1.0.9",
+    "eslint-config-prettier": "^6.7.0"
   }
 }
