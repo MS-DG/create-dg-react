@@ -904,7 +904,9 @@ function setCaretRangeForRuntimeDeps(packageName) {
     process.exit(1);
   }
 
-  const packageVersion = packageJson.dependencies[packageName];
+  const packageVersion =
+    packageJson.dependencies[packageName] ||
+    packageJson.devDependencies[packageName];
   if (typeof packageVersion === 'undefined') {
     console.error(chalk.red(`Unable to find ${packageName} in package.json`));
     process.exit(1);
