@@ -481,7 +481,7 @@ function run(
             (template || '').includes('typescript'))
         ) {
           allDependencies.push(
-            '@types/node',
+            // '@types/node',
             '@types/react',
             '@types/react-dom',
             '@types/jest'
