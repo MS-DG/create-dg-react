@@ -32,7 +32,7 @@
     "jest": "24.9.0",
     "lerna": "3.19.0",
     "lerna-changelog": "~0.8.2",
-    "lint-staged": "^8.0.4",
+    "lint-staged": "^9.5.0",
     "meow": "^5.0.0",
     "multimatch": "^3.0.0",
     "prettier": "1.19.1",
