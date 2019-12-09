@@ -7,6 +7,13 @@
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
+  "editor.rulers": [
+    100
+  ],
+  "files.associations": {
+    ".env": "ini",
+    ".env.*": "ini"
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.validate.enable": true,
   "[typescriptreact]": {

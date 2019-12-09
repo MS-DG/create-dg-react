@@ -163,10 +163,20 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
 
 ## TODO
 
-- [ ] Git precommit hook (format check)
+- [x] Git hooks
+  - pre-commit
+  - commit-msg
+  - pre-push
+- [ ] format
+  - autofix
+  - staged check
+  - CI check
 - [ ] Stylint and prettier for css/scss files
 - [ ] Integration Test template
-- [ ] Multiple env config file
+- [x] Multiple env config file
+  - .env.\*.local
+  - .env.production
+  - .env
 - [ ] MacOS/Linux VSTS Auth
 
 ## License

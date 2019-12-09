@@ -36,6 +36,10 @@ const jest = require('jest');
 const execSync = require('child_process').execSync;
 let argv = process.argv.slice(2);
 
+// for git staged
+const staged =
+  argv.argv.indexOf('--staged=false') === -1 &&
+  (process.env.GIT_AUTHOR_DATE || argv.indexOf('staged'));
 function isInGitRepository() {
   try {
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
@@ -57,6 +61,7 @@ function isInMercurialRepository() {
 // Watch unless on CI or explicitly running all tests
 if (
   !process.env.CI &&
+  !staged &&
   argv.indexOf('--watchAll') === -1 &&
   argv.indexOf('--watchAll=false') === -1
 ) {
