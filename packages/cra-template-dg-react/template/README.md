@@ -80,19 +80,13 @@ You can adjust various development and production settings by setting environmen
 - `.env.development`, `.env.test`, `.env.production`: Environment-specific settings.
 - `.env.development.local`, `.env.test.local`, `.env.production.local`: Local overrides of environment-specific settings.
 
-<summary>
 Files on the left have more priority than files on the right:
-
-<details>
 
 - `npm start`: `.env.development.local`, `.env.development`, `.env.local`, `.env`
 - `npm run build`: `.env.production.local`, `.env.production`, `.env.local`, `.env`
-- `npm test`: `.env.test.local`, `.env.test`, `.env` (note `.env.local` is missing)
+- `npm test`: `.env.test.local`, `.env.test`, `.env` (**note `.env.local` is missing**)
 
 These variables will act as the defaults if the machine does not explicitly set them.
-
-</details>
-</summary>
 
 ## Learn More
 
