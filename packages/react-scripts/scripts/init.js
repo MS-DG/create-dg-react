@@ -58,7 +58,7 @@ function tryGitInit(appPath) {
 
     execSync('git add -A', { stdio: 'ignore' });
     execSync(
-      'git commit -m "chore(init): Initial commit from Create DG-React App"',
+      'git commit -m "chore(init): Initial commit from Create DG-React"',
       {
         stdio: 'ignore',
       }
