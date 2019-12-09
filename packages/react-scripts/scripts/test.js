@@ -37,9 +37,13 @@ const execSync = require('child_process').execSync;
 let argv = process.argv.slice(2);
 
 // for git staged
+// test staged
+// test --staged
+// test --staged=false
 const staged =
-  argv.argv.indexOf('--staged=false') === -1 &&
-  (process.env.GIT_AUTHOR_DATE || argv.indexOf('staged'));
+  argv.indexOf('--staged=false') === -1 &&
+  (process.env.GIT_AUTHOR_DATE ||
+    argv.find(a => a === 'staged' || a === '--staged'));
 function isInGitRepository() {
   try {
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });

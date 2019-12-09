@@ -166,7 +166,7 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
 - [x] Git Hook
   - pre-commit
   - commit-msg
-  - pre-push
+  - [x] pre-push (run test)
 - [ ] format
   - autofix
   - staged check
