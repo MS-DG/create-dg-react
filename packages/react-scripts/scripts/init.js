@@ -22,6 +22,7 @@ const spawn = require('react-dev-utils/crossSpawn');
 const { defaultBrowsers } = require('react-dev-utils/browsersHelper');
 const os = require('os');
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
+const createGitHooks = require('./utils/createGitHooks');
 
 function isInGitRepository() {
   try {
@@ -45,7 +46,10 @@ function tryGitInit(appPath) {
   let didInit = false;
   try {
     execSync('git --version', { stdio: 'ignore' });
-    if (isInGitRepository() || isInMercurialRepository()) {
+    if (isInGitRepository()) {
+      createGitHooks();
+      return false;
+    } else if (isInMercurialRepository()) {
       return false;
     }
 
@@ -53,9 +57,13 @@ function tryGitInit(appPath) {
     didInit = true;
 
     execSync('git add -A', { stdio: 'ignore' });
-    execSync('git commit -m "Initial commit from Create DG-React App"', {
-      stdio: 'ignore',
-    });
+    execSync(
+      'git commit -m "chore(init): Initial commit from Create DG-React App"',
+      {
+        stdio: 'ignore',
+      }
+    );
+    createGitHooks();
     return true;
   } catch (e) {
     if (didInit) {
