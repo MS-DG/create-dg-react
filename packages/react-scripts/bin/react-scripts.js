@@ -25,7 +25,7 @@ const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
 if (process.env.TF_BUILD !== undefined && process.env.CI === undefined) {
-  process.env.CI = process.env.TF_BUILD;
+  process.env.CI = process.env.TF_BUILD || process.env.AZURE_PIPELINES;
 }
 
 if (['build', 'eject', 'start', 'test'].includes(script)) {
