@@ -52,7 +52,11 @@ function lintCheck(file, content) {
     if (errs && errs.length > 0) {
       console.error('eslint:[×] ', file);
       errs.forEach(msg =>
-        console.error(`  ${msg.line},${msg.column}:`, msg.message, msg.ruleId)
+        console.error(
+          `  ${msg.line},${msg.column}:`,
+          msg.message,
+          msg.ruleId || msg.fatal
+        )
       );
       return false;
     }
