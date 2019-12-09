@@ -163,7 +163,7 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
 
 ## TODO
 
-- [x] Git hooks
+- [x] Git Hook
   - pre-commit
   - commit-msg
   - pre-push
