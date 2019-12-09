@@ -17,18 +17,16 @@ process.on('unhandledRejection', err => {
 
 const spawn = require('react-dev-utils/crossSpawn');
 const args = process.argv.slice(2);
-
-const scriptIndex = args.findIndex(
-  x => x === 'build' || x === 'eject' || x === 'start' || x === 'test'
-);
+const scripts = ['build', 'eject', 'start', 'test', 'format'];
+const scriptIndex = args.findIndex(x => scripts.includes(x));
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
-if (process.env.TF_BUILD !== undefined && process.env.CI === undefined) {
+if (process.env.CI === undefined) {
   process.env.CI = process.env.TF_BUILD || process.env.AZURE_PIPELINES;
 }
 
-if (['build', 'eject', 'start', 'test'].includes(script)) {
+if (scripts.includes(script)) {
   const result = spawn.sync(
     'node',
     nodeArgs

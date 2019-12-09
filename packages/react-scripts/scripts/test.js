@@ -41,7 +41,7 @@ let argv = process.argv.slice(2);
 // test --staged
 // test --staged=false
 const staged =
-  argv.indexOf('--staged=false') === -1 &&
+  !argv.includes('--staged=false') &&
   (process.env.GIT_AUTHOR_DATE ||
     argv.find(a => a === 'staged' || a === '--staged'));
 function isInGitRepository() {
