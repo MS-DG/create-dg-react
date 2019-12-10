@@ -30,7 +30,7 @@ The build is minified and the filenames include the hashes.
 
 Your app is ready to be deployed!
 
-See the section about [deployment](azure-pipline.yml) for more information.
+See the section about [deployment](azure-pipelines.yml) for more information.
 
 ### `npm run format`
 

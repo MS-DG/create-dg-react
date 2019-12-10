@@ -10,7 +10,8 @@ const path = require('path');
 const cp = require('child_process');
 const prettier = require('prettier');
 const eslint = require('eslint');
-const chalk = require('chalk').default;
+// const chalk = require('chalk').default;
+const chalk = require('react-dev-utils/chalk');
 // const util = require('util');
 const listStaged = require('./utils/listStaged');
 
@@ -55,6 +56,16 @@ function prettierCheck(f, content) {
   return true;
 }
 
+function prettierFix(f, content) {
+  const options = prettier.resolveConfig.sync(f);
+  options.filepath = f;
+  if (!prettier.check(content, options)) {
+    logError('prettier', f);
+    return false;
+  }
+  return true;
+}
+
 function lintCheck(file, content) {
   const ext = path.extname(file);
   if (['js', 'ts', 'jsx', 'tsx'].includes(ext)) {
@@ -80,7 +91,7 @@ function lintCheck(file, content) {
 function run() {
   let isFail = false;
   if (isFix) {
-    //
+    prettierFix();
   } else if (isStaged) {
     listStaged().forEach(f => {
       const content = getStagedContent(f);

@@ -22,8 +22,19 @@ const scriptIndex = args.findIndex(x => scripts.includes(x));
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
-if (process.env.CI === undefined) {
-  process.env.CI = process.env.TF_BUILD || process.env.AZURE_PIPELINES;
+const azureCI = process.env.TF_BUILD || process.env.AZURE_PIPELINES;
+if (process.env.CI === undefined && azureCI) {
+  process.env.CI = azureCI;
+}
+
+// windows git hook 颜色适配
+if (
+  process.platform === 'win32' &&
+  process.env.GIT_AUTHOR_DATE &&
+  !process.env.PIPE_LOGGING // vscode pipline 不显示颜色
+) {
+  // 颜色自动适配
+  process.env.FORCE_COLOR = process.env.COLORTERM === 'truecolor' ? 3 : 1;
 }
 
 if (scripts.includes(script)) {
