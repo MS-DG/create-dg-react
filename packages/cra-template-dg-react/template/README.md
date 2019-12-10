@@ -34,7 +34,11 @@ See the section about [deployment](azure-pipline.yml) for more information.
 
 ### `npm run format`
 
-auto formatting all files.
+format checking and auto-fixing
+
+- `npm run format` or `npm run format .` default to format and fix all files;
+- `npm run format staged` check staged files format without fix;
+- `npm run format --check` or `npm run format . --check` check all files without fix;
 
 ## Environment Variables
 
@@ -87,6 +91,28 @@ Files on the left have more priority than files on the right:
 - `npm test`: `.env.test.local`, `.env.test`, `.env` (**note `.env.local` is missing**)
 
 These variables will act as the defaults if the machine does not explicitly set them.
+
+## Git Hook
+
+You can use `--no-verify` to skip the git hook verification, but it was **NOT** recommended.
+
+### pre-commit
+
+> check before git commit.
+
+will check the foramt of staged files added by this commit.
+
+### pre-push
+
+> check before git push.
+
+will run all test an format checking.
+
+### commit-msg
+
+> check the commit msg.
+
+do nothing.
 
 ## Learn More
 

@@ -3,13 +3,12 @@
   "search.exclude": {
     "node_modules": true,
     "build": true,
-    ".vscode": true,
+    ".vscode": true
   },
   "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 2,
-  "editor.rulers": [
-    100
-  ],
+  "editor.rulers": [100],
   "files.associations": {
     ".env": "ini",
     ".env.*": "ini"
@@ -20,6 +19,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "eslint.enable": true,

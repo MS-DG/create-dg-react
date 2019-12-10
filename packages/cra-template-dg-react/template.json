@@ -12,7 +12,8 @@
   "devDependencies": {},
   "prettier": "@dragongate/eslint-config/prettier",
   "scripts": {
-    "format": "prettier **/*.{ts,tsx,scss,yml} --write",
+    "format": "react-scripts format",
+    "pre-commit": "npm run format staged",
     "pre-push": "npm test",
     "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
   }
