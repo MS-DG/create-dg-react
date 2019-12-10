@@ -30,8 +30,9 @@ if (process.env.CI === undefined && azureCI) {
 // windows git hook 颜色适配
 if (
   process.platform === 'win32' &&
-  process.env.GIT_AUTHOR_DATE &&
-  !process.env.PIPE_LOGGING // vscode pipline 不显示颜色
+  !process.stdout.isTTY && // hook 环境中未 null
+  process.env.GIT_AUTHOR_DATE && // hook 判断
+  !process.env.PIPE_LOGGING // vscode tasks 中 pipline 不显示颜色
 ) {
   // 颜色自动适配
   process.env.FORCE_COLOR = process.env.COLORTERM === 'truecolor' ? 3 : 1;
