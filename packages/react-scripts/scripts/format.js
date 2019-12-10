@@ -26,6 +26,18 @@ const isStaged =
   argv[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && (argv.length === 0 || argv[0] === '--check'));
 
+/**
+ *
+ * @param {string} type
+ * @param {string} file
+ */
+function logError(type, file) {
+  console.error(
+    `${chalk.yellow(type)}:${chalk.bold.red('[×]')}`,
+    chalk.bold(file)
+  );
+}
+
 const eslinter = new eslint.Linter();
 function getStagedContent(f) {
   // return util.promisify(cp.exec)(`git show :"${f}"`).then(f => f.stdout);
@@ -37,7 +49,7 @@ function prettierCheck(f, content) {
   const options = prettier.resolveConfig.sync(f);
   options.filepath = f;
   if (!prettier.check(content, options)) {
-    console.error(`prettier:${chalk.red('[×]')}`, chalk.bold(f));
+    logError('prettier', f);
     return false;
   }
   return true;
@@ -50,7 +62,8 @@ function lintCheck(file, content) {
       filename: file,
     });
     if (errs && errs.length > 0) {
-      console.error(`eslint:${chalk.red('[×]')}`, file);
+      logError('eslint', file);
+
       errs.forEach(msg =>
         console.error(
           chalk.bold(`  ${msg.line},${msg.column}:`),
@@ -81,7 +94,7 @@ function run() {
   return !isFail;
 }
 
-if (run()) {
+if (!run()) {
   console.error(`
 staged files format check fail!
 Try ${chalk.bold.cyan('npm run format')} to autofix them
