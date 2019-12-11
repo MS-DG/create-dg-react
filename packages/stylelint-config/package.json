@@ -1,6 +1,9 @@
 {
   "name": "@dragongate/stylelint-config",
-  "version": "1.0.1",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "stylint config fro dragongate team",
   "main": "index.js",
   "scripts": {
