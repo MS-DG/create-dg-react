@@ -21,6 +21,7 @@ const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
 // const globStylelint = '**/*.{css,scss,sass,jsx,tsx}';
 const argv = process.argv.slice(2);
 
+const inputFiles = argv.filter(s => s && !s.startsWith('-'));
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
@@ -29,13 +30,13 @@ const isStrict =
   (process.env.CI &&
     (typeof process.env.CI !== 'string' ||
       process.env.CI.toLowerCase() !== 'false'));
+
 // 是否查询staged
-// format  # 环境变量 GIT_AUTHOR_DATE 存在
-// format --check # 环境变量 GIT_AUTHOR_DATE 存在
+// format # 环境变量 GIT_AUTHOR_DATE 存在
 // format staged
 const isStaged =
-  argv[0] === 'staged' ||
-  (process.env.GIT_AUTHOR_DATE && (argv.length === 0 || argv[0] === '--check'));
+  inputFiles[0] === 'staged' ||
+  (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
 /**
  *
@@ -66,6 +67,11 @@ function prettierCheck(f, content) {
   return true;
 }
 
+function getFilesGlob(p, defaultGlob) {
+  return !p || p.length === 0 || (p[0] === '.' && p.length === 1)
+    ? defaultGlob || '**/*'
+    : p;
+}
 /**
  * prettier 命令行
  * @param {'check'|'write'} type
@@ -166,15 +172,18 @@ function run() {
         `);
     }
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
-    isFail = !prettierCli('write', '**/*');
-    isFail = !eslintFix(globEslint) || isFail;
+    isFail = !prettierCli('write', getFilesGlob(inputFiles));
+    isFail = !eslintFix(getFilesGlob(inputFiles, globEslint)) || isFail;
     if (isFail) {
       console.error(chalk.red(`Some files can't be auto fixed!`));
     } else {
       console.log(chalk.green('√'), 'All files are formatted!');
     }
   } else {
-    if (!prettierCli('check', '**/*') || !eslintCheck(globEslint)) {
+    if (
+      !prettierCli('check', getFilesGlob(inputFiles)) ||
+      !eslintCheck(getFilesGlob(inputFiles, globEslint))
+    ) {
       isFail = true;
       console.error(`
  Some files have code style issues!

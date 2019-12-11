@@ -13,8 +13,8 @@
   "prettier": "@dragongate/eslint-config/prettier",
   "scripts": {
     "format": "react-scripts format",
-    "pre-commit": "npm run format staged",
-    "pre-push": "npm test",
+    "pre-commit": "react-scripts format staged",
+    "pre-push": "react-scripts format --check --strict && npm test",
     "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
   }
 }
