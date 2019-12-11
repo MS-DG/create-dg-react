@@ -166,6 +166,10 @@ module.exports = function(
     );
   }
 
+  // prettier
+  appPackage.prettier =
+    templateJson.prettier || '@dragongate/eslint-config/prettier';
+
   // Setup the eslint config
   appPackage.eslintConfig = Object.assign(
     {
@@ -174,9 +178,11 @@ module.exports = function(
     templateJson.eslintConfig
   );
 
-  // prettier
-  appPackage.prettier =
-    templateJson.prettier || '@dragongate/eslint-config/prettier';
+  // stylelint
+  appPackage.stylelint = Object.assign(
+    { extends: '@dragongate/stylelint-config' },
+    templateJson.stylelint
+  );
   // Setup the browsers list
   appPackage.browserslist = defaultBrowsers;
 

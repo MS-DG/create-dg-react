@@ -10,11 +10,17 @@
     "react-i18next": "latest"
   },
   "devDependencies": {},
-  "prettier": "@dragongate/eslint-config/prettier",
   "scripts": {
     "format": "react-scripts format",
     "pre-commit": "react-scripts format staged",
     "pre-push": "react-scripts format --check --strict && npm test",
     "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
+  },
+  "prettier": "@dragongate/eslint-config/prettier",
+  "eslintConfig": {
+    "extends": "@dragongate/eslint-config"
+  },
+  "stylelint": {
+    "extends": "@dragongate/stylelint-config"
   }
 }
