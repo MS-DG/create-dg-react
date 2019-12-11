@@ -17,10 +17,12 @@ const spawn = require('react-dev-utils/crossSpawn');
 // const util = require('util');
 const listStaged = require('./utils/listStaged');
 
+const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
+// const globStylelint = '**/*.{css,scss,sass,jsx,tsx}';
 const argv = process.argv.slice(2);
 
 const isFix = argv.indexOf('--fix') !== -1;
-
+const isCheck = argv.indexOf('--check') !== -1;
 // 是否查询staged
 // format  # 环境变量 GIT_AUTHOR_DATE 存在
 // format --check # 环境变量 GIT_AUTHOR_DATE 存在
@@ -58,19 +60,21 @@ function prettierCheck(f, content) {
   return true;
 }
 
+function prettierCheckAll(f) {
+  const result = spawn.sync(
+    'node',
+    [require.resolve('prettier/bin-prettier'), f, '--check', '--loglevel=log'],
+    { stdio: 'inherit' }
+  );
+  return result.status != 0;
+}
+
 function prettierFix(f) {
   const result = spawn.sync(
     'node',
-    [require.resolve('prettier/bin-prettier'), f, '--write', '--loglevel=warn'],
+    [require.resolve('prettier/bin-prettier'), f, '--write', '--loglevel=log'],
     { stdio: 'inherit' }
   );
-  // require('prettier/bin-prettier')
-  // const options = prettier.resolveConfig.sync(f);
-  // options.filepath = f;
-  // if (!prettier.format(content, {filepath:f})) {
-  //   logError('prettier', f);
-  //   return false;
-  // }
   return result.status != 0;
 }
 
@@ -99,7 +103,6 @@ function lintCheck(file, content) {
 function eslintFix(p) {
   const eslintCli = new eslint.CLIEngine({ fix: true });
   const res = eslintCli.executeOnFiles(p);
-  console.log({ ...res, results: res.results.length });
   eslint.CLIEngine.outputFixes(res);
   res.results.forEach(m => {
     const relateivePath = path.relative(process.cwd(), m.filePath);
@@ -120,12 +123,22 @@ function eslintFix(p) {
     }
   });
 }
+
+function eslintCheck(p) {
+  const eslintCli = new eslint.CLIEngine({ fix: false });
+  const res = eslintCli.executeOnFiles(p);
+  res.results.forEach(m => {
+    const relateivePath = path.relative(process.cwd(), m.filePath);
+    if (m.errorCount) {
+      logError('eslint', relateivePath);
+    } else if (m.warningCount) {
+      console.warn('⚠', relateivePath);
+    }
+  });
+}
 function run() {
   let isFail = false;
-  if (isFix) {
-    prettierFix('**/*');
-    eslintFix('.');
-  } else if (isStaged) {
+  if (isStaged) {
     listStaged().forEach(f => {
       const content = getStagedContent(f);
       if (prettierCheck(f, content) && lintCheck(f, content)) {
@@ -134,6 +147,11 @@ function run() {
         isFail = true;
       }
     });
+  } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
+    isFail = !prettierFix('**/*');
+    isFail = !eslintFix(globEslint) || isFail;
+  } else {
+    isFail = !prettierCheckAll('**/*') || !eslintCheck(globEslint);
   }
   return !isFail;
 }
