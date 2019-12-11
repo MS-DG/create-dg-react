@@ -12,9 +12,9 @@ const pkg = require('../../package.json');
 function getHookScript(hook) {
   return `
 #!/bin/sh
-#@dragongate/react-scripts ${pkg.version}
-npm run ${hook} --if-present
-`.trimLeft();
+#${pkg.name} ${pkg.version}
+npm run ${hook} --if-present --silent
+`.trim();
 }
 /**
  *

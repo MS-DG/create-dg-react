@@ -12,6 +12,8 @@ const prettier = require('prettier');
 const eslint = require('eslint');
 // const chalk = require('chalk').default;
 const chalk = require('react-dev-utils/chalk');
+const spawn = require('react-dev-utils/crossSpawn');
+
 // const util = require('util');
 const listStaged = require('./utils/listStaged');
 
@@ -56,14 +58,20 @@ function prettierCheck(f, content) {
   return true;
 }
 
-function prettierFix(f, content) {
-  const options = prettier.resolveConfig.sync(f);
-  options.filepath = f;
-  if (!prettier.check(content, options)) {
-    logError('prettier', f);
-    return false;
-  }
-  return true;
+function prettierFix(f) {
+  const result = spawn.sync(
+    'node',
+    [require.resolve('prettier/bin-prettier'), f, '--write', '--loglevel=warn'],
+    { stdio: 'inherit' }
+  );
+  // require('prettier/bin-prettier')
+  // const options = prettier.resolveConfig.sync(f);
+  // options.filepath = f;
+  // if (!prettier.format(content, {filepath:f})) {
+  //   logError('prettier', f);
+  //   return false;
+  // }
+  return result.status != 0;
 }
 
 function lintCheck(file, content) {
@@ -88,10 +96,35 @@ function lintCheck(file, content) {
   return true;
 }
 
+function eslintFix(p) {
+  const eslintCli = new eslint.CLIEngine({ fix: true });
+  const res = eslintCli.executeOnFiles(p);
+  console.log({ ...res, results: res.results.length });
+  eslint.CLIEngine.outputFixes(res);
+  res.results.forEach(m => {
+    const relateivePath = path.relative(process.cwd(), m.filePath);
+    if (m.output) {
+      // fs.writeFileSync(m.output,m.filePath)
+      if (
+        m.errorCount + m.warningCount >
+        m.fixableWarningCount + m.fixableErrorCount
+      ) {
+        console.error('x', relateivePath);
+      } else {
+        console.warn('🖊', relateivePath);
+      }
+    } else if (m.errorCount) {
+      logError('eslint', relateivePath);
+    } else if (m.warningCount) {
+      console.warn('⚠', relateivePath);
+    }
+  });
+}
 function run() {
   let isFail = false;
   if (isFix) {
-    prettierFix();
+    prettierFix('**/*');
+    eslintFix('.');
   } else if (isStaged) {
     listStaged().forEach(f => {
       const content = getStagedContent(f);
