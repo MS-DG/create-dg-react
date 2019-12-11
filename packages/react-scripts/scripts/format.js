@@ -23,6 +23,12 @@ const argv = process.argv.slice(2);
 
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
+// 严格模式，warning作为错误处理
+const isStrict =
+  argv.indexOf('--strict') !== -1 ||
+  (process.env.CI &&
+    (typeof process.env.CI !== 'string' ||
+      process.env.CI.toLowerCase() !== 'false'));
 // 是否查询staged
 // format  # 环境变量 GIT_AUTHOR_DATE 存在
 // format --check # 环境变量 GIT_AUTHOR_DATE 存在
@@ -60,22 +66,23 @@ function prettierCheck(f, content) {
   return true;
 }
 
-function prettierCheckAll(f) {
+/**
+ * prettier 命令行
+ * @param {'check'|'write'} type
+ * @param {string} f
+ */
+function prettierCli(type, f) {
   const result = spawn.sync(
     'node',
-    [require.resolve('prettier/bin-prettier'), f, '--check', '--loglevel=log'],
+    [
+      require.resolve('prettier/bin-prettier'),
+      f,
+      `--${type || 'check'}`,
+      '--loglevel=log',
+    ],
     { stdio: 'inherit' }
   );
-  return result.status != 0;
-}
-
-function prettierFix(f) {
-  const result = spawn.sync(
-    'node',
-    [require.resolve('prettier/bin-prettier'), f, '--write', '--loglevel=log'],
-    { stdio: 'inherit' }
-  );
-  return result.status != 0;
+  return result.status == 0;
 }
 
 function lintCheck(file, content) {
@@ -122,6 +129,10 @@ function eslintFix(p) {
       console.warn('⚠', relateivePath);
     }
   });
+  return (
+    res.errorCount === res.fixableErrorCount &&
+    res.warningCount === res.fixableWarningCount
+  );
 }
 
 function eslintCheck(p) {
@@ -135,6 +146,7 @@ function eslintCheck(p) {
       console.warn('⚠', relateivePath);
     }
   });
+  return (res.errorCount == 0 && !isStrict) || res.warningCount == 0;
 }
 function run() {
   let isFail = false;
@@ -142,24 +154,39 @@ function run() {
     listStaged().forEach(f => {
       const content = getStagedContent(f);
       if (prettierCheck(f, content) && lintCheck(f, content)) {
-        console.log(chalk.green('√'), chalk.gray.dim(f));
+        console.log(chalk.green('√'), chalk.dim.gray(f));
       } else {
         isFail = true;
       }
     });
+    if (isFail) {
+      console.error(`
+ Staged files format check fail!
+ Try ${chalk.bold.cyan('npm run format')} to autofix them.
+        `);
+    }
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
-    isFail = !prettierFix('**/*');
+    isFail = !prettierCli('write', '**/*');
     isFail = !eslintFix(globEslint) || isFail;
+    if (isFail) {
+      console.error(chalk.red(`Some files can't be auto fixed!`));
+    } else {
+      console.log(chalk.green('√'), 'All files are formatted!');
+    }
   } else {
-    isFail = !prettierCheckAll('**/*') || !eslintCheck(globEslint);
+    if (!prettierCli('check', '**/*') || !eslintCheck(globEslint)) {
+      isFail = true;
+      console.error(`
+ Some files have code style issues!
+ Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
+        `);
+    } else {
+      console.log(chalk.green('√'), 'All files use good code style!');
+    }
   }
   return !isFail;
 }
 
 if (!run()) {
-  console.error(`
-staged files format check fail!
-Try ${chalk.bold.cyan('npm run format')} to autofix them
-`);
   process.exit(1);
 }
