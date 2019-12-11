@@ -9,7 +9,7 @@
     // debug
     "msjsdiag.debugger-for-chrome"
     // Import Intellisense
-    // "christian-kohler.npm-intellisense", 
+    // "christian-kohler.npm-intellisense",
     // "christian-kohler.path-intellisense"
   ]
 }

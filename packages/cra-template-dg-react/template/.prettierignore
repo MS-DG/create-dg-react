@@ -1,0 +1,17 @@
+# config files
+.env*
+.npmrc
+.prettierignore
+.gitignore
+yarn.lock
+package-lock.json
+
+# binnary images
+*.png
+*.jpg
+*.jpeg
+*.ico
+*.svg
+*.txt
+
+build/
