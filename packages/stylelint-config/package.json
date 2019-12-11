@@ -1,0 +1,16 @@
+{
+  "name": "@dragongate/stylelint-config",
+  "version": "1.0.0",
+  "description": "stylint config fro dragongate team",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MS-DG/create-dg-react.git",
+    "directory": "packages/stylelint-config"
+  },
+  "author": "",
+  "license": "MS-PL"
+}
