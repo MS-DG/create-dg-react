@@ -40,8 +40,6 @@ const isStaged =
   inputFiles[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
-const eslinter = new eslint.Linter();
-
 /**
  *
  * @param {string} type
@@ -52,6 +50,33 @@ function logError(type, file) {
     `${chalk.yellow(type)}:${chalk.bold.red('[×]')}`,
     chalk.bold(file)
   );
+}
+
+let rulesMeta;
+/**
+ * Outputs the results of the linting.
+ * @param {eslint.CLIEngine} engine The CLIEngine to use.
+ * @param {eslint.LintResult[]} results The results to print.
+ */
+function printResults(engine, results) {
+  const formatter = engine.getFormatter(); //visualstudio
+  //relative path
+  results.forEach(m => (m.filePath = path.relative(process.cwd(), m.filePath)));
+  const output = formatter(results, {
+    get rulesMeta() {
+      if (!rulesMeta) {
+        rulesMeta = {};
+        for (const [ruleId, rule] of engine.getRules()) {
+          rulesMeta[ruleId] = rule.meta;
+        }
+      }
+      return rulesMeta;
+    },
+  });
+  if (output) {
+    process.stderr.write(output);
+  }
+  return true;
 }
 
 function errorAndTry(message) {
@@ -127,23 +152,14 @@ function prettierCheck(f, content) {
   return true;
 }
 
+const eslintCli = new eslint.CLIEngine();
 function lintCheck(file, content) {
   // process.stdout.write(chalk.gray(`lint: ${chalk.gray(file)}`));
   const ext = path.extname(file);
   if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
-    const errs = eslinter.verify(content, {
-      filename: file,
-    });
-    if (errs && errs.length > 0) {
-      // clearLine()
-      logError('eslint', file);
-      errs.forEach(msg =>
-        console.error(
-          chalk.bold(`  ${msg.line}, ${msg.column}: `),
-          chalk.red(msg.message),
-          msg.ruleId || msg.fatal
-        )
-      );
+    const res = eslintCli.executeOnText(content, file);
+    if (res.errorCount || res.warningCount) {
+      printResults(eslintCli, res.results);
       return Promise.reject(false);
     }
   }
@@ -175,8 +191,7 @@ function lintCheck(file, content) {
         return true;
       });
   }
-
-  return Promise.resolve(true);
+  return true;
 }
 
 function eslintFix(p) {
@@ -185,24 +200,7 @@ function eslintFix(p) {
   const res = eslintCli.executeOnFiles(p);
   eslint.CLIEngine.outputFixes(res);
   clearLine();
-  res.results.forEach(m => {
-    const relateivePath = path.relative(process.cwd(), m.filePath);
-    if (m.output) {
-      // fs.writeFileSync(m.output,m.filePath)
-      if (
-        m.errorCount + m.warningCount >
-        m.fixableWarningCount + m.fixableErrorCount
-      ) {
-        console.error('x', relateivePath);
-      } else {
-        console.warn('🖊', relateivePath);
-      }
-    } else if (m.errorCount) {
-      logError('eslint', relateivePath);
-    } else if (m.warningCount) {
-      console.warn('⚠', relateivePath);
-    }
-  });
+  printResults(eslintCli, res.results);
   return (
     res.errorCount === res.fixableErrorCount &&
     res.warningCount === res.fixableWarningCount
@@ -211,18 +209,10 @@ function eslintFix(p) {
 
 function eslintCheck(p) {
   process.stdout.write(chalk.gray('checking eslint ...'));
-  const eslintCli = new eslint.CLIEngine({ fix: false });
   const res = eslintCli.executeOnFiles(p);
   clearLine();
-  res.results.forEach(m => {
-    const relateivePath = path.relative(process.cwd(), m.filePath);
-    if (m.errorCount) {
-      logError('eslint', relateivePath);
-    } else if (m.warningCount) {
-      console.warn('⚠', relateivePath);
-    }
-  });
-  return (res.errorCount == 0 && !isStrict) || res.warningCount == 0;
+  printResults(eslintCli, res.results);
+  return res.errorCount == 0 && (!isStrict || res.warningCount == 0);
 }
 
 /**
@@ -230,7 +220,9 @@ function eslintCheck(p) {
  * @param {*} params
  */
 function runStylelint(p, fix) {
-  process.stdout.write(chalk.gray('checking stylelint ...'));
+  process.stdout.write(
+    chalk.gray(`${fix ? 'fixing' : 'checking'} stylelint ...`)
+  );
   return stylelint
     .lint({
       files: p,
@@ -275,9 +267,9 @@ function run() {
       staged.map(f => {
         const content = getStagedContent(f);
         if (prettierCheck(f, content)) {
-          return lintCheck(f, content).then(() => {
-            console.log(chalk.green('√'), chalk.dim.gray(f));
-          });
+          return Promise.resolve(lintCheck(f, content)).then(() =>
+            console.log(chalk.green('√'), chalk.dim.gray(f))
+          );
         } else {
           return Promise.reject(false);
         }
@@ -287,7 +279,7 @@ function run() {
       process.exit(1);
     });
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
-    Promise.resolve(() => prettierCli('write', getFilesGlob(inputFiles)))
+    Promise.resolve(prettierCli('write', getFilesGlob(inputFiles)))
       .then(result => eslintFix(getFilesGlob(inputFiles, globEslint)) && result)
       .then(result =>
         runStylelint(getFilesGlob(inputFiles, globStylelint), true).then(() => {
