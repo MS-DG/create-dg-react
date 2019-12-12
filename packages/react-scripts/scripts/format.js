@@ -20,7 +20,7 @@ const spawn = require('react-dev-utils/crossSpawn');
 const listStaged = require('./utils/listStaged');
 
 const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
-const globStylelint = '**/*.{css,scss,sass,tsx,jsx,ts,js,md,html}';
+const globStylelint = '**/*.{css,scss,tsx,jsx,ts,js,md,html}';
 const argv = process.argv.slice(2);
 
 const inputFiles = argv.filter(s => s && !s.startsWith('-'));
@@ -40,6 +40,8 @@ const isStaged =
   inputFiles[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
+const eslinter = new eslint.Linter();
+
 /**
  *
  * @param {string} type
@@ -52,7 +54,12 @@ function logError(type, file) {
   );
 }
 
-const eslinter = new eslint.Linter();
+function errorAndTry(message) {
+  console.error(`
+ ${chalk.red(message)}
+ Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
+`);
+}
 
 function getStagedContent(f) {
   // return util.promisify(cp.exec)(`git show :"${f}"`).then(f => f.stdout);
@@ -229,6 +236,9 @@ function runStylelint(p, fix) {
       files: p,
       fix: !!fix,
       formatter: 'string',
+      config: {
+        extends: '@dragongate/stylelint-config',
+      },
     })
     .then(linted => {
       clearLine();
@@ -237,16 +247,16 @@ function runStylelint(p, fix) {
       }
       console.log(linted.output);
       if (linted.errored) {
-        return Promise.reject(linted);
+        return Promise.reject(false);
       } else if (linted.maxWarningsExceeded) {
         const foundWarnings = linted.maxWarningsExceeded.foundWarnings;
         console.log(
           chalk.red(`Max warnings exceeded: `),
           `${foundWarnings} found. `
         );
-        if (isStrict) {
-          return Promise.reject(linted);
-        }
+      }
+      if (isStrict) {
+        return Promise.reject(false);
       }
     });
 }
@@ -273,40 +283,41 @@ function run() {
         }
       })
     ).catch(() => {
-      console.error(`
- Staged files format check fail!
- Try ${chalk.bold.cyan('npm run format')} to autofix them.
-`);
+      errorAndTry('Staged files format check fail!');
       process.exit(1);
     });
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
-    isFail = !prettierCli('write', getFilesGlob(inputFiles));
-    isFail = !eslintFix(getFilesGlob(inputFiles, globEslint)) || isFail;
-    if (isFail) {
-      console.error(chalk.red(`Some files can't be auto fixed!`));
-    } else {
-      console.log(chalk.green('√'), 'All files are formatted!');
-    }
+    Promise.resolve(() => prettierCli('write', getFilesGlob(inputFiles)))
+      .then(result => eslintFix(getFilesGlob(inputFiles, globEslint)) && result)
+      .then(result =>
+        runStylelint(getFilesGlob(inputFiles, globStylelint), true).then(() => {
+          if (!result) {
+            return Promise.reject(result);
+          }
+        })
+      )
+      .then(() => console.log(chalk.green('√'), 'All files are formatted!'))
+      .catch(err => {
+        if (err) {
+          console.debug(err);
+        }
+        console.error(chalk.red(`\nSome files can't be auto fixed!\n`));
+        process.exit(1);
+      });
   } else {
     if (
       !prettierCli('check', getFilesGlob(inputFiles)) ||
       !eslintCheck(getFilesGlob(inputFiles, globEslint))
     ) {
       isFail = true;
-      console.error(`
- Some files have code format issues!
- Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
-        `);
+      errorAndTry('Some files have code format issues!');
     } else {
       runStylelint(getFilesGlob(inputFiles, globStylelint))
         .then(() =>
           console.log(chalk.green('√'), 'All files use good code style!')
         )
         .catch(() => {
-          console.error(`
- Some files have code format issues!
- Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
-        `);
+          errorAndTry('Some files have code format issues!');
           process.exit(1);
         });
     }
