@@ -9,7 +9,9 @@
     "i18next": "latest",
     "react-i18next": "latest"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@shennong/eslint-plugin": "latest"
+  },
   "scripts": {
     "format": "react-scripts format",
     "pre-commit": "react-scripts format staged",
@@ -18,7 +20,7 @@
   },
   "prettier": "@dragongate/eslint-config/prettier",
   "eslintConfig": {
-    "extends": "@dragongate/eslint-config"
+    "extends": ["@dragongate/eslint-config","plugin:@shennong/strict"]
   },
   "stylelint": {
     "extends": "@dragongate/stylelint-config"
