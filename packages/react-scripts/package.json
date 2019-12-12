@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.5.8",
+  "version": "3.5.9",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
     "babel-preset-react-app": "^9.0.2",
     "camelcase": "^5.3.1",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
-    "css-loader": "3.2.1",
+    "css-loader": "3.3.0",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
     "eslint": "^6.7.2",
@@ -61,7 +61,7 @@
     "html-webpack-plugin": "4.0.0-beta.11",
     "identity-obj-proxy": "3.0.0",
     "jest": "24.9.0",
-    "jest-environment-jsdom-fourteen": "0.1.0",
+    "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
     "mini-css-extract-plugin": "0.8.0",
