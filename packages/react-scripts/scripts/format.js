@@ -10,15 +10,17 @@ const path = require('path');
 const cp = require('child_process');
 const prettier = require('prettier');
 const eslint = require('eslint');
+
+const stylelint = require('stylelint');
+
 // const chalk = require('chalk').default;
-const chalk = require('react-dev-utils/chalk');
+const { default: chalk } = require('react-dev-utils/chalk');
 const spawn = require('react-dev-utils/crossSpawn');
 
-// const util = require('util');
 const listStaged = require('./utils/listStaged');
 
 const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
-// const globStylelint = '**/*.{css,scss,sass,jsx,tsx}';
+const globStylelint = '**/*.{css,scss,sass,tsx,jsx,ts,js,md,html}';
 const argv = process.argv.slice(2);
 
 const inputFiles = argv.filter(s => s && !s.startsWith('-'));
@@ -51,19 +53,26 @@ function logError(type, file) {
 }
 
 const eslinter = new eslint.Linter();
+
 function getStagedContent(f) {
   // return util.promisify(cp.exec)(`git show :"${f}"`).then(f => f.stdout);
   const buffer = cp.execSync(`git show :"${f}"`);
   return buffer.toString();
 }
 
-function prettierCheck(f, content) {
-  const options = prettier.resolveConfig.sync(f);
-  options.filepath = f;
-  if (!prettier.check(content, options)) {
-    logError('prettier', f);
+function clearLine(n) {
+  if (!process.stdout.clearLine) {
+    process.stdout.write('\n');
     return false;
   }
+  n = n || 1;
+  while (n--) {
+    process.stdout.clearLine();
+    if (n) {
+      process.stdout.write('\u001b[1A');
+    }
+  }
+  process.stdout.cursorTo(0);
   return true;
 }
 
@@ -72,6 +81,7 @@ function getFilesGlob(p, defaultGlob) {
     ? defaultGlob || '**/*'
     : p;
 }
+
 /**
  * prettier 命令行
  * @param {'check'|'write'} type
@@ -88,35 +98,86 @@ function prettierCli(type, f) {
     ],
     { stdio: 'inherit' }
   );
+  if (result.status == 0 && type === 'check') {
+    clearLine(3);
+  }
+  //  (type === "write") {
+  //   //  '\e[90m'
+  // }
   return result.status == 0;
 }
 
+function prettierCheck(f, content) {
+  // process.stdout.write(chalk.gray(`prettier: ${chalk.gray(f)}`));
+  const options = prettier.resolveConfig.sync(f, { useCache: 'true' });
+  options.filepath = f;
+  if (!prettier.check(content, options)) {
+    // clearLine()
+    logError('prettier', f);
+    return false;
+  }
+  // clearLine()
+  return true;
+}
+
 function lintCheck(file, content) {
+  // process.stdout.write(chalk.gray(`lint: ${chalk.gray(file)}`));
   const ext = path.extname(file);
-  if (['js', 'ts', 'jsx', 'tsx'].includes(ext)) {
+  if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
     const errs = eslinter.verify(content, {
       filename: file,
     });
     if (errs && errs.length > 0) {
+      // clearLine()
       logError('eslint', file);
-
       errs.forEach(msg =>
         console.error(
-          chalk.bold(`  ${msg.line},${msg.column}:`),
+          chalk.bold(`  ${msg.line}, ${msg.column}: `),
           chalk.red(msg.message),
           msg.ruleId || msg.fatal
         )
       );
-      return false;
+      return Promise.reject(false);
     }
   }
-  return true;
+
+  if (
+    ['.css', '.scss', '.sass', '.md', '.html', '.jsx', '.tsx'].includes(ext)
+  ) {
+    return stylelint
+      .lint({
+        code: content,
+        fix: false,
+        formatter: 'string',
+        codeFilename: file,
+        config: {
+          extends: '@dragongate/stylelint-config',
+        },
+      })
+      .then(linted => {
+        if (!linted.output) {
+          return true;
+        }
+        // clearLine();
+        console.error(linted.output.trimRight());
+        if (linted.errored) {
+          return Promise.reject(linted);
+        } else if (isStrict) {
+          return Promise.reject(linted);
+        }
+        return true;
+      });
+  }
+
+  return Promise.resolve(true);
 }
 
 function eslintFix(p) {
+  process.stdout.write(chalk.gray('fixing eslint ...'));
   const eslintCli = new eslint.CLIEngine({ fix: true });
   const res = eslintCli.executeOnFiles(p);
   eslint.CLIEngine.outputFixes(res);
+  clearLine();
   res.results.forEach(m => {
     const relateivePath = path.relative(process.cwd(), m.filePath);
     if (m.output) {
@@ -142,8 +203,10 @@ function eslintFix(p) {
 }
 
 function eslintCheck(p) {
+  process.stdout.write(chalk.gray('checking eslint ...'));
   const eslintCli = new eslint.CLIEngine({ fix: false });
   const res = eslintCli.executeOnFiles(p);
+  clearLine();
   res.results.forEach(m => {
     const relateivePath = path.relative(process.cwd(), m.filePath);
     if (m.errorCount) {
@@ -154,23 +217,68 @@ function eslintCheck(p) {
   });
   return (res.errorCount == 0 && !isStrict) || res.warningCount == 0;
 }
+
+/**
+ *
+ * @param {*} params
+ */
+function runStylelint(p, fix) {
+  process.stdout.write(chalk.gray('checking stylelint ...'));
+  return stylelint
+    .lint({
+      files: p,
+      fix: !!fix,
+      formatter: 'string',
+    })
+    .then(linted => {
+      clearLine();
+      if (!linted.output) {
+        return;
+      }
+      console.log(linted.output);
+      if (linted.errored) {
+        return Promise.reject(linted);
+      } else if (linted.maxWarningsExceeded) {
+        const foundWarnings = linted.maxWarningsExceeded.foundWarnings;
+        console.log(
+          chalk.red(`Max warnings exceeded: `),
+          `${foundWarnings} found. `
+        );
+        if (isStrict) {
+          return Promise.reject(linted);
+        }
+      }
+    });
+}
+
 function run() {
   let isFail = false;
   if (isStaged) {
-    listStaged().forEach(f => {
-      const content = getStagedContent(f);
-      if (prettierCheck(f, content) && lintCheck(f, content)) {
-        console.log(chalk.green('√'), chalk.dim.gray(f));
-      } else {
-        isFail = true;
-      }
-    });
-    if (isFail) {
+    const staged = listStaged();
+    console.log(
+      chalk.gray(
+        `Checking ${chalk.reset.bold(staged.length)}`,
+        chalk.gray(`staged file${staged.length > 1 ? 's' : ''}`)
+      )
+    );
+    Promise.all(
+      staged.map(f => {
+        const content = getStagedContent(f);
+        if (prettierCheck(f, content)) {
+          return lintCheck(f, content).then(() => {
+            console.log(chalk.green('√'), chalk.dim.gray(f));
+          });
+        } else {
+          return Promise.reject(false);
+        }
+      })
+    ).catch(() => {
       console.error(`
  Staged files format check fail!
  Try ${chalk.bold.cyan('npm run format')} to autofix them.
-        `);
-    }
+`);
+      process.exit(1);
+    });
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
     isFail = !prettierCli('write', getFilesGlob(inputFiles));
     isFail = !eslintFix(getFilesGlob(inputFiles, globEslint)) || isFail;
@@ -186,16 +294,26 @@ function run() {
     ) {
       isFail = true;
       console.error(`
- Some files have code style issues!
+ Some files have code format issues!
  Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
         `);
     } else {
-      console.log(chalk.green('√'), 'All files use good code style!');
+      runStylelint(getFilesGlob(inputFiles, globStylelint))
+        .then(() =>
+          console.log(chalk.green('√'), 'All files use good code style!')
+        )
+        .catch(() => {
+          console.error(`
+ Some files have code format issues!
+ Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
+        `);
+          process.exit(1);
+        });
     }
   }
-  return !isFail;
+  if (isFail) {
+    process.exit(1);
+  }
 }
 
-if (!run()) {
-  process.exit(1);
-}
+run();

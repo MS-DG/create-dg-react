@@ -14,4 +14,5 @@ package-lock.json
 *.svg
 *.txt
 
+node_modules/
 build/
