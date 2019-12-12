@@ -10,7 +10,12 @@
     "react-i18next": "latest"
   },
   "devDependencies": {
-    "@shennong/eslint-plugin": "latest"
+    "@shennong/eslint-plugin": "latest",
+    "stylelint-prettier": "latest",
+    "stylelint-scss": "latest",
+    "stylelint-order": "latest",
+    "stylelint-config-recommended-scss": "latest",
+    "stylelint-config-rational-order": "latest"
   },
   "scripts": {
     "format": "react-scripts format",
