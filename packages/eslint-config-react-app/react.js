@@ -359,8 +359,7 @@ module.exports = {
     'import/no-deprecated': 'error',
     'import/no-duplicates': 'warn',
     'import/no-unassigned-import': 'warn',
-    'import/no-extraneous-dependencies': 'error',
-
+    // 'import/no-extraneous-dependencies': 'error',
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
     'react/forbid-foreign-prop-types': ['warn', { allowInPropTypes: true }],
     'react/jsx-no-comment-textnodes': 'warn',
