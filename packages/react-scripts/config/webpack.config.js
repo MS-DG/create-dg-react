@@ -37,6 +37,7 @@ const eslint = require('eslint');
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
+const stylelintConfig = require('./stylelint');
 
 const appPackageJson = require(paths.appPackageJson);
 
@@ -111,6 +112,11 @@ module.exports = function(webpackEnv) {
           // https://github.com/facebook/create-react-app/issues/2677
           ident: 'postcss',
           plugins: () => [
+            require('stylelint')({
+              config: stylelintConfig,
+              formatter: 'compact',
+              cache: true,
+            }),
             require('postcss-flexbugs-fixes'),
             require('postcss-preset-env')({
               autoprefixer: {
@@ -323,6 +329,7 @@ module.exports = function(webpackEnv) {
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
         new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        // new StylelintPlugin({config:stylelintConfig}),
       ],
     },
     resolveLoader: {
