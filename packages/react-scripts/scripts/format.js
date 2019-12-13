@@ -40,19 +40,9 @@ const isStaged =
   inputFiles[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
-/**
- *
- * @param {string} type
- * @param {string} file
- */
-function logError(type, file) {
-  console.error(
-    `${chalk.yellow(type)}:${chalk.bold.red('[×]')}`,
-    chalk.bold(file)
-  );
-}
-
+const eslintCli = new eslint.CLIEngine();
 let rulesMeta;
+
 /**
  * Outputs the results of the linting.
  * @param {eslint.CLIEngine} engine The CLIEngine to use.
@@ -139,21 +129,23 @@ function prettierCli(type, f) {
   return result.status == 0;
 }
 
-function prettierCheck(f, content) {
-  // process.stdout.write(chalk.gray(`prettier: ${chalk.gray(f)}`));
-  const options = prettier.resolveConfig.sync(f, { useCache: 'true' });
-  options.filepath = f;
-  if (!prettier.check(content, options)) {
-    // clearLine()
-    logError('prettier', f);
-    return false;
-  }
-  // clearLine()
-  return true;
+function prettierCheckSingleFile(file, content) {
+  return prettier.getFileInfo(file).then(info => {
+    if (!info.ignored) {
+      const options = prettier.resolveConfig.sync(file, { useCache: true });
+      options.filepath = file;
+      if (!prettier.check(content, options)) {
+        console.error(
+          `${chalk.yellow('prettier')}:${chalk.bold.red('[×]')}`,
+          chalk.bold(file)
+        );
+        return Promise.reject(false);
+      }
+    }
+  });
 }
 
-const eslintCli = new eslint.CLIEngine();
-function lintCheck(file, content) {
+function lintCheckSingleFile(file, content) {
   // process.stdout.write(chalk.gray(`lint: ${chalk.gray(file)}`));
   const ext = path.extname(file);
   if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
@@ -266,13 +258,9 @@ function run() {
     Promise.all(
       staged.map(f => {
         const content = getStagedContent(f);
-        if (prettierCheck(f, content)) {
-          return Promise.resolve(lintCheck(f, content)).then(() =>
-            console.log(chalk.green('√'), chalk.dim.gray(f))
-          );
-        } else {
-          return Promise.reject(false);
-        }
+        return Promise.resolve(lintCheckSingleFile(f, content))
+          .then(() => prettierCheckSingleFile(f, content))
+          .then(() => console.log(chalk.green('√'), chalk.dim.gray(f)));
       })
     ).catch(() => {
       errorAndTry('Staged files format check fail!');

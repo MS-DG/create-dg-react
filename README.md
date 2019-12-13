@@ -160,7 +160,7 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
   - [x] pre-commit
   - commit-msg
   - [x] pre-push (run test)
-- [ ] format
+- [x] format
   - autofix
   - staged check
   - CI check
