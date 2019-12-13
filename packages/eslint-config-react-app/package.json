@@ -27,7 +27,12 @@
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
-    "eslint-plugin-react-hooks": "*"
+    "eslint-plugin-react-hooks": "*",
+    "eslint-plugin-prettier": "3.x",
+    "eslint-plugin-jest": "23.x",
+    "eslint-plugin-jsdoc": "18.x",
+    "eslint-plugin-lodash": "6.x",
+    "eslint-plugin-security": "1.x"
   },
   "dependencies": {
     "confusing-browser-globals": "^1.0.9",
