@@ -84,6 +84,8 @@ You can adjust various development and production settings by setting environmen
 - `.env.development`, `.env.test`, `.env.production`: Environment-specific settings.
 - `.env.development.local`, `.env.test.local`, `.env.production.local`: Local overrides of environment-specific settings.
 
+> In azure pipelines the `.env.${Build_SourceBranchName}` will be copied to `.env.local` for CI build.
+
 Files on the left have more priority than files on the right:
 
 - `npm start`: `.env.development.local`, `.env.development`, `.env.local`, `.env`

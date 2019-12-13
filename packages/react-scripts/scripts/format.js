@@ -18,6 +18,7 @@ const { default: chalk } = require('react-dev-utils/chalk');
 const spawn = require('react-dev-utils/crossSpawn');
 
 const listStaged = require('./utils/listStaged');
+const stylelintConfig = require('../config/stylelint');
 
 const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
 const globStylelint = '**/*.{css,scss,tsx,jsx,ts,js,md,html}';
@@ -40,19 +41,9 @@ const isStaged =
   inputFiles[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
-/**
- *
- * @param {string} type
- * @param {string} file
- */
-function logError(type, file) {
-  console.error(
-    `${chalk.yellow(type)}:${chalk.bold.red('[×]')}`,
-    chalk.bold(file)
-  );
-}
-
+const eslintCli = new eslint.CLIEngine({ useEslintrc: false, cache: true });
 let rulesMeta;
+
 /**
  * Outputs the results of the linting.
  * @param {eslint.CLIEngine} engine The CLIEngine to use.
@@ -81,7 +72,7 @@ function printResults(engine, results) {
 
 function errorAndTry(message) {
   console.error(`
- ${chalk.red(message)}
+ ${chalk.yellow(message)}
  Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
 `);
 }
@@ -139,21 +130,20 @@ function prettierCli(type, f) {
   return result.status == 0;
 }
 
-function prettierCheck(f, content) {
-  // process.stdout.write(chalk.gray(`prettier: ${chalk.gray(f)}`));
-  const options = prettier.resolveConfig.sync(f, { useCache: 'true' });
-  options.filepath = f;
-  if (!prettier.check(content, options)) {
-    // clearLine()
-    logError('prettier', f);
-    return false;
-  }
-  // clearLine()
-  return true;
+function prettierCheckSingleFile(file, content) {
+  return prettier.getFileInfo(file).then(info => {
+    if (!info.ignored) {
+      const options = prettier.resolveConfig.sync(file, { useCache: true });
+      options.filepath = file;
+      if (!prettier.check(content, options)) {
+        console.error(`${chalk.red('[×]prettier')}:`, chalk.yellow.bold(file));
+        return Promise.reject(false);
+      }
+    }
+  });
 }
 
-const eslintCli = new eslint.CLIEngine();
-function lintCheck(file, content) {
+function lintCheckSingleFile(file, content) {
   // process.stdout.write(chalk.gray(`lint: ${chalk.gray(file)}`));
   const ext = path.extname(file);
   if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
@@ -173,9 +163,8 @@ function lintCheck(file, content) {
         fix: false,
         formatter: 'string',
         codeFilename: file,
-        config: {
-          extends: '@dragongate/stylelint-config',
-        },
+        config: stylelintConfig,
+        cache: true,
       })
       .then(linted => {
         if (!linted.output) {
@@ -196,7 +185,11 @@ function lintCheck(file, content) {
 
 function eslintFix(p) {
   process.stdout.write(chalk.gray('fixing eslint ...'));
-  const eslintCli = new eslint.CLIEngine({ fix: true });
+  const eslintCli = new eslint.CLIEngine({
+    fix: true,
+    useEslintrc: false,
+    cache: true,
+  });
   const res = eslintCli.executeOnFiles(p);
   eslint.CLIEngine.outputFixes(res);
   clearLine();
@@ -228,9 +221,8 @@ function runStylelint(p, fix) {
       files: p,
       fix: !!fix,
       formatter: 'string',
-      config: {
-        extends: '@dragongate/stylelint-config',
-      },
+      config: stylelintConfig,
+      cache: true,
     })
     .then(linted => {
       clearLine();
@@ -266,13 +258,9 @@ function run() {
     Promise.all(
       staged.map(f => {
         const content = getStagedContent(f);
-        if (prettierCheck(f, content)) {
-          return Promise.resolve(lintCheck(f, content)).then(() =>
-            console.log(chalk.green('√'), chalk.dim.gray(f))
-          );
-        } else {
-          return Promise.reject(false);
-        }
+        return Promise.resolve(lintCheckSingleFile(f, content))
+          .then(() => prettierCheckSingleFile(f, content))
+          .then(() => console.log(chalk.green('√'), chalk.dim.gray(f)));
       })
     ).catch(() => {
       errorAndTry('Staged files format check fail!');
@@ -293,13 +281,13 @@ function run() {
         if (err) {
           console.debug(err);
         }
-        console.error(chalk.red(`\nSome files can't be auto fixed!\n`));
+        console.error(chalk.yellow(`\nSome files can't be auto fixed!\n`));
         process.exit(1);
       });
   } else {
     if (
-      !prettierCli('check', getFilesGlob(inputFiles)) ||
-      !eslintCheck(getFilesGlob(inputFiles, globEslint))
+      !eslintCheck(getFilesGlob(inputFiles, globEslint)) ||
+      !prettierCli('check', getFilesGlob(inputFiles))
     ) {
       isFail = true;
       errorAndTry('Some files have code format issues!');

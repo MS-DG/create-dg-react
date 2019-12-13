@@ -160,16 +160,17 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
   - [x] pre-commit
   - commit-msg
   - [x] pre-push (run test)
-- [ ] format
+- [x] format
   - autofix
   - staged check
   - CI check
-- [ ] Stylint and prettier for css/scss files
+- [x] Stylint and prettier for css/scss files
 - [ ] Integration Test template
 - [x] Multiple env config file
   - .env.\*.local
   - .env.production
   - .env
+  - in in-build `.env.${Build_SourceBranchName}` => `.env.local`
 - [ ] MacOS/Linux VSTS Auth
 
 ## License

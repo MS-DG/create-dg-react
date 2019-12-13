@@ -28,14 +28,20 @@ jobs:
           versionSpec: "10.x"
         displayName: "Install Node.js"
 
+      - bash: "cp .env.${Build_SourceBranchName} .env.local 2>/dev/null || :"
+        displayName: Init ${{variables['Build.SourceBranchName']}} .env
+
       - script: npm install
         displayName: "npm install"
 
       - script: npm run build --if-present
-        displayName: "BUILD"
+        displayName: "Build"
 
       - script: npm test
-        displayName: "TEST"
+        displayName: "Test"
+
+      - script: npm run format --if-present
+        displayName: "Format"
 
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: drop"
@@ -47,12 +53,15 @@ jobs:
     pool: # see pool schema
       vmImage: "windows-2019"
     dependsOn: web_build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master','refs/heads/prod'))
     continueOnError: false # 'true' if future jobs should run even if this job fails; defaults to 'false'
     timeoutInMinutes: 5 # how long to run the job before automatically cancelling
     cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
-    variables: { NODE_ENV: production }
-    environment: static-web # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
+    variables:
+      # set the container name will be
+      SUBSCRIPTION_NAME_AND_ID: "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)" # LIKE "
+      STORAGE_NAME: ${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}}
+    environment: static-web-${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}} # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
     strategy:
       runOnce:
         deploy:
@@ -63,5 +72,5 @@ jobs:
                 SourcePath: "$(Agent.BuildDirectory)/drop"
                 Destination: AzureBlob
                 ContainerName: "$web"
-                azureSubscription: "SUBSCRIPTION_NAME_AND_ID" # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
-                storage: STORAGE_NAME
+                azureSubscription: "$(SUBSCRIPTION_NAME_AND_ID)" # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
+                storage: "$(STORAGE_NAME)"
