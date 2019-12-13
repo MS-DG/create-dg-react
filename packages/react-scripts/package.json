@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
