@@ -29,7 +29,17 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  plugins: ['import', 'jsx-a11y', 'react', 'react-hooks', 'prettier'],
+  plugins: [
+    'import',
+    'jsx-a11y',
+    'react',
+    'react-hooks',
+    'prettier',
+    'jest',
+    'jsdoc',
+    'lodash',
+    'security',
+  ],
 
   env: {
     browser: true,
@@ -71,6 +81,7 @@ module.exports = {
       // If adding a typescript-eslint version of an existing ESLint rule,
       // make sure to disable the ESLint rule here.
       rules: {
+        'import/no-unassigned-import': 'off',
         // TypeScript's `noFallthroughCasesInSwitch` option is more robust (#6906)
         'default-case': 'off',
         // 'tsc' already handles this (https://github.com/typescript-eslint/typescript-eslint/issues/291)
@@ -112,6 +123,93 @@ module.exports = {
         ],
         'no-useless-constructor': 'off',
         '@typescript-eslint/no-useless-constructor': 'warn',
+
+        '@typescript-eslint/adjacent-overload-signatures': 'error',
+        '@typescript-eslint/array-type': [
+          'error',
+          {
+            default: 'array',
+            readonly: 'generic',
+          },
+        ],
+        '@typescript-eslint/member-ordering': [
+          'error',
+          {
+            default: [
+              'private-static-field',
+              'public-static-field',
+              'private-instance-field',
+              'public-instance-field',
+              'private-constructor',
+              'public-constructor',
+              'public-instance-method',
+              'protected-instance-method',
+              'private-instance-method',
+            ],
+          },
+        ],
+        '@typescript-eslint/interface-name-prefix': ['error', 'always'],
+        '@typescript-eslint/ban-types': [
+          'error',
+          {
+            types: {
+              Object: 'Avoid using the `Object` type. Did you mean `object`?',
+              Function:
+                'Avoid using the `Function` type. Prefer a specific function type, like `() => void`.',
+              Boolean:
+                'Avoid using the `Boolean` type. Did you mean `boolean`?',
+              Number: 'Avoid using the `Number` type. Did you mean `number`?',
+              String: 'Avoid using the `String` type. Did you mean `string`?',
+              Symbol: 'Avoid using the `Symbol` type. Did you mean `symbol`?',
+            },
+          },
+        ],
+        '@typescript-eslint/class-name-casing': 'error',
+        '@typescript-eslint/triple-slash-reference': [
+          'error',
+          {
+            path: 'never',
+            types: 'always',
+            lib: 'never',
+          },
+        ],
+        '@typescript-eslint/no-empty-interface': 'error',
+        '@typescript-eslint/no-misused-new': 'error',
+        '@typescript-eslint/type-annotation-spacing': 'error',
+        '@typescript-eslint/unified-signatures': 'error',
+        '@typescript-eslint/prefer-for-of': 'error',
+        '@typescript-eslint/explicit-member-accessibility': [
+          'error',
+          {
+            overrides: {
+              constructors: 'off',
+              accessors: 'off',
+            },
+          },
+        ],
+        '@typescript-eslint/prefer-namespace-keyword': 'error',
+        '@typescript-eslint/no-inferrable-types': [
+          'error',
+          {
+            ignoreParameters: false,
+          },
+        ],
+      },
+    },
+    {
+      files: ['**/*.test.[tj]sx?$'],
+      rules: {
+        'jest/lowercase-name': [
+          'error',
+          {
+            ignore: ['describe', 'test'],
+          },
+        ],
+        'jest/no-empty-title': 'error',
+        'jest/no-focused-tests': 'error',
+        'jest/no-jest-import': 'error',
+        'jest/no-mocks-import': 'error',
+        'jest/valid-expect': 'error',
       },
     },
   ],
@@ -256,6 +354,12 @@ module.exports = {
     'import/first': 'error',
     'import/no-amd': 'error',
     'import/no-webpack-loader-syntax': 'error',
+    'import/no-self-import': 'error',
+    'import/no-useless-path-segments': 'warn',
+    'import/no-deprecated': 'error',
+    'import/no-duplicates': 'warn',
+    'import/no-unassigned-import': 'warn',
+    'import/no-extraneous-dependencies': 'error',
 
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
     'react/forbid-foreign-prop-types': ['warn', { allowInPropTypes: true }],
@@ -318,5 +422,183 @@ module.exports = {
     // 'flowtype/use-flow-type': 'warn',
 
     'prettier/prettier': ['warn', prettierConfig],
+
+    'jsdoc/check-alignment': 'error',
+    'jsdoc/check-indentation': 'warn',
+
+    'security/detect-pseudoRandomBytes': 'error',
+    'lodash/chaining': ['error', 'never'],
+    'arrow-body-style': 'error',
+    'arrow-parens': ['error', 'as-needed'],
+    complexity: ['error', 20],
+    curly: 'error',
+    'constructor-super': 'error',
+    'eol-last': 'error',
+    'guard-for-in': 'error',
+
+    'no-bitwise': 'error',
+
+    'no-console': [
+      'error',
+      {
+        allow: [
+          'log',
+          'error',
+          'warn',
+          'groupCollapsed',
+          'group',
+          'groupEnd',
+          'debug',
+          'dirxml',
+          'assert',
+        ],
+      },
+    ],
+    'no-debugger': 'error',
+    'no-empty': 'error',
+    'no-return-await': 'error',
+    'no-trailing-spaces': 'error',
+    'no-undef-init': 'error',
+    'no-unsafe-finally': 'error',
+    'no-var': 'error',
+    'object-shorthand': 'error',
+    'one-var': ['error', 'never'],
+    'prefer-const': 'error',
+    'prefer-object-spread': 'error',
+    'prefer-template': 'error',
+    radix: 'error',
+    'func-names': 'error',
+    semi: 'error',
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        markers: ['/', '@function'],
+        exceptions: ['*'],
+      },
+    ],
+    /**
+     * teams config
+     */
+    // eqeqeq: ["error", "smart"],
+    // "max-classes-per-file": "error",
+    // "max-lines-per-function": [
+    //   "error",
+    //     {
+    //       max: 60,
+    //       skipComments: true,
+    //       skipBlankLines: true
+    //     }
+    // ],
+    // "max-depth": ["error", 4],
+    // "max-len": [
+    //   "error",
+    //   {
+    //     code: 120,
+    //     ignoreComments: true,
+    //     ignoreStrings: true,
+    //     ignoreTemplateLiterals: true,
+    //     ignoreRegExpLiterals: true
+    //   }
+    // ],
+    // "new-parens": "error",
+    // "max-lines": [
+    //   "error",
+    //   {
+    //     max: 1000,
+    //     skipComments: true,
+    //     skipBlankLines: true
+    //   }
+    // ],
+    // "no-caller": "error",
+    // "no-cond-assign": "error",
+    // "no-duplicate-case": "error",
+    // "no-unused-expressions": [
+    //   "error",
+    //   {
+    //     allowShortCircuit: true,
+    //     allowTernary: true
+    //   }
+    // ],
+    // "react-hooks/rules-of-hooks": "error",
+    // "react-hooks/exhaustive-deps": "error",
+    // "use-isnan": "error",
+    // "no-restricted-globals": [
+    //   "error",
+    //   {
+    //     name: "global",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "history",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "location",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "navigator",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "setTimeout",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "window",
+    //     message:
+    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
+    //   },
+    //   {
+    //     name: "fdescribe",
+    //     message: "Focused tests should not be checked in."
+    //   },
+    //   {
+    //     name: "fit",
+    //     message: "Focused tests should not be checked in."
+    //   },
+    //   {
+    //     name: "html",
+    //     message: "Any html (DOM) modifying functions are not allowed."
+    //   }
+    // ],
+    // "no-restricted-properties": [
+    //   "error",
+    //   {
+    //     object: "test",
+    //     property: "only",
+    //     message: "Focused tests should not be checked in."
+    //   },
+    //   {
+    //     object: "describe",
+    //     property: "only",
+    //     message: "Focused tests should not be checked in."
+    //   },
+    //   {
+    //     object: "it",
+    //     property: "only",
+    //     message: "Focused tests should not be checked in."
+    //   }
+    // ],
+    // "no-sparse-arrays": "error",
+    // "no-template-curly-in-string": "error",
+    // "no-throw-literal": "error",
+    // "no-eval": "error",
+    // "no-implied-eval": "error",
+    // "no-invalid-regexp": "error",
+    // "no-labels": "error",
+    // "no-multiple-empty-lines": "error",
+    // "no-new-wrappers": "error",
+    // "no-redeclare": "error",
+    // "no-restricted-syntax": [
+    //   "error",
+    //   "MemberExpression[object.name='document'][property.name='write']"
+    // ],
   },
 };
