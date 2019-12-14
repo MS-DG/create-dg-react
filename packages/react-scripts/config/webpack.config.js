@@ -33,7 +33,7 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 // @remove-on-eject-begin
-const eslint = require('eslint');
+// const eslint = require('eslint');
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
@@ -112,11 +112,10 @@ module.exports = function(webpackEnv) {
           // https://github.com/facebook/create-react-app/issues/2677
           ident: 'postcss',
           plugins: () => [
-            require('stylelint')({
-              config: stylelintConfig,
-              formatter: 'compact',
-              cache: true,
-            }),
+            // require('stylelint')({
+            //   config: stylelintConfig,
+            //   cache: true,
+            // }),
             require('postcss-flexbugs-fixes'),
             require('postcss-preset-env')({
               autoprefixer: {
@@ -128,6 +127,13 @@ module.exports = function(webpackEnv) {
             // so that it honors browserslist config in package.json
             // which in turn let's users customize the target behavior as per their needs.
             postcssNormalize(),
+            // require('postcss-reporter')(
+            //   // {
+            //   //   formatter: function (input) {
+            //   //     return input.source + ' produced ' + input.messages.length + ' messages';
+            //   //   }
+            //   // }
+            // ),
           ],
           sourceMap: isEnvProduction && shouldUseSourceMap,
         },
@@ -177,11 +183,12 @@ module.exports = function(webpackEnv) {
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
       // Finally, this is your app's code:
-      paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
       // changing JS code would still trigger a refresh.
-    ].filter(Boolean),
+    ]
+      .filter(Boolean)
+      .concat(appPackageJson.entry || paths.appIndexJs),
     output: {
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
@@ -354,35 +361,52 @@ module.exports = function(webpackEnv) {
             {
               options: {
                 cache: true,
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                // formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
                 // @remove-on-eject-begin
-                ignore: process.env.EXTEND_ESLINT === 'true',
-                baseConfig: (() => {
-                  // We allow overriding the config only if the env variable is set
-                  if (process.env.EXTEND_ESLINT === 'true') {
-                    const eslintCli = new eslint.CLIEngine();
-                    let eslintConfig;
-                    try {
-                      eslintConfig = eslintCli.getConfigForFile(
-                        paths.appIndexJs
-                      );
-                    } catch (e) {
-                      console.error(e);
-                      process.exit(1);
-                    }
-                    return eslintConfig;
-                  } else {
-                    return {
-                      extends: [require.resolve('@dragongate/eslint-config')],
-                    };
-                  }
-                })(),
+                ignore: true,
+                baseConfig: appPackageJson.eslintConfig || {
+                  extends: [require.resolve('@dragongate/eslint-config')],
+                },
+                // (() => {
+                //   // We allow overriding the config only if the env variable is set
+                //   if (process.env.EXTEND_ESLINT === 'true') {
+                //     const eslintCli = new eslint.CLIEngine();
+                //     let eslintConfig;
+                //     try {
+                //       eslintConfig = eslintCli.getConfigForFile(
+                //         paths.appIndexJs
+                //       );
+                //     } catch (e) {
+                //       console.error(e);
+                //       process.exit(1);
+                //     }
+                //     return eslintConfig;
+                //   } else {
+                //     return {
+                //       extends: [require.resolve('@dragongate/eslint-config')],
+                //     };
+                //   }
+                // })(),
                 useEslintrc: false,
                 // @remove-on-eject-end
               },
               loader: require.resolve('eslint-loader'),
+            },
+          ],
+          include: paths.appSrc,
+        },
+        {
+          test: /\.(css|scss|jsx|tsx)$/,
+          enforce: 'pre',
+          use: [
+            {
+              loader: require.resolve('./stylint-loader'),
+              options: {
+                config: stylelintConfig,
+                cache: true,
+              },
             },
           ],
           include: paths.appSrc,
@@ -584,6 +608,10 @@ module.exports = function(webpackEnv) {
       ],
     },
     plugins: [
+      // new (require('stylelint-webpack-plugin'))({
+      //   config: stylelintConfig,
+      //   cache: true,
+      // }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
