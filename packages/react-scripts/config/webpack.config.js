@@ -361,7 +361,7 @@ module.exports = function(webpackEnv) {
             {
               options: {
                 cache: true,
-                // formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
                 // @remove-on-eject-begin
@@ -398,11 +398,11 @@ module.exports = function(webpackEnv) {
           include: paths.appSrc,
         },
         {
-          test: /\.(css|scss|jsx|tsx)$/,
+          test: /\.(css|scss|jsx|tsx|html)$/,
           enforce: 'pre',
           use: [
             {
-              loader: require.resolve('./stylint-loader'),
+              loader: require.resolve('./stylelint-loader'),
               options: {
                 config: stylelintConfig,
                 cache: true,
