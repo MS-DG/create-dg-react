@@ -1,6 +1,6 @@
 {
   "name": "@dragongate/eslint-config",
-  "version": "5.0.8",
+  "version": "5.0.9",
   "publishConfig": {
     "access": "public"
   },
@@ -25,13 +25,13 @@
     "babel-eslint": "10.x",
     "eslint": "6.x",
     "eslint-plugin-import": "2.x",
-    "eslint-plugin-jsx-a11y": "6.x",
-    "eslint-plugin-react": "7.x",
-    "eslint-plugin-react-hooks": "*",
-    "eslint-plugin-prettier": "3.x",
     "eslint-plugin-jest": "23.x",
     "eslint-plugin-jsdoc": "18.x",
+    "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-lodash": "6.x",
+    "eslint-plugin-prettier": "3.x",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "*",
     "eslint-plugin-security": "1.x"
   },
   "dependencies": {
