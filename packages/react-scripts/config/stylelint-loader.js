@@ -13,7 +13,7 @@ const defaultOptions = {
 };
 
 /**
- * align with `react-dev-utils/eslintFormatter`
+ * align with `@dragongate/react-dev-utils/eslintFormatter`
  * @param {stylelint.LintResult[]} results
  */
 function formatter(results) {
@@ -88,16 +88,13 @@ function linter(content, options, context, callback) {
     files: context.resourcePath,
     // formatter: 'string',
     formatter,
-    // require('react-dev-utils/eslintFormatter'),
+    // require('@dragongate/react-dev-utils/eslintFormatter'),
   });
   stylelint
     .lint(lintOptions)
-
     .then(result => {
       if (result.errored && result.output) {
         const error = Error(result.output);
-        // error.file = filePath;
-
         context.emitWarning(error);
       }
       return callback(null, content);

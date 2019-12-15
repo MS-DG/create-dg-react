@@ -14,8 +14,8 @@ const eslint = require('eslint');
 const stylelint = require('stylelint');
 
 // const chalk = require('chalk').default;
-const { default: chalk } = require('react-dev-utils/chalk');
-const spawn = require('react-dev-utils/crossSpawn');
+const { default: chalk } = require('@dragongate/react-dev-utils/chalk');
+const spawn = require('@dragongate/react-dev-utils/crossSpawn');
 
 const listStaged = require('./utils/listStaged');
 const stylelintConfig = require('../config/stylelint');
