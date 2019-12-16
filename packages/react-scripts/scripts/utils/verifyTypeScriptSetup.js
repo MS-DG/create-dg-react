@@ -21,7 +21,8 @@ function writeJson(fileName, object) {
   fs.writeFileSync(
     fileName,
     prettier.format(JSON.stringify(object), {
-      fileName: 'tsconfig.json',
+      parser: 'json',
+      fileName: fileName,
     })
   );
 }
