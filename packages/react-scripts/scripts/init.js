@@ -97,7 +97,7 @@ function tryOpenCode() {
     return false;
   }
 }
-module.exports = function(
+module.exports = function (
   appPath,
   appName,
   verbose,
@@ -313,7 +313,8 @@ module.exports = function(
 
   if (
     dependencies.find(arg => arg.includes('typescript')) ||
-    devDependencies.find(arg => arg.includes('typescript'))
+    devDependencies.find(arg => arg.includes('typescript')) ||
+    (appPackage.devDependencies || {})["typescript"]
   ) {
     console.log();
     verifyTypeScriptSetup();
