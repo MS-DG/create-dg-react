@@ -4,7 +4,7 @@
     "access": "public"
   },
   "version": "3.6.9",
-  "description": "Configuration and scripts for Create React App.",
+  "description": "Configuration and scripts for DG-React App.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MS-DG/create-dg-react.git",
