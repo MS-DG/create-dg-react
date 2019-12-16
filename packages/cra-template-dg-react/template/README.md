@@ -30,7 +30,7 @@ The build is minified and the filenames include the hashes.
 
 Your app is ready to be deployed!
 
-See the section about [deployment](azure-pipelines.yml) for more information.
+See the section about [deployment](#ci-cd) for more information.
 
 ### `npm run format`
 
@@ -146,6 +146,11 @@ Files on the left have more priority than files on the right:
 - `npm test`: `.env.test.local`, `.env.test`, `.env` (**note `.env.local` is missing**)
 
 These variables will act as the defaults if the machine does not explicitly set them.
+
+## CI-CD
+
+This Project using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/javascript) for continuous integration and continuous delivery.
+It's defined in [azure-pipelines.yml](azure-pipelines.yml)
 
 ## Git Hook
 
