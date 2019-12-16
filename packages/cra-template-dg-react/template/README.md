@@ -36,9 +36,62 @@ See the section about [deployment](azure-pipelines.yml) for more information.
 
 format checking and auto-fixing
 
-- `npm run format` or `npm run format .` default to format and fix all files;
+- `npm run format` default to format and fix all files;
 - `npm run format staged` check staged files format without fix;
-- `npm run format --check` or `npm run format . --check` check all files without fix;
+- `npm run format -- --check` check all files without fix;
+
+Warnings also need to be fixed befor git-push.
+
+**The warning will break the build in CI environment**.
+
+## Lint
+
+> There two categories of rules:
+>
+> - **Formatting rules**: eg: `max-len`, `no-mixed-spaces-and-tabs`, `keyword-spacing`,`comma-style`...
+>
+> - **Code-quality rules**: eg `no-unused-vars`, `no-extra-bind`, `no-implicit-globals` ...
+
+All config rules is in shared npm packages, and **should not** be modified in local.
+
+It's all to update `"@dragongate/react-scripts"` and `@shennong/eslint-plugin`.
+
+### prettier
+
+All files (Typescript, SCSS, HTML, Markdown ...) using the same prettier config for formatting rules.
+The [.eslintignore](.eslintignore) list exceptions for prettier.
+
+The config files is using [`@dragongate/eslint-config/prettier`](https://github.com/MS-DG/create-dg-react/blob/master/packages/eslint-config-react-app/prettier.js).
+
+### eslint
+
+All Typescript (`.ts`,`.tsx`) using [eslint](https://eslint.org/) to lint code-quality rules.
+Base on [`@dragongate/eslint-config`](https://github.com/MS-DG/create-dg-react/tree/master/packages/eslint-config-react-app) and `@shennong/eslint-plugin`(a private eslint plugin).
+
+All files in `.gitignore`(can not be committed) are exceptions for eslint.
+
+You **Should not** change the eslintConfig.
+
+> If some rules should be added or modified, please change the two packages.
+>
+> If some rules should be disable in special case, using the disable comment: (try to avoid)
+>
+> - add `// eslint-disable-next-line rule-id1, rule-id2` to disable those rules in next line.
+> - add `// eslint-disable-line rule-id1, rule-id2` to disable those rules in this line.
+
+### stylelint
+
+All SCSS and CSS files and other files with styles (`.html`,`.tsx`,and `.md`) are linted with [stylelint](https://stylelint.io/) for code-quality rules.
+Base on [`@dragongate/stylelint-config`](https://github.com/MS-DG/create-dg-react/tree/master/packages/stylelint-config).
+
+You **Should not** change the eslintConfig.
+
+> If some rules should be added or modified, please change the two packages.
+>
+> If some rules should be disable in special case using disable comment: (try to avoid)
+>
+> - add `// stylelint-disable-next-line rule-id1, rule-id2` to disable those rules in next line.
+> - add `// stylelint-disable-line rule-id1` to disable those rules in this line.
 
 ## Environment Variables
 
