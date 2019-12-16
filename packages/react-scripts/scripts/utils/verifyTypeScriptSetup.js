@@ -14,13 +14,15 @@ const resolve = require('resolve');
 const path = require('path');
 const paths = require('../../config/paths');
 const os = require('os');
+const prettier = require('prettier');
 const immer = require('@dragongate/react-dev-utils/immer').produce;
 const globby = require('@dragongate/react-dev-utils/globby').sync;
-
 function writeJson(fileName, object) {
   fs.writeFileSync(
     fileName,
-    JSON.stringify(object, null, 2).replace(/\n/g, os.EOL) + os.EOL
+    prettier.format(JSON.stringify(object), {
+      fileName: 'tsconfig.json',
+    })
   );
 }
 
