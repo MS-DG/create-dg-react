@@ -44,6 +44,88 @@ const staged =
   !argv.includes('--staged=false') &&
   (process.env.GIT_AUTHOR_DATE ||
     argv.find(a => a === 'staged' || a === '--staged'));
+// Check test run stage: pre-commit/pre-push/post-build
+const testStage = (args => {
+  for (let arg of args) {
+    if (arg.startsWith('--teststage=')) {
+      return arg.substring(12);
+    }
+  }
+})(argv);
+const testStageArg = (testStage => {
+  if (testStage == 'pre-commit') {
+    console.log('run pre-commit test...');
+    return [
+      'nowatch',
+      '--testmatch=test',
+      '--changedSince=HEAD',
+      '--passWithNoTests',
+      '--verbose',
+    ];
+  } else if (testStage == 'pre-push') {
+    console.log('run pre-push test...');
+    let params = [
+      'nowatch',
+      '--testmatch=test',
+      '--testmatch=integration',
+      '--passWithNoTests',
+      '--verbose',
+    ];
+    if (process.env.CHANGED_SINCE) params.push(process.env.CHANGED_SINCE);
+    return params;
+  } else if (testStage == 'post-build') {
+    console.log('run pre-push test...');
+    return [
+      'nowatch',
+      '--testmatch=test',
+      '--testmatch=integration',
+      '--passWithNoTests',
+      '--verbose',
+      '--reporter=default',
+    ];
+  }
+  // else if (testStage == "incident-test") {
+  //   console.log("run incident-test test...");
+  //   return [ "nowatch", "--testmatch=incident", "--passWithNoTests", "--verbose" ];
+  // }
+  // else if (testStage == "service-checklist-test") {
+  //   console.log("run service check list test...");
+  //   return [ "nowatch", "--testmatch=checklist",  "--passWithNoTests", "--verbose" ];
+  // }
+  else if (testStage == 'post-deploy') {
+    console.log('run pre-push test...');
+    return [
+      'nowatch',
+      '--testmatch=test',
+      '--testmatch=blackbox',
+      '--lastCommit',
+      '--passWithNoTests',
+      '--verbose',
+    ];
+  }
+})(testStage);
+if (testStageArg) argv = argv.concat(testStageArg);
+
+// run without watch
+const nowatch =
+  argv.includes('--nowatch=false') ||
+  argv.find(a => a === 'nowatch' || a === '--nowatch');
+// specify test files: --testmatch=test, use multiple pairs to specify multiple matches.
+const testMatchDefault = 'test,';
+const testMatchArg = (args => {
+  let result = [];
+  args.forEach(arg => {
+    if (arg.startsWith('--testmatch=')) {
+      result.push(arg.substring(12));
+    }
+  });
+  return result;
+})(argv);
+const testMatch =
+  testMatchArg.length > 0
+    ? testMatchArg.join(',').concat(',')
+    : testMatchDefault;
+
 function isInGitRepository() {
   try {
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
@@ -64,6 +146,7 @@ function isInMercurialRepository() {
 
 // Watch unless on CI or explicitly running all tests
 if (
+  !nowatch &&
   !process.env.CI &&
   !staged &&
   argv.indexOf('--watchAll') === -1 &&
@@ -85,7 +168,8 @@ argv.push(
     createJestConfig(
       relativePath => path.resolve(__dirname, '..', relativePath),
       path.resolve(paths.appSrc, '..'),
-      false
+      false,
+      testMatch
     )
   )
 );
@@ -119,7 +203,13 @@ let env = 'jsdom';
 let next;
 do {
   next = argv.shift();
-  if (next === '--env') {
+  if (
+    next.startsWith('nowatch') ||
+    next.startsWith('--testmatch=') ||
+    next.startsWith('--teststage=')
+  ) {
+    // Skip our customized arguments
+  } else if (next === '--env') {
     env = argv.shift();
   } else if (next.indexOf('--env=') === 0) {
     env = next.substring('--env='.length);
@@ -143,5 +233,19 @@ if (!resolvedEnv) {
 }
 const testEnvironment = resolvedEnv || env;
 argv.push('--env', testEnvironment);
+
 // @remove-on-eject-end
-jest.run(argv);
+
+console.log(argv);
+return;
+
+// git stash before we run test.
+let needPop = false;
+const buffer = execSync('git stash save --keep-index --include-untracked');
+if (buffer.toString().startsWith('Saved working directory')) needPop = true;
+
+// Run test
+jest.run(argv).then(() => {
+  if (needPop) execSync('git stash pop', { stdio: 'ignore' });
+});
+//console.log(argv)
