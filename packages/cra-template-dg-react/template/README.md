@@ -74,7 +74,7 @@ You **Should not** change the eslintConfig.
 
 > If some rules should be added or modified, please change the two packages.
 >
-> If some rules should be disable in special case, using the disable comment: (try to avoid)
+> If some rules should be disable in some specific cases, using the disable comment:
 >
 > - add `// eslint-disable-next-line rule-id1, rule-id2` to disable those rules in next line.
 > - add `// eslint-disable-line rule-id1, rule-id2` to disable those rules in this line.
@@ -88,7 +88,7 @@ You **Should not** change the eslintConfig.
 
 > If some rules should be added or modified, please change the two packages.
 >
-> If some rules should be disable in special case using disable comment: (try to avoid)
+> If some rules should be disable in some specific cases, using disable comment:
 >
 > - add `// stylelint-disable-next-line rule-id1, rule-id2` to disable those rules in next line.
 > - add `// stylelint-disable-line rule-id1` to disable those rules in this line.
