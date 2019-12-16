@@ -38,6 +38,7 @@ const getCacheIdentifier = require('@dragongate/react-dev-utils/getCacheIdentifi
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
 const stylelintConfig = require('./stylelint');
+const eslintConfig = require('./eslint');
 
 const appPackageJson = require(paths.appPackageJson);
 
@@ -368,9 +369,7 @@ module.exports = function(webpackEnv) {
                 resolvePluginsRelativeTo: __dirname,
                 // @remove-on-eject-begin
                 ignore: true,
-                baseConfig: appPackageJson.eslintConfig || {
-                  extends: [require.resolve('@dragongate/eslint-config')],
-                },
+                baseConfig: eslintConfig,
                 // (() => {
                 //   // We allow overriding the config only if the env variable is set
                 //   if (process.env.EXTEND_ESLINT === 'true') {

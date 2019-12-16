@@ -14,14 +14,15 @@ const eslint = require('eslint');
 const stylelint = require('stylelint');
 
 // const chalk = require('chalk').default;
-const { default: chalk } = require('@dragongate/react-dev-utils/chalk');
+const chalk = require('@dragongate/react-dev-utils/chalk');
 const spawn = require('@dragongate/react-dev-utils/crossSpawn');
 
 const listStaged = require('./utils/listStaged');
 const stylelintConfig = require('../config/stylelint');
+const eslintConfig = require('../config/eslint');
 
 const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
-const globStylelint = '**/*.{css,scss,tsx,jsx,ts,js,md,html}';
+const globStylelint = '**/*.{css,scss,tsx,jsx,md,html}';
 const argv = process.argv.slice(2);
 
 const inputFiles = argv.filter(s => s && !s.startsWith('-'));
@@ -41,7 +42,11 @@ const isStaged =
   inputFiles[0] === 'staged' ||
   (process.env.GIT_AUTHOR_DATE && argv.length === 0);
 
-const eslintCli = new eslint.CLIEngine({ useEslintrc: false, cache: true });
+const eslintCli = new eslint.CLIEngine({
+  useEslintrc: false,
+  baseConfig: eslintConfig,
+  cache: true,
+});
 let rulesMeta;
 
 /**
@@ -188,6 +193,7 @@ function eslintFix(p) {
   const eslintCli = new eslint.CLIEngine({
     fix: true,
     useEslintrc: false,
+    baseConfig: eslintConfig,
     cache: true,
   });
   const res = eslintCli.executeOnFiles(p);

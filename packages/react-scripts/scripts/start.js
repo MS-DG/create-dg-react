@@ -7,24 +7,6 @@
  */
 // @remove-on-eject-end
 'use strict';
-
-const Module = require('module');
-const originalCompile = Module.prototype._compile;
-Module.prototype._compile = function(content, filename) {
-  if (
-    filename.endsWith('@dragongate/react-dev-utils/formatWebpackMessages.js')
-  ) {
-    console.log(filename);
-    return originalCompile.call(
-      this,
-      content,
-      require.resolve('../patch-inject/formatWebpackMessages')
-    );
-  } else {
-    return originalCompile.call(this, content, filename);
-  }
-};
-
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';

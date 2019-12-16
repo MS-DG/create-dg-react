@@ -13,3 +13,6 @@ yarn-error.log*
 .npm/
 yarn.lock
 yarn.lock.cached
+
+# cache
+.*cache
