@@ -97,7 +97,7 @@ function tryOpenCode() {
     return false;
   }
 }
-module.exports = function (
+module.exports = function(
   appPath,
   appName,
   verbose,
@@ -314,7 +314,7 @@ module.exports = function (
   if (
     dependencies.find(arg => arg.includes('typescript')) ||
     devDependencies.find(arg => arg.includes('typescript')) ||
-    (appPackage.devDependencies || {})["typescript"]
+    (appPackage.devDependencies || {})['typescript']
   ) {
     console.log();
     verifyTypeScriptSetup();
@@ -349,22 +349,20 @@ module.exports = function (
 
   // Change displayed command to yarn instead of yarnpkg
   const displayedCommand = useYarn ? 'yarn' : 'npm';
-
+  const displayedCommandRun = useYarn ? 'yarn' : 'npm run';
   console.log();
   console.log(chalk.green('='.repeat(60)));
   console.log(`Success! Created ${appName} at ${appPath}`);
   console.log('Inside that directory, you can run several commands:');
   console.log();
   console.log(chalk.cyan(`  ${displayedCommand} start`));
-  console.log('    Starts the development server.');
-  console.log();
-  console.log(
-    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`)
-  );
-  console.log('    Bundles the app into static files for production.');
-  console.log();
+  console.log('    Starts the development server. 🎉');
+  console.log(chalk.cyan(`  ${displayedCommandRun} build`));
+  console.log('    Bundles the app into static files for production. 🚀');
   console.log(chalk.cyan(`  ${displayedCommand} test`));
-  console.log('    Starts the test runner.');
+  console.log('    Starts the test runner. ✅');
+  console.log(chalk.cyan(`  ${displayedCommandRun} format`));
+  console.log('    Fixs the code lint and format. 🎨');
   console.log();
   // console.log(
   //   chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}eject`)
