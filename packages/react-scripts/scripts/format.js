@@ -45,6 +45,7 @@ const isStaged =
 const eslintCli = new eslint.CLIEngine({
   useEslintrc: false,
   baseConfig: eslintConfig,
+  ignorePath: '.gitignore',
   cache: true,
 });
 let rulesMeta;
@@ -136,7 +137,7 @@ function prettierCli(type, f) {
 }
 
 function prettierCheckSingleFile(file, content) {
-  return prettier.getFileInfo(file).then(info => {
+  return prettier.getFileInfo(file, { ignorePath: '.gitignore' }).then(info => {
     if (!info.ignored) {
       const options = prettier.resolveConfig.sync(file, { useCache: true });
       options.filepath = file;
@@ -169,6 +170,7 @@ function lintCheckSingleFile(file, content) {
         formatter: 'string',
         codeFilename: file,
         config: stylelintConfig,
+        ignorePath: '.gitignore',
         cache: true,
       })
       .then(linted => {
@@ -178,9 +180,9 @@ function lintCheckSingleFile(file, content) {
         // clearLine();
         console.error(linted.output.trimRight());
         if (linted.errored) {
-          return Promise.reject(linted);
+          return Promise.reject(false);
         } else if (isStrict) {
-          return Promise.reject(linted);
+          return Promise.reject(false);
         }
         return true;
       });
@@ -194,6 +196,7 @@ function eslintFix(p) {
     fix: true,
     useEslintrc: false,
     baseConfig: eslintConfig,
+    ignorePath: '.gitignore',
     cache: true,
   });
   const res = eslintCli.executeOnFiles(p);
@@ -268,7 +271,10 @@ function run() {
           .then(() => prettierCheckSingleFile(f, content))
           .then(() => console.log(chalk.green('√'), chalk.dim.gray(f)));
       })
-    ).catch(() => {
+    ).catch(error => {
+      if (error) {
+        console.log(error);
+      }
       errorAndTry('Staged files format check fail!');
       process.exit(1);
     });
