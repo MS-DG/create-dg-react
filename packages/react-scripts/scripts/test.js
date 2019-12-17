@@ -84,11 +84,15 @@ const testStageArg = (testStage => {
       '--passWithNoTests',
       '--verbose',
       '--coverage',
+      '--reporters=jest-junit',
+      '--reporters=default',
+      '--coverageReporters=cobertura',
     ];
   }
-
 })(testStage);
-if (testStageArg) {argv = argv.concat(testStageArg);}
+if (testStageArg) {
+  argv = argv.concat(testStageArg);
+}
 
 // run without watch
 const nowatch =
@@ -221,10 +225,14 @@ argv.push('--env', testEnvironment);
 // git stash before we run test.
 let needPop = false;
 const buffer = execSync('git stash save --keep-index --include-untracked');
-if (buffer.toString().startsWith('Saved working directory')) {needPop = true;}
+if (buffer.toString().startsWith('Saved working directory')) {
+  needPop = true;
+}
 
-// Run test
 // @remove-on-eject-end
+// Run test
 jest.run(argv).then(() => {
-  if (needPop) {execSync('git stash pop', { stdio: 'ignore' });}
+  if (needPop) {
+    execSync('git stash pop', { stdio: 'ignore' });
+  }
 });
