@@ -14,12 +14,26 @@ trigger:
   paths:
     # include: [web] # file paths which must match to trigger a build
     exclude: [.vscode] # file paths which will not trigger a build
+
+# PR triggers are only supported in GitHub and Bitbucket Cloud.
+# If you are using Azure Repos Git,
+# you can configure a branch policy for build validation in order to trigger your pipeline for validation.
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?#pr-triggers
+# https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?#build-validation
+pr:
+  autoCancel: true
+  branches:
+    include: # branch names which will trigger a build
+      - "master"
+      - "prod"
+      - "devmaster"
+
 jobs:
   - job: web_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
-    displayName: Build Static Website # friendly name to display in the UI
-    variables:
-      # CI: true # react-scripts test need CI to be true
-      #   REACT_APP_API_ROOT: "/"
+    displayName: Build ${{variables['Build.SourceBranchName']}} to Static Website # friendly name to display in the UI
+    # variables:
+    #   CI: true # react-scripts test need CI to be true
+    #   REACT_APP_API_ROOT: "/"
     pool:
       vmImage: "ubuntu-latest"
     steps:
@@ -48,7 +62,7 @@ jobs:
         inputs:
           PathtoPublish: "build"
 
-  - deployment: web_deployment_master # name of the deployment job, A-Z, a-z, 0-9, and underscore
+  - deployment: web_deployment # name of the deployment job, A-Z, a-z, 0-9, and underscore
     displayName: Deploy web site to azure blob CDN # friendly name to display in the UI
     pool: # see pool schema
       vmImage: "windows-2019"
