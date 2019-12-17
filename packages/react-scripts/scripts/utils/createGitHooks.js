@@ -11,7 +11,7 @@ const pkg = require('../../package.json');
  */
 function getHookScript(hook) {
   if (hook == 'pre-push') {
-    return prePushHookScript;
+    return prePushHookScript.trim();
   }
 
   return `
@@ -56,25 +56,21 @@ while read local_ref local_sha remote_ref remote_sha
 do
 	if [ "$local_sha" = $z40 ]
 	then
-    echo "......?"
 		# Handle delete
 		:
 	else
 		if [ "$remote_sha" = $z40 ]
 		then
-      echo "d????"
 			# New branch, examine all commits
 			range="$local_sha"
 		else
-      echo "IDJFIDFJIDF"
 			# Update to existing branch, examine new commits
 			range="$remote_sha..$local_sha"
-      changedSince="--changedSince=$remote/$currentBranchName"
+      changedSince="$remote/$currentBranchName"
 		fi
 	fi
 done
 
-changedSince="--changedSince=$remote/$currentBranchName"
 export CHANGED_SINCE=$changedSince
 
 npm run pre-push --if-present --silent
