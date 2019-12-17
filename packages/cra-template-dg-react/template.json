@@ -14,9 +14,9 @@
   },
   "scripts": {
     "format": "react-scripts format",
-    "pre-commit": "react-scripts format staged",
-    "pre-push": "react-scripts format --check --strict && npm test",
-    "preinstall": "npx vsts-npm-auth -c .npmrc || echo Auth FAIL!"
+    "@pre-commit": "react-scripts format staged && react-scripts test --teststage=pre-commit",
+    "pre-push": "react-scripts format --check --strict && react-scripts test --teststage=pre-push",
+    "post-build": "react-scripts test --teststage=post-build",
   },
   "prettier": "@dragongate/eslint-config/prettier",
   "eslintConfig": {

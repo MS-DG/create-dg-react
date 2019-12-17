@@ -69,12 +69,11 @@ do
       echo "IDJFIDFJIDF"
 			# Update to existing branch, examine new commits
 			range="$remote_sha..$local_sha"
-      changedSince="--changedSince=$remote/$currentBranchName"
+      changedSince="$remote/$currentBranchName"
 		fi
 	fi
 done
 
-changedSince="--changedSince=$remote/$currentBranchName"
 export CHANGED_SINCE=$changedSince
 
 npm run pre-push --if-present --silent

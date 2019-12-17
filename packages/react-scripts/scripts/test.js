@@ -71,7 +71,9 @@ const testStageArg = (testStage => {
       '--passWithNoTests',
       '--verbose',
     ];
-    if (process.env.CHANGED_SINCE) params.push(process.env.CHANGED_SINCE);
+    if (process.env.CHANGED_SINCE) {
+      params.push(`--changedSince=${process.env.CHANGED_SINCE}`);
+    }
     return params;
   } else if (testStage == 'post-build') {
     console.log('run pre-push test...');
