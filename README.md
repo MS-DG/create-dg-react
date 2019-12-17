@@ -143,8 +143,8 @@ Your environment will have everything you need to build a modern single-page Rea
 - **Integrated with Azure pipelines (build/test/env).**
 - **Shared vscode (IDE) config and plugins.**
 - Force lint rules on build and **staged check**.
-    - **stylelint for css style**
-    - eslint for js/ts/jsx
+  - **stylelint for css style**
+  - eslint for js/ts/jsx
 - **prettier integration.**
 - **Git hook support for commit and push.**
 - React, JSX, ES6, TypeScript syntax support.
