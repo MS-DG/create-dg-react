@@ -17,7 +17,7 @@ trigger:
 jobs:
   - job: web_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
     displayName: Build Static Website # friendly name to display in the UI
-    variables:
+    # variables:
       # CI: true # react-scripts test need CI to be true
       #   REACT_APP_API_ROOT: "/"
     pool:
