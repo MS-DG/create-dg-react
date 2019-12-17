@@ -76,7 +76,7 @@ const testStageArg = (testStage => {
     }
     return params;
   } else if (testStage == 'post-build') {
-    console.log('run pre-push test...');
+    console.log('run post-build test...');
     return [
       'nowatch',
       '--testmatch=test',
@@ -86,27 +86,9 @@ const testStageArg = (testStage => {
       '--reporter=default',
     ];
   }
-  // else if (testStage == "incident-test") {
-  //   console.log("run incident-test test...");
-  //   return [ "nowatch", "--testmatch=incident", "--passWithNoTests", "--verbose" ];
-  // }
-  // else if (testStage == "service-checklist-test") {
-  //   console.log("run service check list test...");
-  //   return [ "nowatch", "--testmatch=checklist",  "--passWithNoTests", "--verbose" ];
-  // }
-  else if (testStage == 'post-deploy') {
-    console.log('run pre-push test...');
-    return [
-      'nowatch',
-      '--testmatch=test',
-      '--testmatch=blackbox',
-      '--lastCommit',
-      '--passWithNoTests',
-      '--verbose',
-    ];
-  }
+
 })(testStage);
-if (testStageArg) argv = argv.concat(testStageArg);
+if (testStageArg) {argv = argv.concat(testStageArg);}
 
 // run without watch
 const nowatch =
@@ -236,18 +218,13 @@ if (!resolvedEnv) {
 const testEnvironment = resolvedEnv || env;
 argv.push('--env', testEnvironment);
 
-// @remove-on-eject-end
-
-console.log(argv);
-return;
-
 // git stash before we run test.
 let needPop = false;
 const buffer = execSync('git stash save --keep-index --include-untracked');
-if (buffer.toString().startsWith('Saved working directory')) needPop = true;
+if (buffer.toString().startsWith('Saved working directory')) {needPop = true;}
 
 // Run test
+// @remove-on-eject-end
 jest.run(argv).then(() => {
-  if (needPop) execSync('git stash pop', { stdio: 'ignore' });
+  if (needPop) {execSync('git stash pop', { stdio: 'ignore' });}
 });
-//console.log(argv)
