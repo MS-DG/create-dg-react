@@ -83,7 +83,7 @@ const testStageArg = (testStage => {
       '--testmatch=integration',
       '--passWithNoTests',
       '--verbose',
-      '--reporter=default',
+      '--coverage',
     ];
   }
 
