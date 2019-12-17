@@ -56,17 +56,14 @@ while read local_ref local_sha remote_ref remote_sha
 do
 	if [ "$local_sha" = $z40 ]
 	then
-    echo "......?"
 		# Handle delete
 		:
 	else
 		if [ "$remote_sha" = $z40 ]
 		then
-      echo "d????"
 			# New branch, examine all commits
 			range="$local_sha"
 		else
-      echo "IDJFIDFJIDF"
 			# Update to existing branch, examine new commits
 			range="$remote_sha..$local_sha"
       changedSince="$remote/$currentBranchName"
