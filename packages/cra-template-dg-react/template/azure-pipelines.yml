@@ -51,9 +51,21 @@ jobs:
       - script: npm run build --if-present
         displayName: "Build"
 
-      - script: npm test
-        displayName: "Test"
+      - script: npm run post-build --ci
+        displayName: "POST BUILD TEST"
 
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'junit.xml'
+          mergeTestResults: true
+          testRunTitle: 'Jest Test'
+
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'Cobertura'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
       - script: npm run format --if-present
         displayName: "Format"
 

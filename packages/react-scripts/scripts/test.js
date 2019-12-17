@@ -84,6 +84,9 @@ const testStageArg = (testStage => {
       '--passWithNoTests',
       '--verbose',
       '--coverage',
+      '--reporters=jest-junit',
+      '--reporters=default',
+      '--coverageReporters=cobertura',
     ];
   }
 })(testStage);
@@ -226,8 +229,8 @@ if (buffer.toString().startsWith('Saved working directory')) {
   needPop = true;
 }
 
-// Run test
 // @remove-on-eject-end
+// Run test
 jest.run(argv).then(() => {
   if (needPop) {
     execSync('git stash pop', { stdio: 'ignore' });
