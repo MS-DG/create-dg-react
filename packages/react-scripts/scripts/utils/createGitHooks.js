@@ -11,7 +11,7 @@ const pkg = require('../../package.json');
  */
 function getHookScript(hook) {
   if (hook == 'pre-push') {
-    return prePushHookScript;
+    return prePushHookScript.trim();
   }
 
   return `
