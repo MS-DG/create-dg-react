@@ -10,6 +10,10 @@ const pkg = require('../../package.json');
  * @param {string} hook
  */
 function getHookScript(hook) {
+  if (hook == 'pre-push') {
+    return prePushHookScript;
+  }
+
   return `
 #!/bin/sh
 #${pkg.name} ${pkg.version}
@@ -37,5 +41,43 @@ function createGitHooks(hooks) {
     });
   });
 }
+
+const prePushHookScript = `
+#!/bin/sh
+#@dragongate/react-scripts 3.5.8
+
+# get the jest argument: --changedSince=<remote-name>/<branch-name>
+# Write to environment variable for decouple.
+remote="$1"
+url="$2"
+currentBranchName=\`git branch --show-current\`
+z40=0000000000000000000000000000000000000000
+while read local_ref local_sha remote_ref remote_sha
+do
+	if [ "$local_sha" = $z40 ]
+	then
+    echo "......?"
+		# Handle delete
+		:
+	else
+		if [ "$remote_sha" = $z40 ]
+		then
+      echo "d????"
+			# New branch, examine all commits
+			range="$local_sha"
+		else
+      echo "IDJFIDFJIDF"
+			# Update to existing branch, examine new commits
+			range="$remote_sha..$local_sha"
+      changedSince="--changedSince=$remote/$currentBranchName"
+		fi
+	fi
+done
+
+changedSince="--changedSince=$remote/$currentBranchName"
+export CHANGED_SINCE=$changedSince
+
+npm run pre-push --if-present --silent
+`;
 
 module.exports = createGitHooks;
