@@ -140,9 +140,13 @@ update the dependency `@dragongate/react-scripts` to lasted in your app project.
 
 Your environment will have everything you need to build a modern single-page React app with git:
 
-- Integrated with Azure pipelines
-- Shared vscode (IDE) config and plugins
-- Force formatting
+- **Integrated with Azure pipelines (build/test/env).**
+- **Shared vscode (IDE) config and plugins.**
+- Force lint rules on build and **staged check**.
+    - **stylelint for css style**
+    - eslint for js/ts/jsx
+- **prettier integration.**
+- **Git hook support for commit and push.**
 - React, JSX, ES6, TypeScript syntax support.
 - Language extras beyond ES6 like the object spread operator.
 - Autoprefixed CSS, so you don’t need `-webkit-` or other prefixes.
@@ -156,21 +160,7 @@ The tradeoff is that **these tools are preconfigured to work in a specific way**
 
 ## TODO
 
-- [x] Git Hook
-  - [x] pre-commit
-  - commit-msg
-  - [x] pre-push (run test)
-- [x] format
-  - autofix
-  - staged check
-  - CI check
-- [x] Stylint and prettier for css/scss files
 - [ ] Integration Test template
-- [x] Multiple env config file
-  - .env.\*.local
-  - .env.production
-  - .env
-  - in in-build `.env.${Build_SourceBranchName}` => `.env.local`
 - [ ] MacOS/Linux VSTS Auth
 
 ## License

@@ -231,6 +231,7 @@ function runStylelint(p, fix) {
       fix: !!fix,
       formatter: 'string',
       config: stylelintConfig,
+      ignorePath: '.gitignore',
       cache: true,
     })
     .then(linted => {
