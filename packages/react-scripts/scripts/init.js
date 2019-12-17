@@ -356,13 +356,13 @@ module.exports = function(
   console.log('Inside that directory, you can run several commands:');
   console.log();
   console.log(chalk.cyan(`  ${displayedCommand} start`));
-  console.log('  🎉 Starts the development server.');
+  console.log('  ⌨ Starts the development server.');
   console.log(chalk.cyan(`  ${displayedCommandRun} build`));
-  console.log('  🚀 Bundles the app into static files for production.');
+  console.log('  ✈ Bundles the app into static files for production.');
   console.log(chalk.cyan(`  ${displayedCommand} test`));
-  console.log('  ✅ Starts the test runner.');
+  console.log('  ☑ Starts the test runner.');
   console.log(chalk.cyan(`  ${displayedCommandRun} format`));
-  console.log('  🎨 Fixs the code lint and format.');
+  console.log('  ✿ Fixs the code lint and format.');
   console.log();
   // console.log(
   //   chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}eject`)
