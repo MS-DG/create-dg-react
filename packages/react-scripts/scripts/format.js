@@ -137,7 +137,7 @@ function prettierCli(type, f) {
 }
 
 function prettierCheckSingleFile(file, content) {
-  return prettier.getFileInfo(file, { ignorePath: '.gitignore' }).then(info => {
+  return prettier.getFileInfo(file, { ignorePath: '.prettierignore' }).then(info => {
     if (!info.ignored) {
       const options = prettier.resolveConfig.sync(file, { useCache: true });
       options.filepath = file;
@@ -261,7 +261,7 @@ function run() {
     const staged = listStaged();
     console.log(
       chalk.gray(
-        `Checking ${chalk.reset.bold(staged.length)}`,
+        `Checking format in ${chalk.reset.bold(staged.length)}`,
         chalk.gray(`staged file${staged.length > 1 ? 's' : ''}`)
       )
     );
