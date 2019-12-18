@@ -1,0 +1,23 @@
+{
+  "name": "azure-devops-auth",
+  "version": "0.0.1",
+  "description": "azure devops corss platform",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MS-DG/create-dg-react.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MS-DG/create-dg-react/issues"
+  },
+  "optionalDependencies": {
+    "better-vsts-npm-auth": "latest"
+  },
+  "homepage": "https://github.com/MS-DG/create-dg-react#readme"
+}
