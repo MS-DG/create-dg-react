@@ -152,6 +152,15 @@ These variables will act as the defaults if the machine does not explicitly set 
 This Project using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/javascript) for continuous integration and continuous delivery.
 It's defined in [azure-pipelines.yml](azure-pipelines.yml)
 
+### CI
+
+* build
+* test
+* format
+
+### CD
+
+
 ## Git Hook
 
 You can use `--no-verify` to skip the git hook verification, but it was **NOT** recommended.

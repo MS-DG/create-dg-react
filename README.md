@@ -2,7 +2,6 @@
 
 Create DG React apps with no build configuration.
 
-> **You should login to the Microsoft Corp with your MSFT acount in your PC (ONLY WINDOWS NOW). When use the Default Template**
 
 - [Creating an App](#creating-an-app) – How to create a new app.
 
@@ -147,6 +146,7 @@ Your environment will have everything you need to build a modern single-page Rea
   - eslint for js/ts/jsx
 - **prettier integration.**
 - **Git hook support for commit and push.**
+- **Cross-Platform VSTS auth**
 - React, JSX, ES6, TypeScript syntax support.
 - Language extras beyond ES6 like the object spread operator.
 - Autoprefixed CSS, so you don’t need `-webkit-` or other prefixes.
@@ -158,10 +158,6 @@ Your environment will have everything you need to build a modern single-page Rea
 
 The tradeoff is that **these tools are preconfigured to work in a specific way**. If your project needs more customization, you can ["eject"](https://facebook.github.io/create-react-app/docs/available-scripts#npm-run-eject) and customize it, but then you will need to maintain this configuration.
 
-## TODO
-
-- [ ] Integration Test template
-- [ ] MacOS/Linux VSTS Auth
 
 ## License
 
