@@ -4,7 +4,8 @@ const vstsAuth = require('better-vsts-npm-auth');
 const input = require('input');
 
 function auth() {
-  vstsAuth.run()
+  vstsAuth
+    .run()
     .then(() => console.log('npm auth success'))
     .catch(e => {
       // we can catch AuthorizationError and prompt our users to
@@ -15,13 +16,12 @@ function auth() {
         // wait for user input if we're running on a dev box
         // note - I like the input package, but feel free to get your user
         // input however you'd like
-        return input.text('paste your refresh_token:').
-          then(token => {
-            vstsAuth.setRefreshToken(token);
-            // not necessary, but nifty if you want to create a
-            // seamless local dev startup experience by re-running
-            return auth();
-          })
+        return input.text('paste your refresh_token:').then(token => {
+          vstsAuth.setRefreshToken(token);
+          // not necessary, but nifty if you want to create a
+          // seamless local dev startup experience by re-running
+          return auth();
+        });
       }
     });
 }
