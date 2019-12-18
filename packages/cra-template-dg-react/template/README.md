@@ -20,6 +20,14 @@ Launches the test runner in the interactive watch mode.
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+- `npm test` run test auto detected environment;
+- `npm test staged` test git commit staged files;
+- `npm test nowatch` run all test without watch;
+- `npm test ci` run test in CI mode (the same behaviors as `npm test` with `env.CI` is true);
+- other parameters:
+  - `--testmatch` test matched files
+  - `--changedSince` test the different from remote
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.
@@ -37,7 +45,7 @@ See the section about [deployment](#ci-cd) for more information.
 format checking and auto-fixing
 
 - `npm run format` default to format and fix all files;
-- `npm run format staged` check staged files format without fix;
+- `npm run format staged` check git commit staged files format without fix;
 - `npm run format -- --check` check all files without fix;
 
 Warnings also need to be fixed befor git-push.
@@ -154,12 +162,11 @@ It's defined in [azure-pipelines.yml](azure-pipelines.yml)
 
 ### CI
 
-* build
-* test
-* format
+- build
+- test
+- format
 
 ### CD
-
 
 ## Git Hook
 

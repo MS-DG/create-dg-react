@@ -14,8 +14,8 @@
   },
   "scripts": {
     "format": "react-scripts format",
-    "pre-commit": "react-scripts format staged && react-scripts test --teststage=pre-commit",
-    "pre-push": "react-scripts format --check --strict && react-scripts test --teststage=pre-push",
+    "pre-commit": "react-scripts format staged && react-scripts test staged",
+    "pre-push": "react-scripts format --check --strict && react-scripts test nowatch",
     "preinstall": "npx azure-devops-auth"
   },
   "prettier": "@dragongate/eslint-config/prettier",
