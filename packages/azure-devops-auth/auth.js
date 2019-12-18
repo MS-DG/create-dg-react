@@ -6,7 +6,7 @@ const input = require('input');
 function auth() {
   vstsAuth
     .run()
-    .then(() => console.log('npm auth success'))
+    .then(() => console.log('npm feeds auth success!'))
     .catch(e => {
       // we can catch AuthorizationError and prompt our users to
       // authorize the Stateless VSTS NPM OAuth application

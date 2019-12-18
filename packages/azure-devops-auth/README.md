@@ -1,4 +1,4 @@
-Command Line for Azure DevOps feeds Authorization.
+Command Line for Azure DevOps feeds Authentication.
 
 ### CLI
 

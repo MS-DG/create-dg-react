@@ -42,6 +42,11 @@ jobs:
           versionSpec: "10.x"
         displayName: "Install Node.js"
 
+      - task: npmAuthenticate@0
+        inputs:
+          workingFile: .npmrc
+        displayName: AUTHENTICATE
+
       - bash: "cp .env.${Build_SourceBranchName} .env.local 2>/dev/null || :"
         displayName: Init ${{variables['Build.SourceBranchName']}} .env
 
@@ -51,21 +56,22 @@ jobs:
       - script: npm run build --if-present
         displayName: "Build"
 
-      - script: npm run post-build --ci
+      - script: npm test
         displayName: "POST BUILD TEST"
 
       - task: PublishTestResults@2
         inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'junit.xml'
+          testResultsFormat: "JUnit"
+          testResultsFiles: "junit.xml"
           mergeTestResults: true
-          testRunTitle: 'Jest Test'
+          testRunTitle: "Jest Test"
 
       - task: PublishCodeCoverageResults@1
         inputs:
-          codeCoverageTool: 'Cobertura'
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-          reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+          reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+
       - script: npm run format --if-present
         displayName: "Format"
 
