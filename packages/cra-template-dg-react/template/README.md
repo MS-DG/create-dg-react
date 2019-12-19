@@ -38,12 +38,13 @@ See the section about [deployment](#ci-cd) for more information.
 
 ### `npm run format`
 
-format checking and auto-fixing
+format checking and auto-fixing.
+When `env.CI` is `true`, it will checks the format in strict mode (warnings as errors).
 
 - `npm run format` auto run format, default fix all files in local;
 - `npm run format staged` check git commit staged files format without fix;
 - `npm run format -- --check` check all files without fix;
-- `npm run format ci` run test in CI mode (the same behaviors as `npm run format` with `env.CI` is true);
+
 
 Warnings also need to be fixed befor git-push.
 

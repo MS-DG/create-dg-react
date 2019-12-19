@@ -28,10 +28,6 @@ const defaultGlob = {
 };
 const argv = process.argv.slice(2);
 
-let inputFiles = argv.filter(s => s && !s.startsWith('-'));
-if (inputFiles.length === 0 && process.env.CHANGED_SINCE) {
-  inputFiles = listStaged(process.env.CHANGED_SINCE);
-}
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
@@ -44,10 +40,21 @@ const isStrict =
 // 是否查询staged
 // format # 环境变量 GIT_AUTHOR_DATE 存在
 // format staged
-const isStaged =
-  inputFiles[0] === 'staged' ||
-  (process.env.GIT_AUTHOR_DATE && argv.length === 0);
+const isStaged = argv.includes('staged') || argv.includes('--staged');
 
+let inputFiles = argv.filter(s => s && !s.startsWith('-'));
+if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
+  inputFiles = listStaged(process.env.CHANGED_SINCE);
+  if (inputFiles.length > 0) {
+    console.log(
+      chalk.gray(
+        `linting ${chalk.reset.bold(inputFiles.length)}`,
+        chalk.gray(`committed file${inputFiles.length > 1 ? 's' : ''}`)
+      )
+    );
+    console.log();
+  }
+}
 const eslintCli = new eslint.CLIEngine({
   useEslintrc: false,
   baseConfig: eslintConfig,
