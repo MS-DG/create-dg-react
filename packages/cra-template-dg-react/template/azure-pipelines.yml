@@ -50,14 +50,14 @@ jobs:
       - bash: "cp .env.${Build_SourceBranchName} .env.local 2>/dev/null || :"
         displayName: Init ${{variables['Build.SourceBranchName']}} .env
 
-      - script: npm install
-        displayName: "npm install"
+      - script: npm ci
+        displayName: "npm ci"
 
       - script: npm run build --if-present
-        displayName: "Build"
+        displayName: "BUILD"
 
       - script: npm test
-        displayName: "POST BUILD TEST"
+        displayName: "TEST"
 
       - task: PublishTestResults@2
         inputs:

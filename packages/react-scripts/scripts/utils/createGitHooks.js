@@ -53,7 +53,7 @@ RESULT=$?
 
 if [ "$CHNAGED_FILES" ];then
   # recove without output
-  $(git stash pop --index)
+  stash_pop=$(git stash pop --index)
 fi
 exit $RESULT
 `,

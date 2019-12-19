@@ -15,8 +15,10 @@ package-lock.json
 *.jpg
 *.jpeg
 *.ico
+
 *.svg
 *.txt
+*.xml
 
 node_modules/
 build/
