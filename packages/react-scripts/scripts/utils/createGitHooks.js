@@ -46,7 +46,7 @@ fi
 
 REMOTE="$1"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-export CHANGED_SINCE="$REMOTE/$BRANCH"
+git show-branch remotes/$REMOTE/$BRANCH >/dev/null 2>/dev/null && export CHANGED_SINCE="$REMOTE/$BRANCH"
 
 npm run pre-push --if-present --silent
 RESULT=$?
