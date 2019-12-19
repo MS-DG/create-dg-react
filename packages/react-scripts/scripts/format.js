@@ -21,11 +21,17 @@ const listStaged = require('./utils/listStaged');
 const stylelintConfig = require('../config/stylelint');
 const eslintConfig = require('../config/eslint');
 
-const globEslint = '**/*.{js,mjs,jsx,ts,tsx}';
-const globStylelint = '**/*.{css,scss,tsx,jsx,md,html}';
+const defaultGlob = {
+  eslint: '**/*.{js,mjs,jsx,ts,tsx}',
+  stylelint: '**/*.{css,scss,tsx,jsx,md,html}',
+  prettier: '**/*',
+};
 const argv = process.argv.slice(2);
 
-const inputFiles = argv.filter(s => s && !s.startsWith('-'));
+let inputFiles = argv.filter(s => s && !s.startsWith('-'));
+if (inputFiles.length === 0 && process.env.CHANGED_SINCE) {
+  inputFiles = listStaged(process.env.CHANGED_SINCE);
+}
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
@@ -106,26 +112,46 @@ function clearLine(n) {
   return true;
 }
 
-function getFilesGlob(p, defaultGlob) {
-  return !p || p.length === 0 || (p[0] === '.' && p.length === 1)
-    ? defaultGlob || '**/*'
-    : p;
+/**
+ *
+ * @param {string|string[]} p
+ * @param {'prettier'|'eslint'|'stylelint'} type
+ */
+function getFilesGlob(p, type) {
+  if (!p || p.length === 0 || (p[0] === '.' && p.length === 1)) {
+    return defaultGlob[type] || '**/*';
+  } else if (p instanceof Array) {
+    switch (type) {
+      case 'eslint':
+        return p.filter(p =>
+          ['.ts', '.tsx', '.js', '.jsx'].includes(path.extname(p))
+        );
+      case 'stylelint':
+        return p.filter(p =>
+          ['.scss', '.css', '.md', '.jsx', '.tsx', '.html'].includes(
+            path.extname(p)
+          )
+        );
+      default:
+        return p;
+    }
+  }
+  return p;
 }
 
 /**
  * prettier 命令行
  * @param {'check'|'write'} type
- * @param {string} f
+ * @param {string|string[]} f
  */
 function prettierCli(type, f) {
   const result = spawn.sync(
     'node',
     [
       require.resolve('prettier/bin-prettier'),
-      f,
       `--${type || 'check'}`,
       '--loglevel=log',
-    ],
+    ].concat(f),
     { stdio: 'inherit' }
   );
   if (result.status == 0 && type === 'check') {
@@ -286,10 +312,10 @@ function run() {
       process.exit(1);
     });
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
-    Promise.resolve(prettierCli('write', getFilesGlob(inputFiles)))
-      .then(result => eslintFix(getFilesGlob(inputFiles, globEslint)) && result)
+    Promise.resolve(prettierCli('write', getFilesGlob(inputFiles, 'prettier')))
+      .then(result => eslintFix(getFilesGlob(inputFiles, 'eslint')) && result)
       .then(result =>
-        runStylelint(getFilesGlob(inputFiles, globStylelint), true).then(() => {
+        runStylelint(getFilesGlob(inputFiles, 'stylelint'), true).then(() => {
           if (!result) {
             return Promise.reject(result);
           }
@@ -305,13 +331,13 @@ function run() {
       });
   } else {
     if (
-      !eslintCheck(getFilesGlob(inputFiles, globEslint)) ||
-      !prettierCli('check', getFilesGlob(inputFiles))
+      !eslintCheck(getFilesGlob(inputFiles, 'eslint')) ||
+      !prettierCli('check', getFilesGlob(inputFiles, 'prettier'))
     ) {
       isFail = true;
       errorAndTry('Some files have code format issues!');
     } else {
-      runStylelint(getFilesGlob(inputFiles, globStylelint))
+      runStylelint(getFilesGlob(inputFiles, 'stylelint'))
         .then(() =>
           console.log(chalk.green('√'), 'All files use good code style!')
         )
