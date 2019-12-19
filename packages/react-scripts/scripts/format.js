@@ -157,7 +157,7 @@ function prettierCli(type, f) {
     [
       require.resolve('prettier/bin-prettier'),
       `--${type || 'check'}`,
-      '--loglevel=log',
+      // '--loglevel=log',
     ].concat(f),
     { stdio: 'inherit' }
   );
@@ -230,6 +230,9 @@ function lintCheckSingleFile(file, content) {
 }
 
 function eslintFix(p) {
+  if (!p || !p.length) {
+    return true;
+  }
   process.stdout.write(chalk.gray('fixing eslint ...'));
   const eslintCli = new eslint.CLIEngine({
     fix: true,
@@ -249,6 +252,9 @@ function eslintFix(p) {
 }
 
 function eslintCheck(p) {
+  if (!p || !p.length) {
+    return true;
+  }
   process.stdout.write(chalk.gray('checking eslint ...'));
   const res = eslintCli.executeOnFiles(p);
   clearLine();
@@ -261,6 +267,9 @@ function eslintCheck(p) {
  * @param {*} params
  */
 function runStylelint(p, fix) {
+  if (!p || !p.length) {
+    return Promise.resolve(true);
+  }
   process.stdout.write(
     chalk.gray(`${fix ? 'fixing' : 'checking'} stylelint ...`)
   );
