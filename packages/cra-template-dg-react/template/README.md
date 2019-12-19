@@ -21,11 +21,8 @@ Launches the test runner in the interactive watch mode.
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 - `npm test` run test auto detected environment;
-- `npm test nowatch` run all test without watch;
+- `npm test nowatch` run all test and disable watch mode;
 - `npm test ci` run test in CI mode (the same behaviors as `npm test` with `env.CI` is true);
-- other parameters:
-  - `--testmatch` test matched files
-  - `--changedSince` test the different from remote
 
 ### `npm run build`
 
@@ -43,9 +40,10 @@ See the section about [deployment](#ci-cd) for more information.
 
 format checking and auto-fixing
 
-- `npm run format` default to format and fix all files;
+- `npm run format` auto run format, default fix all files in local;
 - `npm run format staged` check git commit staged files format without fix;
 - `npm run format -- --check` check all files without fix;
+- `npm run format ci` run test in CI mode (the same behaviors as `npm run format` with `env.CI` is true);
 
 Warnings also need to be fixed befor git-push.
 
