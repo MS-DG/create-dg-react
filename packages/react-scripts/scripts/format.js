@@ -5,9 +5,9 @@
 // format staged --check
 // format . --check
 
-// const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
-const cp = require('child_process');
+// const cp = require('child_process');
 const prettier = require('prettier');
 const eslint = require('eslint');
 
@@ -85,8 +85,9 @@ function errorAndTry(message) {
 
 function getStagedContent(f) {
   // return util.promisify(cp.exec)(`git show :"${f}"`).then(f => f.stdout);
-  const buffer = cp.execSync(`git show :"${f}"`);
-  return buffer.toString();
+  // const buffer = cp.execSync(`git show :"${f}"`);
+  // return buffer.toString();
+  return fs.readFileSync(f).toString();
 }
 
 function clearLine(n) {
@@ -137,16 +138,21 @@ function prettierCli(type, f) {
 }
 
 function prettierCheckSingleFile(file, content) {
-  return prettier.getFileInfo(file, { ignorePath: '.prettierignore' }).then(info => {
-    if (!info.ignored) {
-      const options = prettier.resolveConfig.sync(file, { useCache: true });
-      options.filepath = file;
-      if (!prettier.check(content, options)) {
-        console.error(`${chalk.red('[×]prettier')}:`, chalk.yellow.bold(file));
-        return Promise.reject(false);
+  return prettier
+    .getFileInfo(file, { ignorePath: '.prettierignore' })
+    .then(info => {
+      if (!info.ignored) {
+        const options = prettier.resolveConfig.sync(file, { useCache: true });
+        options.filepath = file;
+        if (!prettier.check(content, options)) {
+          console.error(
+            `${chalk.red('[×]prettier')}:`,
+            chalk.yellow.bold(file)
+          );
+          return Promise.reject(false);
+        }
       }
-    }
-  });
+    });
 }
 
 function lintCheckSingleFile(file, content) {

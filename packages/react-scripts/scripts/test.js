@@ -34,60 +34,40 @@ if (process.env.SKIP_PREFLIGHT_CHECK !== 'true') {
 
 const jest = require('jest');
 const execSync = require('child_process').execSync;
-let argv = process.argv.slice(2);
+const argv = process.argv.slice(2);
+let jestArgv = argv.filter(
+  a =>
+    !(
+      ['nowatch', 'staged', 'ci'].includes(a) ||
+      a.startsWith('--nowatch') ||
+      a.startsWith('--staged') ||
+      a.startsWith('--testmatch=') ||
+      a.startsWith('--env=')
+    )
+);
 
 // for CI test
 // test ci
 // test --ci
-const isCI = argv.includes("ci") || argv.includes("--ci") || (process.env.CI &&
-  (typeof process.env.CI !== 'string' ||
-    process.env.CI.toLowerCase() !== 'false'));
+const isCI =
+  argv.includes('ci') ||
+  (process.env.CI &&
+    (typeof process.env.CI !== 'string' ||
+      process.env.CI.toLowerCase() !== 'false'));
+
+// no watch mode
+const nowatch = argv.some(a => a === 'nowatch' || a === '--nowatch');
 
 // for git commit staged
 // test staged
 // test --staged
 const isStaged =
-  !argv.includes('--staged=false') &&
-  (process.env.STAGED ||
-    argv.find(a => a === 'staged' || a === '--staged'));
-
-
-// no watch mode
-const nowatch =
-  argv.includes('--nowatch=false') ||
-  argv.find(a => a === 'nowatch' || a === '--nowatch');
-
-// const p = process.env.CHANGED_SINCE;
-// const testStageArg = (testStage => {
-//   if (testStage == 'pre-commit') {
-//     console.log('run pre-commit test...');
-//     return [
-//       'nowatch',
-//       // '--testmatch=test',
-//       '--changedSince=HEAD',
-//       '--passWithNoTests',
-//       '--verbose',
-//     ];
-//   } else if (testStage == 'pre-push') {
-//     console.log('run pre-push test...');
-//     let params = [
-//       'nowatch',
-//       // '--testmatch=test',
-//       // '--testmatch=integration',
-//       '--passWithNoTests',
-//       '--verbose',
-//     ];
-//     if (process.env.CHANGED_SINCE) {
-//       params.push(`--changedSince=${process.env.CHANGED_SINCE}`);
-//     }
-//     return params;
-//   }
-// })(testStage);
+  process.env.STAGED || argv.some(a => a === 'staged' || a === '--staged');
 
 if (isCI) {
   // CI build
   console.log('run test ci ...');
-  argv = argv.concat([
+  jestArgv = jestArgv.concat([
     // '--nowatch',
     // '--testmatch=test',
     // '--testmatch=integration',
@@ -99,12 +79,13 @@ if (isCI) {
     '--coverageReporters=cobertura',
   ]);
 } else if (isStaged) {
-  // git staged
-  argv = argv.concat([
+  console.log('run test related to staged files ...');
+  jestArgv = jestArgv.concat([
     // '--nowatch',
     // '--testmatch=test',
     // '--testmatch=integration',
     '--passWithNoTests',
+    `--changedSince=HEAD`,
     // '--verbose',
     // '--coverage',
     // '--reporters=jest-junit',
@@ -113,13 +94,15 @@ if (isCI) {
   ]);
 } else if (process.env.CHANGED_SINCE) {
   // git changedSince
-  argv.push(`--changedSince=${process.env.CHANGED_SINCE}`, '--passWithNoTests');
-} else if (!nowatch && argv.indexOf('--watchAll') === -1 &&
-  argv.indexOf('--watchAll=false') === -1) {
-  console.log("run test in watch mode ...");
+  jestArgv = jestArgv.concat([
+    `--changedSince=${process.env.CHANGED_SINCE}`,
+    '--passWithNoTests',
+  ]);
+} else if (!nowatch && jestArgv.length === 0) {
+  console.log('run test in watch mode ...');
   // https://github.com/facebook/create-react-app/issues/5210
   const hasSourceControl = isInGitRepository() || isInMercurialRepository();
-  argv.push(hasSourceControl ? '--watch' : '--watchAll');
+  jestArgv.push(hasSourceControl ? '--watch' : '--watchAll');
 }
 
 function isInGitRepository() {
@@ -146,9 +129,12 @@ const createJestConfig = require('./utils/createJestConfig');
 const path = require('path');
 const paths = require('../config/paths');
 // specify test files: --testmatch=test, use multiple pairs to specify multiple matches.
-const testMatchArg = argv.filter(a => a.startsWith("--testmatch")).map(a => a.substring(12));
-const testMatch = testMatchArg.length > 0 ? testMatchArg.join(",") : 'test,spec';
-argv.push(
+const testMatchArg = argv
+  .filter(a => a.startsWith('--testmatch'))
+  .map(a => a.substring(12));
+const testMatch =
+  testMatchArg.length > 0 ? testMatchArg.join(',') : 'test,spec';
+jestArgv.push(
   '--config',
   JSON.stringify(
     createJestConfig(
@@ -184,29 +170,11 @@ function resolveJestDefaultEnvironment(name) {
     basedir: jestConfigDir,
   });
 }
-let cleanArgv = [];
-let env = 'jsdom';
-let next;
-do {
-  next = argv.shift();
-  if (
-    ['nowatch', 'staged', 'ci'].includes(next) ||
-    next.startsWith("--nowatch") ||
-    next.startsWith("--staged") ||
-    next.startsWith("--ci") ||
-    next.startsWith('--testmatch=') ||
-    next.startsWith('--teststage=')
-  ) {
-    // Skip our customized arguments
-  } else if (next === '--env') {
-    env = argv.shift();
-  } else if (next.indexOf('--env=') === 0) {
-    env = next.substring('--env='.length);
-  } else {
-    cleanArgv.push(next);
-  }
-} while (argv.length > 0);
-argv = cleanArgv;
+
+const env = (argv.find(a => a.startsWith('--env=')) || '--env=jsdom').substring(
+  6
+);
+
 let resolvedEnv;
 try {
   resolvedEnv = resolveJestDefaultEnvironment(`jest-environment-${env}`);
@@ -220,20 +188,8 @@ if (!resolvedEnv) {
     // ignore
   }
 }
-const testEnvironment = resolvedEnv || env;
-argv.push('--env', testEnvironment);
-
-// git stash before we run test.
-let needPop = false;
-const buffer = execSync('git stash save --keep-index --include-untracked');
-if (buffer.toString().startsWith('Saved working directory')) {
-  needPop = true;
-}
+jestArgv.push(`--env=${resolvedEnv || env}`);
 
 // @remove-on-eject-end
 // Run test
-jest.run(argv).then(() => {
-  if (needPop) {
-    execSync('git stash pop', { stdio: 'ignore' });
-  }
-});
+jest.run(jestArgv);
