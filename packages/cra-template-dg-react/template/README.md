@@ -160,11 +160,18 @@ It's defined in [azure-pipelines.yml](azure-pipelines.yml)
 
 ### CI
 
+> Firstly, the pipelines and pr-build configuration for this repository needs be enabled.
+
 - build
 - test
 - format
 
 ### CD
+
+> 1. Connect to [Azure Subscription](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints
+) in project. (Only need once for all repositories one project)
+>
+> 2. 
 
 ## Git Hook
 

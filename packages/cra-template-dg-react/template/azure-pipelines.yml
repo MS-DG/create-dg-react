@@ -47,11 +47,11 @@ jobs:
           workingFile: .npmrc
         displayName: AUTHENTICATE
 
-      - bash: "cp .env.${Build_SourceBranchName} .env.local 2>/dev/null || :"
+      - bash: "cp .env.${{variables['Build.SourceBranchName']}} .env.local 2>/dev/null || :"
         displayName: Init ${{variables['Build.SourceBranchName']}} .env
 
-      - script: npm ci
-        displayName: "npm ci"
+      - script: npm install
+        displayName: "npm install"
 
       - script: npm run build --if-present
         displayName: "BUILD"
@@ -70,7 +70,7 @@ jobs:
         inputs:
           codeCoverageTool: "Cobertura"
           summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
-          reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+          # reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
 
       - script: npm run format --if-present
         displayName: "Format"
@@ -81,7 +81,8 @@ jobs:
           PathtoPublish: "build"
 
   - deployment: web_deployment # name of the deployment job, A-Z, a-z, 0-9, and underscore
-    displayName: Deploy web site to azure blob CDN # friendly name to display in the UI
+    # friendly name to display in the UI
+    displayName: Deploy web site ${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}} blob
     pool: # see pool schema
       vmImage: "windows-2019"
     dependsOn: web_build
@@ -93,7 +94,7 @@ jobs:
       # set the container name will be
       SUBSCRIPTION_NAME_AND_ID: "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)" # LIKE "
       STORAGE_NAME: ${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}}
-    environment: static-web-${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}} # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
+    environment: static-web-${{variables['Build.SourceBranchName']}}-deploy # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
     strategy:
       runOnce:
         deploy:
