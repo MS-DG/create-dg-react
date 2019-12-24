@@ -97,7 +97,7 @@ function tryOpenCode() {
     return false;
   }
 }
-module.exports = function(
+module.exports = function (
   appPath,
   appName,
   verbose,
@@ -186,7 +186,7 @@ module.exports = function(
     templateJson.stylelint
   );
   // Setup the browsers list
-  appPackage.browserslist = defaultBrowsers;
+  appPackage.browserslist = templateJson.browserslist || defaultBrowsers;
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
