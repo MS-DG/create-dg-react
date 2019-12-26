@@ -45,7 +45,6 @@ When `env.CI` is `true`, it will checks the format in strict mode (warnings as e
 - `npm run format staged` check git commit staged files format without fix;
 - `npm run format -- --check` check all files without fix;
 
-
 Warnings also need to be fixed befor git-push.
 
 **The warning will break the build in CI environment**.
@@ -162,16 +161,24 @@ It's defined in [azure-pipelines.yml](azure-pipelines.yml)
 
 > Firstly, the pipelines and pr-build configuration for this repository needs be enabled.
 
-- build
-- test
-- format
+In CI, there are two main jobs:
+
+1. run build, test, lint in production mode, and report the results for review and deploy;
+2. ensure the code can be build test and lint in different OS with latest 2 LTS version Node.js.
 
 ### CD
 
-> 1. Connect to [Azure Subscription](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints
-) in project. (Only need once for all repositories one project)
+> 1. Connect to [Azure Subscription](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) in project. (Only need once for all repositories one project) and set the resource name as `dg-website`
 >
-> 2. 
+> 2. if subscription modified, the `variables`.`AZURE_SUBSCRIPTION` should be set
+>
+
+```bash
+dgapp[env].azure.blob:
+    app-name #(container: like dg-app , default $web)
+        /index.html
+        /
+```
 
 ## Git Hook
 

@@ -1,7 +1,15 @@
-# Node.js with React
+# DG APP Azure Pipelines
 # Build a Node.js project that uses React.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+# global variables
+variables:
+  AZURE_SUBSCRIPTION: "" # default is dg-website https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
+  # BLOB_PREFIX: subfoldername
+  # CONTAINER_NAME: storage name
+  # STORAGE: must be lowercase or number
+  # STORAGE_SUFFIX: must be lowercase or number #
 
 trigger:
   batch: true # batch changes if true (the default); start a new build for every push if false
@@ -37,35 +45,34 @@ jobs:
     pool:
       vmImage: "ubuntu-latest"
     steps:
-      - task: NodeTool@0
+      - task: useNode@1
         inputs:
-          versionSpec: "10.x"
+          version: "12.x"
         displayName: "Install Node.js"
-
       - task: npmAuthenticate@0
         inputs:
           workingFile: .npmrc
         displayName: AUTHENTICATE
+      - script: npm ci
+        displayName: "npm ci"
 
       - bash: "cp .env.${{variables['Build.SourceBranchName']}} .env.local 2>/dev/null || :"
         displayName: Init ${{variables['Build.SourceBranchName']}} .env
-
-      - script: npm install
-        displayName: "npm install"
-
       - script: npm run build --if-present
         displayName: "BUILD"
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: drop"
+        inputs:
+          PathtoPublish: "build"
 
       - script: npm test
         displayName: "TEST"
-
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: "JUnit"
           testResultsFiles: "junit.xml"
           mergeTestResults: true
           testRunTitle: "Jest Test"
-
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: "Cobertura"
@@ -75,35 +82,83 @@ jobs:
       - script: npm run format --if-present
         displayName: "Format"
 
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Artifact: drop"
+  # run build and test in Mac/Windows/Linux with different node versions
+  # to avoiding break development cross platform
+  - job: compatibility_check
+    # displayName: compatibility
+    condition: in(variables['Build.SourceBranch'], 'refs/heads/master')
+    continueOnError: false # 'true' if future jobs should run even if this job fails; defaults to 'false'
+    strategy:
+      matrix:
+        node_mac:
+          node_version: 12.x
+          imageName: "macOS-latest"
+        node_win:
+          node_version: 12.x
+          imageName: "windows-latest"
+        node10_linux:
+          node_version: 10.x
+          imageName: "ubuntu-latest"
+    variables:
+      skipComponentGovernanceDetection: true # disable ComponentGovernanceDetection https://docs.opensource.microsoft.com/tools/cg/policyinjection.html
+    pool:
+      vmImage: $(imageName)
+    steps:
+      - task: UseNode@1
         inputs:
-          PathtoPublish: "build"
+          version: $(node_version)
+      - task: Cache@2
+        inputs:
+          key: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
+          path: "node_modules"
+          cacheHitVar: CACHE_RESTORED
+      - task: npmAuthenticate@0
+        condition: ne(variables.CACHE_RESTORED, 'true')
+        inputs:
+          workingFile: .npmrc
+      - script: npm install --no-audit --progress=false
+        condition: ne(variables.CACHE_RESTORED, 'true')
+        displayName: "npm install"
+      - script: npm run build --if-present
+        displayName: "npm run build"
+      - script: npm test
+        displayName: "npm test"
+      - script: npm run format --if-present
+        displayName: "npm run format"
 
   - deployment: web_deployment # name of the deployment job, A-Z, a-z, 0-9, and underscore
     # friendly name to display in the UI
-    displayName: Deploy web site ${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}} blob
+    displayName: Deploy web site ${{variables['Build.SourceBranchName']}} blob
+    variables:
+      x_azureSubscription: $[coalesce(variables.AZURE_SUBSCRIPTION,'dg-website')] # bug track https://github.com/microsoft/azure-pipelines-tasks/issues/12036
+      x_containerName: $[coalesce(variables.CONTAINER_NAME,'$web')]
+      x_blobPrefix: $[coalesce(variables.BLOB_PREFIX, variables['Build.Repository.Name'], variables['Build.DefinitionName'],'')]
+      x_storage: $[format('{0}{1}', coalesce(variables.STORAGE, 'dgapp'), coalesce(variables.STORAGE_SUFFIX, variables['Build.SourceBranchName'],''))] # the storage
     pool: # see pool schema
       vmImage: "windows-2019"
-    dependsOn: web_build
-    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master','refs/heads/prod'))
-    continueOnError: false # 'true' if future jobs should run even if this job fails; defaults to 'false'
+    dependsOn:
+      - web_build
+      - compatibility_check
+    condition: |
+      and(
+        in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/devmaster', 'refs/heads/prod'),
+        in(dependencies.web_build.result, 'Succeeded', 'SucceededWithIssues'),
+        in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+      )
+    # continueOnError: false # 'true' if future jobs should run even if this job fails; defaults to 'false'
     timeoutInMinutes: 5 # how long to run the job before automatically cancelling
     cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
-    variables:
-      # set the container name will be
-      SUBSCRIPTION_NAME_AND_ID: "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)" # LIKE "
-      STORAGE_NAME: ${{variables['Build.Repository.Name']}}-${{variables['Build.SourceBranchName']}}
     environment: static-web-${{variables['Build.SourceBranchName']}}-deploy # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
     strategy:
       runOnce:
         deploy:
           steps:
             - task: AzureFileCopy@3
-              displayName: "AzureBlob File Copy"
+              displayName: "Copy files to blob"
               inputs:
-                SourcePath: "$(Agent.BuildDirectory)/drop"
-                Destination: AzureBlob
-                ContainerName: "$web"
-                azureSubscription: "$(SUBSCRIPTION_NAME_AND_ID)" # LIKE "Visual Studio Enterprise (087cc3e0-4650-424c-a20f-76e018064622)"
-                storage: "$(STORAGE_NAME)"
+                azureSubscription: ${{coalesce(variables.AZURE_SUBSCRIPTION,'dg-website')}} #can not set in runtime now https://github.com/microsoft/azure-pipelines-tasks/issues/12036
+                containerName: $(x_containerName) # the container name default is $web
+                blobPrefix: $(x_blobPrefix) # the subfolder name
+                storage: $(x_storage) # the storage
+                destination: AzureBlob
+                sourcePath: "$(Agent.BuildDirectory)/drop" #
