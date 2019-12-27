@@ -168,16 +168,15 @@ In CI, there are two main jobs:
 
 ### CD
 
-> 1. Connect to [Azure Subscription](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) in project. (Only need once for all repositories one project) and set the resource name as `dg-website`
->
-> 2. if subscription modified, the `variables`.`AZURE_SUBSCRIPTION` should be set
->
+> 1. Connect to [Azure Subscription](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) in project. (Only need once for all repositories one project) and set the resource name as `${{projectname}}`, the subscription name is modified, you can set `variables`.`AZURE_SUBSCRIPTION` (do once in a project)
+> 2. create blobs storage in `${{projectname}}master`, `${{projectname}}prod` and etc (do once in a project).
+> 3. create a public container `{{app-repo-name}}` in each blob.
 
 ```bash
 dgapp[env].azure.blob:
     app-name #(container: like dg-app , default $web)
         /index.html
-        /
+        /static/*
 ```
 
 ## Git Hook

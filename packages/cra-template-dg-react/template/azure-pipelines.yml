@@ -131,9 +131,9 @@ jobs:
     displayName: Deploy web site ${{variables['Build.SourceBranchName']}} blob
     variables:
       x_azureSubscription: $[coalesce(variables.AZURE_SUBSCRIPTION,'dg-website')] # bug track https://github.com/microsoft/azure-pipelines-tasks/issues/12036
-      x_containerName: $[coalesce(variables.CONTAINER_NAME,'$web')]
-      x_blobPrefix: $[coalesce(variables.BLOB_PREFIX, variables['Build.Repository.Name'], variables['Build.DefinitionName'],'')]
-      x_storage: $[format('{0}{1}', coalesce(variables.STORAGE, 'dgapp'), coalesce(variables.STORAGE_SUFFIX, variables['Build.SourceBranchName'],''))] # the storage
+      x_containerName: $[coalesce(variables.CONTAINER_NAME, variables['Build.Repository.Name'], variables['Build.DefinitionName'],'$web')]
+      x_blobPrefix: $[coalesce(variables.BLOB_PREFIX, '')]
+      x_storage: $[format('{0}{1}', coalesce(variables.STORAGE, variables['System.TeamProject'], 'dgapp'), coalesce(variables.STORAGE_SUFFIX, variables['Build.SourceBranchName'],''))] # the storage
     pool: # see pool schema
       vmImage: "windows-2019"
     dependsOn:
