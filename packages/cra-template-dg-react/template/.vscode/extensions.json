@@ -6,6 +6,7 @@
     // format
     "esbenp.prettier-vscode", // Prettier
     "dbaeumer.vscode-eslint", // ESLint
+    "stylelint.vscode-stylelint", // Stylelint
     // debug
     "msjsdiag.debugger-for-chrome"
     // Import Intellisense
