@@ -2,19 +2,17 @@
 
 module.exports = {
   plugins: [
-    'stylelint-prettier',
     'stylelint-scss',
     'stylelint-order',
-    'stylelint-config-rational-order/plugin',
+    'stylelint-prettier',
   ],
   extends: [
     'stylelint-config-recommended-scss',
     'stylelint-prettier/recommended',
-    'stylelint-config-rational-order',
   ],
   rules: {
+    "order/order": ["dollar-variables", "custom-properties", "declarations", "rules", "at-rules"],
     'order/properties-order': ['all'],
-    'plugin/rational-order': [true, { 'empty-line-between-groups': true }],
     'prettier/prettier': true,
     'max-nesting-depth': 4,
     'selector-max-compound-selectors': 3,
