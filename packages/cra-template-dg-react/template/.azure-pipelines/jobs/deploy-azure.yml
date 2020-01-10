@@ -1,0 +1,39 @@
+# deployment job templates
+# upload ${{SOURCE_PATH}} to azure blob
+parameters:
+  condition: always()
+  NAME: "web_deployment"
+  AZURE_SUBSCRIPTION: ""
+  STORAGE: "$(STORAGE)" # the storage
+  BLOB_PREFIX: "" # the subfolder name
+  CONTAINER_NAME: $web # the container name default is $web
+  SOURCE_PATH: "$(Agent.BuildDirectory)/drop"
+
+jobs:
+  - deployment: ${{ parameters.NAME }} # name of the deployment job, A-Z, a-z, 0-9, and underscore
+    # friendly name to display in the UI
+    # displayName: upload to ${{coalesce(parameters.STORAGE, variables.STORAGE) }}:${{ coalesce(parameters.CONTAINER_NAME,variables.CONTAINER_NAME) }}/${{ parameters.BLOB_PREFIX }}
+    pool: # see pool schema
+      vmImage: "windows-2019"
+    dependsOn: [web_build, compatibility_check]
+    condition: |
+      and(
+        ${{ parameters.condition }},
+        in(dependencies.web_build.result, 'Succeeded', 'SucceededWithIssues'),
+        in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+      )
+    cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
+    environment: azure-static-website-deploy # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureFileCopy@3
+              displayName: "Copy files to Azure blob"
+              inputs:
+                azureSubscription: "${{ parameters.AZURE_SUBSCRIPTION }}"
+                storage: ${{ parameters.STORAGE }} # ${{ coalesce(, variables.STORAGE) }}
+                containerName: ${{ parameters.CONTAINER_NAME }}
+                blobPrefix: ${{ parameters.BLOB_PREFIX }}
+                sourcePath: "${{ parameters.SOURCE_PATH }}"
+                destination: AzureBlob

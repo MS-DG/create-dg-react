@@ -51,22 +51,25 @@ yarn create dg-react dg-app
 
 _`yarn create` is available in Yarn 0.25+_
 
-### Default template
+### Default template files
 
 It will create a directory called `dg-app` inside the current folder.<br>
 Inside that directory, it will generate the initial project structure and install the transitive dependencies:
 
-```
+```sh
 dg-app
+├── azure-pipelines.yml # Azure piplines CI/CD entry point
 ├── README.md
-├── node_modules
 ├── package.json
 ├── .gitignore
-├── public
+├── .azure-pipelines/ # azure piplines config and templates
+|
+├── public/ # static resources
 │   ├── favicon.ico
 │   ├── index.html
 │   └── manifest.json
-└── src
+│
+└── src/ # source code
     ├── App.scss
     ├── App.tsx
     ├── App.test.tsx
