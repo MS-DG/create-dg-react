@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.7.3",
+  "version": "3.7.4",
   "description": "Configuration and scripts for DG-React App.",
   "repository": {
     "type": "git",
@@ -35,8 +35,8 @@
   "dependencies": {
     "@babel/core": "7.7.7",
     "@dragongate/eslint-config": "^5.0.9",
-    "@dragongate/react-dev-utils": "^10.0.3",
-    "@dragongate/stylelint-config": "^0.1.1",
+    "@dragongate/react-dev-utils": "^10.0.4",
+    "@dragongate/stylelint-config": "^0.1.2",
     "@svgr/webpack": "4.3.3",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
