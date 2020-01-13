@@ -70,6 +70,14 @@ jobs:
           NODE_VERSION: $(node_version)
           CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
 
+  # preview for every build
+  # - template: .azure-pipelines/jobs/deploy-azure.yml
+  #   parameters:
+  #     NAME: "test_deploy"
+  #     AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
+  #     CONTAINER_NAME: build
+  #     BLOB_PREFIX: $(Build.BuildID)
+
   - template: .azure-pipelines/jobs/deploy-azure.yml
     parameters:
       condition: in(variables['Build.SourceBranch'], 'refs/heads/master')
