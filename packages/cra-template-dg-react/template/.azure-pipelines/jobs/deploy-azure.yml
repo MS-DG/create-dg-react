@@ -8,6 +8,8 @@ parameters:
   BLOB_PREFIX: "" # the subfolder name
   CONTAINER_NAME: $web # the container name default is $web
   SOURCE_PATH: "$(Agent.BuildDirectory)/drop"
+  TEAMS_WEBHOOK: ""
+  TEAMS_MESSAGE: ""
 
 jobs:
   - deployment: ${{ parameters.NAME }} # name of the deployment job, A-Z, a-z, 0-9, and underscore
@@ -37,3 +39,8 @@ jobs:
                 blobPrefix: ${{ parameters.BLOB_PREFIX }}
                 sourcePath: "${{ parameters.SOURCE_PATH }}"
                 destination: AzureBlob
+            - ${{ if and(parameters.TEAMS_WEBHOOK, parameters.TEAMS_MESSAGE) }}:
+                - powershell: Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body "$env:MESSAGE_BODY" -Uri ${{parameters.TEAMS_WEBHOOK}}
+                  displayName: post messsage to Teams
+                  env:
+                    MESSAGE_BODY: '{"text":"${{parameters.TEAMS_MESSAGE}}"}'

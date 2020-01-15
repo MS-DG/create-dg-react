@@ -39,7 +39,7 @@ steps:
 
   # using build env
   - ${{ if parameters.BUILD_ENV }}:
-      - bash: "cp .env.${{ parameters.BUILD_ENV }} .env.local 2>/dev/null || :"
+      - bash: "cp .env.${{ parameters.BUILD_ENV }} .env.local 2>/dev/null || echo SKIP"
         displayName: Init ${{ parameters.BUILD_ENV }} .env
 
   # build
