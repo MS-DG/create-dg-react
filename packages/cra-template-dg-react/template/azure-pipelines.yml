@@ -84,7 +84,7 @@ jobs:
 
         > $(Build.SourceVersionMessage)
         >
-        > created by `$(Build.RequestedFor)`
+        > created by `$(Build.RequestedFor)`.
 
         Following is the preview URL
 
