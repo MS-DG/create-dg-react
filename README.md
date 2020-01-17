@@ -62,7 +62,7 @@ dg-app
 ├── README.md
 ├── package.json
 ├── .gitignore
-├── .azure-pipelines/ # azure piplines config and templates
+├── .azure-devops/ # azure piplines config and templates
 |
 ├── public/ # static resources
 │   ├── favicon.ico
