@@ -97,7 +97,7 @@ function tryOpenCode() {
     return false;
   }
 }
-module.exports = function (
+module.exports = function(
   appPath,
   appName,
   verbose,

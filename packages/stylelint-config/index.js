@@ -1,15 +1,11 @@
 'use strict';
 
 module.exports = {
-  plugins: [
-    'stylelint-prettier',
-  ],
   extends: [
     'stylelint-config-twbs-bootstrap/scss',
     'stylelint-prettier/recommended',
   ],
   rules: {
-    'prettier/prettier': true,
     'max-nesting-depth': 4,
     'selector-max-compound-selectors': 3,
     'at-rule-no-vendor-prefix': true,
