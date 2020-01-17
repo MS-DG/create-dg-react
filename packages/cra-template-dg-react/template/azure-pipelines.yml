@@ -40,7 +40,7 @@ jobs:
     pool:
       vmImage: "ubuntu-latest"
     steps:
-      - template: .azure-pipelines/steps/build.yml
+      - template: .azure-devops/steps/build.yml
         parameters:
           BUILD_ENV: ${{variables['Build.SourceBranchName']}}
           PUBLISH_BUILD: true
@@ -66,12 +66,12 @@ jobs:
     pool:
       vmImage: $(imageName)
     steps:
-      - template: .azure-pipelines/steps/build.yml
+      - template: .azure-devops/steps/build.yml
         parameters:
           NODE_VERSION: $(node_version)
           CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
 
-  - template: .azure-pipelines/jobs/deploy-azure.yml
+  - template: .azure-devops/jobs/deploy-azure.yml
     parameters:
       NAME: "pr_test_deploy"
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
@@ -90,7 +90,7 @@ jobs:
 
         **[http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/](http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/)**
 
-  - template: .azure-pipelines/jobs/deploy-azure.yml
+  - template: .azure-devops/jobs/deploy-azure.yml
     parameters:
       condition: in(variables['Build.SourceBranch'], 'refs/heads/master')
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
