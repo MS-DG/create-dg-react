@@ -2,17 +2,13 @@
 
 module.exports = {
   plugins: [
-    'stylelint-scss',
-    'stylelint-order',
     'stylelint-prettier',
   ],
   extends: [
-    'stylelint-config-recommended-scss',
+    'stylelint-config-twbs-bootstrap/scss',
     'stylelint-prettier/recommended',
   ],
   rules: {
-    "order/order": ["dollar-variables", "custom-properties", "declarations", "rules", "at-rules"],
-    'order/properties-order': ['all'],
     'prettier/prettier': true,
     'max-nesting-depth': 4,
     'selector-max-compound-selectors': 3,
@@ -38,41 +34,6 @@ module.exports = {
         message:
           'class name MUST be Lite BEM: `.ComponentName-descendentName_modifierName`,`utilityName-propertyName`,`.is-stateOfComponent` or `.has-propertyOfComponent`精简版BEM',
         resolveNestedSelectors: true,
-      },
-    ],
-    'unit-no-unknown': [
-      true,
-      {
-        ignoreUnits: ['rpx'],
-      },
-    ],
-    'selector-type-no-unknown': [
-      true,
-      {
-        ignoreTypes: [
-          'view',
-          '/^[a-zA-Z]*-view$/',
-          'page',
-          'text',
-          'icon',
-          'progress',
-          'checkbox',
-          'input',
-          'radio',
-          'slider',
-          'switch',
-          'audio',
-          'image',
-          'video',
-          'camera',
-          'live-player',
-          'live-pusher',
-          'map',
-          'canvas',
-          'open-data',
-          'official-account',
-          'navigator',
-        ],
       },
     ],
   },

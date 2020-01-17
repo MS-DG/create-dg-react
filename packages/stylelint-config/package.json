@@ -14,14 +14,13 @@
     "url": "https://github.com/MS-DG/create-dg-react.git",
     "directory": "packages/stylelint-config"
   },
-  "author": "",
+  "author": "New Future",
   "license": "MS-PL",
   "peerDependencies": {
-    "stylelint": "^12.0.0",
-    "stylelint-config-prettier": ">=8.0",
-    "stylelint-config-recommended-scss": "^4.1.0",
-    "stylelint-order": "^3.1.1",
-    "stylelint-prettier": "^1.1.1",
-    "stylelint-scss": "^3.13.0"
+    "stylelint": ">=12.0.0"
+  },
+  "dependencies": {
+    "stylelint-prettier": "^1.1.2",
+    "stylelint-config-twbs-bootstrap": "^1.1.0"
   }
 }
