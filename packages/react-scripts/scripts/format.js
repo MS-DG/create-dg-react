@@ -41,6 +41,7 @@ const isStrict =
 // format # 环境变量 GIT_AUTHOR_DATE 存在
 // format staged
 const isStaged = argv.includes('staged') || argv.includes('--staged');
+const ignoreFile = fs.existsSync('.gitignore') ? '.gitignore' : undefined;
 
 let inputFiles = argv.filter(s => s && !s.startsWith('-'));
 if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
@@ -58,7 +59,7 @@ if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
 const eslintCli = new eslint.CLIEngine({
   useEslintrc: false,
   baseConfig: eslintConfig,
-  ignorePath: '.gitignore',
+  ignorePath: ignoreFile,
   cache: true,
 });
 let rulesMeta;
@@ -209,7 +210,7 @@ function lintCheckSingleFile(file, content) {
         formatter: 'string',
         codeFilename: file,
         config: stylelintConfig,
-        ignorePath: '.gitignore',
+        ignorePath: ignoreFile,
         cache: true,
       })
       .then(linted => {
@@ -238,7 +239,7 @@ function eslintFix(p) {
     fix: true,
     useEslintrc: false,
     baseConfig: eslintConfig,
-    ignorePath: '.gitignore',
+    ignorePath: ignoreFile,
     cache: true,
   });
   const res = eslintCli.executeOnFiles(p);
@@ -279,7 +280,7 @@ function runStylelint(p, fix) {
       fix: !!fix,
       formatter: 'string',
       config: stylelintConfig,
-      ignorePath: '.gitignore',
+      ignorePath: ignoreFile,
       cache: true,
     })
     .then(linted => {
