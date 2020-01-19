@@ -148,7 +148,7 @@ module.exports = {
             ],
           },
         ],
-        '@typescript-eslint/interface-name-prefix': ['error', 'always'],
+        '@typescript-eslint/interface-name-prefix': ['warn', 'never'],
         '@typescript-eslint/ban-types': [
           'error',
           {
