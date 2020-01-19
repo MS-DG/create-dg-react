@@ -368,6 +368,7 @@ module.exports = function(webpackEnv) {
                 formatter: require.resolve(
                   '@dragongate/react-dev-utils/eslintFormatter'
                 ),
+                cwd: path.dirname(paths.appSrc),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
                 // @remove-on-eject-begin

@@ -11,3 +11,5 @@ jobs:
         run: yarn --no-progress --non-interactive --no-lockfile
       - name: Alex
         run: yarn alex
+      - name: test-format
+        run: yarn test-format

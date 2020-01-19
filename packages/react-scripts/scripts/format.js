@@ -20,11 +20,14 @@ const spawn = require('@dragongate/react-dev-utils/crossSpawn');
 const listStaged = require('./utils/listStaged');
 const stylelintConfig = require('../config/stylelint');
 const eslintConfig = require('../config/eslint');
+const paths = require('../config/paths');
+
+const root = path.dirname(paths.appSrc);
 
 const defaultGlob = {
-  eslint: '**/*.{js,mjs,jsx,ts,tsx}',
-  stylelint: '**/*.{css,scss,tsx,jsx,md,html}',
-  prettier: '**/*',
+  eslint: path.join(root, '**/*.{js,mjs,jsx,ts,tsx}'),
+  stylelint: path.join(root, '/**/*.{css,scss,tsx,jsx,md,html}'),
+  prettier: path.join(root, '/**/*'),
 };
 const argv = process.argv.slice(2);
 
@@ -41,7 +44,7 @@ const isStrict =
 // format # 环境变量 GIT_AUTHOR_DATE 存在
 // format staged
 const isStaged = argv.includes('staged') || argv.includes('--staged');
-const ignoreFile = fs.existsSync('.gitignore') ? '.gitignore' : undefined;
+const ignoreFile = fs.existsSync(path.join(paths.appPath, '.gitignore')) ? path.join(paths.appPath, '.gitignore') : undefined;
 
 let inputFiles = argv.filter(s => s && !s.startsWith('-'));
 if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
@@ -160,7 +163,7 @@ function prettierCli(type, f) {
       `--${type || 'check'}`,
       // '--loglevel=log',
     ].concat(f),
-    { stdio: 'inherit' }
+    { stdio: 'inherit', cwd: root }
   );
   if (result.status == 0 && type === 'check') {
     clearLine(3);
@@ -173,7 +176,7 @@ function prettierCli(type, f) {
 
 function prettierCheckSingleFile(file, content) {
   return prettier
-    .getFileInfo(file, { ignorePath: '.prettierignore' })
+    .getFileInfo(file, { ignorePath: path.join(root, '.prettierignore') })
     .then(info => {
       if (!info.ignored) {
         const options = prettier.resolveConfig.sync(file, { useCache: true });
@@ -241,6 +244,7 @@ function eslintFix(p) {
     baseConfig: eslintConfig,
     ignorePath: ignoreFile,
     cache: true,
+    cwd: root,
   });
   const res = eslintCli.executeOnFiles(p);
   eslint.CLIEngine.outputFixes(res);

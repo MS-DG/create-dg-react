@@ -22,9 +22,9 @@ const scriptIndex = args.findIndex(x => scripts.includes(x));
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
-const azureCI = process.env.TF_BUILD || process.env.AZURE_PIPELINES;
-if (process.env.CI === undefined && azureCI) {
-  process.env.CI = azureCI;
+const envCI = process.env.TF_BUILD || process.env.AZURE_PIPELINES || process.env.GITHUB_ACTIONS;
+if (process.env.CI === undefined && envCI) {
+  process.env.CI = envCI;
 }
 
 // windows git hook 颜色适配
