@@ -3,6 +3,7 @@
 .npmrc
 .prettierignore
 .gitignore
+gitignore
 
 # cache 
 .*cache
