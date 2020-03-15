@@ -59,7 +59,7 @@ Warnings also need to be fixed befor git-push.
 
 All config rules is in shared npm packages, and **should not** be modified in local.
 
-It's all to update `"@dragongate/react-scripts"` and `@shennong/eslint-plugin`.
+It's all to update `"@dragongate/react-scripts"` and `@dragongate/eslint-plugin`.
 
 ### prettier
 
@@ -71,7 +71,7 @@ The config files is using [`@dragongate/eslint-config/prettier`](https://github.
 ### eslint
 
 All Typescript (`.ts`,`.tsx`) using [eslint](https://eslint.org/) to lint code-quality rules.
-Base on [`@dragongate/eslint-config`](https://github.com/MS-DG/create-dg-react/tree/master/packages/eslint-config-react-app) and `@shennong/eslint-plugin`(a private eslint plugin).
+Base on [`@dragongate/eslint-config`](https://github.com/MS-DG/create-dg-react/tree/master/packages/eslint-config-react-app) and `@dragongate/eslint-plugin`(a private eslint plugin).
 
 All files in `.gitignore`(can not be committed) are exceptions for eslint.
 
