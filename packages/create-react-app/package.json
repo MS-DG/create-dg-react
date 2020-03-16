@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "bugs": {
     "url": "https://github.com/MS-DG/create-dg-react/issues"

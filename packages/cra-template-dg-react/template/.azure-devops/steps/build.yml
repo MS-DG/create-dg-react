@@ -46,6 +46,8 @@ steps:
   - script: npm run build --if-present
     displayName: "BUILD"
   - ${{ if eq(parameters.PUBLISH_BUILD, true) }}:
+      - script: npx react-snap
+        displayName: "react-snap"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: drop"
         inputs:
