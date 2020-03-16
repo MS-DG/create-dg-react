@@ -1,0 +1,35 @@
+# global variables
+variables:
+  AZURE_SUBSCRIPTION: "" # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
+  STORAGE: "" # must be lowercase or number
+  TEAMS_WEBHOOK: "" # send messages in teams webhook
+
+pr:
+  autoCancel: true
+
+jobs:
+  - job: pr_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
+    displayName: Build Pull Request # friendly name to display in the UI
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - template: ./steps/build.yml
+        parameters:
+          # BUILD_ENV: ${{variables['Build.SourceBranchName']}}
+          PUBLISH_BUILD: true
+          PUBLISH_TEST: true
+  - template: ./jobs/deploy-azure.yml
+    parameters:
+      NAME: "pr_test_deploy"
+      dependsOn: [pr_build]
+      AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
+      CONTAINER_NAME: build
+      BLOB_PREFIX: $(Build.BuildID)
+      TEAMS_WEBHOOK: ${{variables.TEAMS_WEBHOOK}}
+      TEAMS_MESSAGE: |
+        **[$(Build.Repository.Name) PR#$(System.PullRequest.PullRequestId)]($(System.PullRequest.SourceRepositoryURI)/pullrequest/$(System.PullRequest.PullRequestId)) build Success!**
+        > $(Build.SourceVersionMessage)
+        >
+        > created by `$(Build.RequestedFor)`.
+        Following is the preview URL
+        **[http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/](http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/)**

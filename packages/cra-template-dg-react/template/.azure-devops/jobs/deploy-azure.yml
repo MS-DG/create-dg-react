@@ -1,7 +1,7 @@
 # deployment job templates
 # upload ${{SOURCE_PATH}} to azure blob
 parameters:
-  condition: always()
+  dependsOn: []
   NAME: "web_deployment"
   AZURE_SUBSCRIPTION: ""
   STORAGE: "$(STORAGE)" # the storage
@@ -17,13 +17,7 @@ jobs:
     # displayName: upload to ${{coalesce(parameters.STORAGE, variables.STORAGE) }}:${{ coalesce(parameters.CONTAINER_NAME,variables.CONTAINER_NAME) }}/${{ parameters.BLOB_PREFIX }}
     pool: # see pool schema
       vmImage: "windows-2019"
-    dependsOn: [web_build, compatibility_check]
-    condition: |
-      and(
-        ${{ parameters.condition }},
-        in(dependencies.web_build.result, 'Succeeded', 'SucceededWithIssues'),
-        in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-      )
+    dependsOn: ${{ parameters.dependsOn }}
     cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
     environment: azure-static-website-deploy # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
     strategy:

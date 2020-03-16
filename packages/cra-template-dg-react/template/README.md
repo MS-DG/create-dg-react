@@ -181,6 +181,12 @@ dgapp.azure.blob:
             /index.html
 ```
 
+### pipelines
+
+- [pr.yml](.azure-devops/pr.yml) is for pull-request build validation;
+- [ci.yml](.azure-devops/ci.yml) is for CI and CD build and deploy;
+- copy ci.yml update the configuration for muti build and deploy environment
+
 ## Git Hook
 
 You can use `--no-verify` to skip the git hook verification, but it was **NOT** recommended.

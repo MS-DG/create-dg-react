@@ -5,7 +5,7 @@
 
 # global variables
 variables:
-  AZURE_SUBSCRIPTION: "" # default is dg-website https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
+  AZURE_SUBSCRIPTION: "" # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
   STORAGE: "" # must be lowercase or number
   TEAMS_WEBHOOK: "" # send messages in teams webhook
 
@@ -26,21 +26,13 @@ trigger:
     # include: [web] # file paths which must match to trigger a build
     exclude: [.vscode] # file paths which will not trigger a build
 
-# PR triggers are only supported in GitHub and Bitbucket Cloud.
-# For Azure Repos Git, you can configure a branch policy for build validation in order to trigger your pipeline for validation.
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?#pr-triggers
-# https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?#build-validation
-pr:
-  autoCancel: true
-  branches:
-    include: []
 jobs:
   - job: web_build # name of the deployment job, A-Z, a-z, 0-9, and underscore
     displayName: Build ${{variables['Build.SourceBranchName']}} to Static Website # friendly name to display in the UI
     pool:
       vmImage: "ubuntu-latest"
     steps:
-      - template: .azure-devops/steps/build.yml
+      - template: ./steps/build.yml
         parameters:
           BUILD_ENV: ${{variables['Build.SourceBranchName']}}
           PUBLISH_BUILD: true
@@ -66,32 +58,13 @@ jobs:
     pool:
       vmImage: $(imageName)
     steps:
-      - template: .azure-devops/steps/build.yml
+      - template: ./steps/build.yml
         parameters:
           NODE_VERSION: $(node_version)
           CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
 
-  - template: .azure-devops/jobs/deploy-azure.yml
+  - template: ./jobs/deploy-azure.yml
     parameters:
-      NAME: "pr_test_deploy"
-      AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
-      CONTAINER_NAME: build
-      condition: eq(variables['Build.Reason'], 'PullRequest')
-      BLOB_PREFIX: $(Build.BuildID)
-      TEAMS_WEBHOOK: ${{variables.TEAMS_WEBHOOK}}
-      TEAMS_MESSAGE: |
-        **[$(Build.Repository.Name) PR#$(System.PullRequest.PullRequestId)]($(System.PullRequest.SourceRepositoryURI)/pullrequest/$(System.PullRequest.PullRequestId)) build Success!**
-
-        > $(Build.SourceVersionMessage)
-        >
-        > created by `$(Build.RequestedFor)`.
-
-        Following is the preview URL
-
-        **[http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/](http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/)**
-
-  - template: .azure-devops/jobs/deploy-azure.yml
-    parameters:
-      condition: in(variables['Build.SourceBranch'], 'refs/heads/master')
+      dependsOn: [web_build, compatibility_check]
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: $web
