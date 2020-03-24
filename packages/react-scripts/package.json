@@ -25,7 +25,6 @@
     "utils"
   ],
   "bin": {
-    "@dragongate/react-scripts": "./bin/react-scripts.js",
     "dg": "./bin/react-scripts.js",
     "react-scripts": "./bin/react-scripts.js"
   },
