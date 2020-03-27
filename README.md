@@ -2,7 +2,6 @@
 
 Create DG React apps with no build configuration.
 
-
 - [Creating an App](#creating-an-app) – How to create a new app.
 
 Create DG React App works on macOS, Windows, and Linux.
@@ -29,7 +28,7 @@ Create a project, and you’re good to go.
 
 ## Creating an App
 
-**You’ll need to have Node 8.16.0 or Node 10.16.0 or later version on your local development machine** (but it’s not required on the server). You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.
+**You’ll need to have Node 10.16.0 or later version on your local development machine** (but it’s not required on the server). You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.
 
 To create a new app, you may choose one of the following methods:
 
@@ -160,7 +159,6 @@ Your environment will have everything you need to build a modern single-page Rea
 - Hassle-free updates for the above tools with a single dependency.
 
 The tradeoff is that **these tools are preconfigured to work in a specific way**. If your project needs more customization, you can ["eject"](https://facebook.github.io/create-react-app/docs/available-scripts#npm-run-eject) and customize it, but then you will need to maintain this configuration.
-
 
 ## License
 
