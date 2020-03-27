@@ -8,6 +8,7 @@
  * @type {prettier.Options}
  */
 const options = {
+  endOfLine: 'auto',
   printWidth: 100, //default 80
   trailingComma: 'es5', //default none
 
