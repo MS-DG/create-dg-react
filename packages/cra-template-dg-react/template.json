@@ -9,9 +9,6 @@
     "i18next": "latest",
     "react-i18next": "latest"
   },
-  "devDependencies": {
-    "@dragongate/eslint-plugin": "latest"
-  },
   "scripts": {
     "format": "react-scripts format",
     "pre-commit": "react-scripts format staged && react-scripts test --changedSince=HEAD",
@@ -20,10 +17,7 @@
   },
   "prettier": "@dragongate/eslint-config/prettier",
   "eslintConfig": {
-    "extends": [
-      "@dragongate/eslint-config",
-      "plugin:@dragongate/strict"
-    ]
+    "extends": ["@dragongate/eslint-config", "plugin:@dragongate/strict"]
   },
   "stylelint": {
     "extends": "@dragongate/stylelint-config"
