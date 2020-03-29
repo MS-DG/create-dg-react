@@ -18,10 +18,43 @@ jobs:
           # BUILD_ENV: ${{variables['Build.SourceBranchName']}}
           PUBLISH_BUILD: true
           PUBLISH_TEST: true
+
+  # check in Mac/Win/Linux with different node versions to avoid breaking cross platform dev
+  - job: compatibility_check
+    condition: in(variables['Build.PullRequest.TargetBranch'], 'refs/heads/master')
+    strategy:
+      matrix:
+        node_mac:
+          node_version: 12.x
+          imageName: "macOS-latest"
+        node_win:
+          node_version: 12.x
+          imageName: "windows-latest"
+        node10_linux:
+          node_version: 10.x
+          imageName: "ubuntu-latest"
+    variables:
+      # disable ComponentGovernanceDetection https://docs.opensource.microsoft.com/tools/cg/policyinjection.html
+      skipComponentGovernanceDetection: true
+    pool:
+      vmImage: $(imageName)
+    steps:
+      - template: .azure-pipelines/steps/build.yml
+        parameters:
+          BUILD_ENV: "production"
+          NODE_VERSION: $(node_version)
+          CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
+
   - template: ./jobs/deploy-azure.yml
     parameters:
       NAME: "pr_test_deploy"
-      dependsOn: [pr_build]
+      dependsOn: [pr_build, compatibility_check]
+      condition: not(failed())
+      # |
+      #   and(
+      #     in(dependencies.pr_build.result, 'Succeeded', 'SucceededWithIssues'),
+      #     in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+      #   )
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: build
       BLOB_PREFIX: $(Build.BuildID)
