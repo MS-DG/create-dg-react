@@ -39,7 +39,7 @@ jobs:
     pool:
       vmImage: $(imageName)
     steps:
-      - template: .azure-pipelines/steps/build.yml
+      - template: ./steps/build.yml
         parameters:
           BUILD_ENV: "production"
           NODE_VERSION: $(node_version)
