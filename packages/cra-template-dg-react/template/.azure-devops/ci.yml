@@ -36,6 +36,7 @@ jobs:
       NAME: "web_deploy"
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: $web
+      TEAMS_WEBHOOK: ${{variables.TEAMS_WEBHOOK}}
       TEAMS_MESSAGE: |
         **$(Build.Repository.Name) `${{variables['Build.SourceBranchName']}}` deployed!**
 
