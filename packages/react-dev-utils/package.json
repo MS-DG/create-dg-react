@@ -60,7 +60,7 @@
     "cross-spawn": "7.0.1",
     "detect-port-alt": "1.1.6",
     "escape-string-regexp": "2.0.0",
-    "filesize": "6.0.1",
+    "filesize": "6.1.0",
     "find-up": "4.1.0",
     "fork-ts-checker-webpack-plugin": "4.1.1",
     "global-modules": "2.0.0",
