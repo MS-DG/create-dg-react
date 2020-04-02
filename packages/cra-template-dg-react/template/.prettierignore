@@ -9,7 +9,6 @@ gitignore
 .*cache
 
 yarn.lock
-package-lock.json
 
 # binnary images
 *.png
@@ -23,3 +22,8 @@ package-lock.json
 
 node_modules/
 build/
+
+# log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
