@@ -4,6 +4,7 @@ variables:
   STORAGE: "" # must be lowercase or number
   TEAMS_WEBHOOK: "" # send messages in teams webhook
 
+trigger: none # will disable CI builds entirely
 pr:
   autoCancel: true
 
