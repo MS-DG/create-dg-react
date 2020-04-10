@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "jest": "25.2.1"
+    "jest": "25.3.0"
   },
   "scripts": {
     "test": "cross-env FORCE_COLOR=true jest"
