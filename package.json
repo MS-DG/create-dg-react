@@ -38,6 +38,7 @@
     "meow": "^6.0.0",
     "multimatch": "^4.0.0",
     "prettier": "2.0.2",
+    "eslint-plugin-prettier": "3.x",
     "strip-ansi": "^6.0.0",
     "svg-term-cli": "^2.1.1",
     "tempy": "^0.5.0",
