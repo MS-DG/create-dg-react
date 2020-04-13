@@ -22,7 +22,7 @@ jobs:
 
   # check in Mac/Win/Linux with different node versions to avoid breaking cross platform dev
   - job: compatibility_check
-    condition: in(variables['Build.PullRequest.TargetBranch'], 'refs/heads/master')
+    condition: in(variables['system.pullRequest.targetBranch'], 'refs/heads/master')
     strategy:
       matrix:
         node_mac:
