@@ -1,6 +1,6 @@
 {
   "name": "@dragongate/react-dev-utils",
-  "version": "10.0.10",
+  "version": "10.0.11",
   "publishConfig": {
     "access": "public"
   },
@@ -55,7 +55,7 @@
   "dependencies": {
     "@babel/code-frame": "7.8.3",
     "address": "1.1.2",
-    "browserslist": "4.10.0",
+    "browserslist": "4.11.1",
     "chalk": "3.0.0",
     "cross-spawn": "7.0.1",
     "detect-port-alt": "1.1.6",
@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "jest": "25.2.1"
+    "jest": "25.3.0"
   },
   "scripts": {
     "test": "cross-env FORCE_COLOR=true jest"
