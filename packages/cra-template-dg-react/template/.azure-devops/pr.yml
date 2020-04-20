@@ -16,7 +16,7 @@ jobs:
     steps:
       - template: ./steps/build.yml
         parameters:
-          # BUILD_ENV: ${{variables['Build.SourceBranchName']}}
+          BUILD_ENV: ${{variables['Build.SourceBranchName']}}
           PUBLISH_BUILD: true
           PUBLISH_TEST: true
 
@@ -25,13 +25,13 @@ jobs:
     condition: in(variables['system.pullRequest.targetBranch'], 'refs/heads/master')
     strategy:
       matrix:
-        node_mac:
+        mac:
           node_version: 12.x
           imageName: "macOS-latest"
-        node_win:
+        windows:
           node_version: 12.x
           imageName: "windows-latest"
-        node10_linux:
+        linux_node10:
           node_version: 10.x
           imageName: "ubuntu-latest"
     variables:
