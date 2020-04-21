@@ -37,7 +37,7 @@
     "lint-staged": "^10.0.8",
     "meow": "^6.0.0",
     "multimatch": "^4.0.0",
-    "prettier": "2.0.2",
+    "prettier": "2.0.4",
     "eslint-plugin-prettier": "3.x",
     "strip-ansi": "^6.0.0",
     "svg-term-cli": "^2.1.1",
