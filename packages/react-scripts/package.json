@@ -34,7 +34,7 @@
     "@dragongate/eslint-config": "^5.0.11",
     "@dragongate/react-dev-utils": "^10.0.11",
     "@dragongate/stylelint-config": "^0.1.4",
-    "@svgr/webpack": "5.3.1",
+    "@svgr/webpack": "5.4.0",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
     "babel-eslint": "10.1.0",
