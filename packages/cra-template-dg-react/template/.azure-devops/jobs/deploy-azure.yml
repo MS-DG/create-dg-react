@@ -2,6 +2,7 @@
 # upload ${{SOURCE_PATH}} to azure blob
 parameters:
   dependsOn: []
+  condition: succeeded()
   NAME: "web_deployment"
   AZURE_SUBSCRIPTION: ""
   STORAGE: "$(STORAGE)" # the storage
@@ -18,6 +19,7 @@ jobs:
     pool: # see pool schema
       vmImage: "windows-2019"
     dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
     cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
     environment: azure-static-website-deploy # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
     strategy:

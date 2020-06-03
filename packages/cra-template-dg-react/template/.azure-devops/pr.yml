@@ -4,6 +4,7 @@ variables:
   STORAGE: "" # must be lowercase or number
   TEAMS_WEBHOOK: "" # send messages in teams webhook
 
+trigger: none # will disable CI builds entirely
 pr:
   autoCancel: true
 
@@ -15,13 +16,46 @@ jobs:
     steps:
       - template: ./steps/build.yml
         parameters:
-          # BUILD_ENV: ${{variables['Build.SourceBranchName']}}
+          BUILD_ENV: ${{variables['Build.SourceBranchName']}}
           PUBLISH_BUILD: true
           PUBLISH_TEST: true
+
+  # check in Mac/Win/Linux with different node versions to avoid breaking cross platform dev
+  - job: compatibility_check
+    condition: in(variables['system.pullRequest.targetBranch'], 'refs/heads/master')
+    strategy:
+      matrix:
+        mac:
+          node_version: 12.x
+          imageName: "macOS-latest"
+        windows:
+          node_version: 12.x
+          imageName: "windows-latest"
+        linux_node10:
+          node_version: 10.x
+          imageName: "ubuntu-latest"
+    variables:
+      # disable ComponentGovernanceDetection https://docs.opensource.microsoft.com/tools/cg/policyinjection.html
+      skipComponentGovernanceDetection: true
+    pool:
+      vmImage: $(imageName)
+    steps:
+      - template: ./steps/build.yml
+        parameters:
+          BUILD_ENV: "production"
+          NODE_VERSION: $(node_version)
+          CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
+
   - template: ./jobs/deploy-azure.yml
     parameters:
       NAME: "pr_test_deploy"
-      dependsOn: [pr_build]
+      dependsOn: [pr_build, compatibility_check]
+      condition: not(failed())
+      # |
+      #   and(
+      #     in(dependencies.pr_build.result, 'Succeeded', 'SucceededWithIssues'),
+      #     in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+      #   )
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: build
       BLOB_PREFIX: $(Build.BuildID)

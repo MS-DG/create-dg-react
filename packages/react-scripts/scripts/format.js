@@ -44,7 +44,9 @@ const isStrict =
 // format # 环境变量 GIT_AUTHOR_DATE 存在
 // format staged
 const isStaged = argv.includes('staged') || argv.includes('--staged');
-const ignoreFile = fs.existsSync(path.join(paths.appPath, '.gitignore')) ? path.join(paths.appPath, '.gitignore') : undefined;
+const ignoreFile = fs.existsSync(path.join(paths.appPath, '.gitignore'))
+  ? path.join(paths.appPath, '.gitignore')
+  : undefined;
 
 let inputFiles = argv.filter(s => s && !s.startsWith('-'));
 if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {

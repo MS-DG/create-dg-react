@@ -14,14 +14,6 @@ trigger:
   branches:
     include: # branch names which will trigger a build
       - "master"
-      - "prod"
-      - "devmaster"
-      - "features/*"
-      - "release/*"
-    # exclude: [ string ] # branch names which will not
-  # tags:
-  #   include: [ string ] # tag names which will trigger a build
-  #   exclude: [ string ] # tag names which will not
   paths:
     # include: [web] # file paths which must match to trigger a build
     exclude: [.vscode] # file paths which will not trigger a build
@@ -38,33 +30,16 @@ jobs:
           PUBLISH_BUILD: true
           PUBLISH_TEST: true
 
-  # check in Mac/Win/Linux with different node versions to avoid breaking cross platform dev
-  - job: compatibility_check
-    condition: in(variables['Build.SourceBranch'], 'refs/heads/master')
-    strategy:
-      matrix:
-        node_mac:
-          node_version: 12.x
-          imageName: "macOS-latest"
-        node_win:
-          node_version: 12.x
-          imageName: "windows-latest"
-        node10_linux:
-          node_version: 10.x
-          imageName: "ubuntu-latest"
-    variables:
-      # disable ComponentGovernanceDetection https://docs.opensource.microsoft.com/tools/cg/policyinjection.html
-      skipComponentGovernanceDetection: true
-    pool:
-      vmImage: $(imageName)
-    steps:
-      - template: ./steps/build.yml
-        parameters:
-          NODE_VERSION: $(node_version)
-          CACHE_KEY: '"$(node_version)" | "node_modules" | "$(Agent.OS)" | package-lock.json'
-
   - template: ./jobs/deploy-azure.yml
     parameters:
-      dependsOn: [web_build, compatibility_check]
+      dependsOn: [web_build]
+      NAME: "web_deploy"
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: $web
+      TEAMS_WEBHOOK: ${{variables.TEAMS_WEBHOOK}}
+      TEAMS_MESSAGE: |
+        **$(Build.Repository.Name) `${{variables['Build.SourceBranchName']}}` deployed!**
+
+        > $(Build.SourceVersionMessage)
+        >
+        > created by `$(Build.RequestedFor)`

@@ -29,7 +29,10 @@ function formatter(message, useColors) {
       : message;
 
   const colors = new chalk.Instance({ enabled: useColors });
-  const messageColor = message.isWarningSeverity() ? colors.yellow : colors.red;
+  const messageColor =
+    message.isWarningSeverity && message.isWarningSeverity()
+      ? colors.yellow
+      : colors.red;
   const fileAndNumberColor = colors.bold.cyan;
 
   const source = file && fs.existsSync(file) && fs.readFileSync(file, 'utf-8');

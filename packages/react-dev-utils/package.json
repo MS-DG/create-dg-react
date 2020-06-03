@@ -1,6 +1,6 @@
 {
   "name": "@dragongate/react-dev-utils",
-  "version": "10.0.9",
+  "version": "10.0.12",
   "publishConfig": {
     "access": "public"
   },
@@ -55,14 +55,14 @@
   "dependencies": {
     "@babel/code-frame": "7.8.3",
     "address": "1.1.2",
-    "browserslist": "4.10.0",
-    "chalk": "3.0.0",
+    "browserslist": "4.12.0",
+    "chalk": "4.0.0",
     "cross-spawn": "7.0.1",
     "detect-port-alt": "1.1.6",
-    "escape-string-regexp": "2.0.0",
-    "filesize": "6.0.1",
+    "escape-string-regexp": "4.0.0",
+    "filesize": "6.1.0",
     "find-up": "4.1.0",
-    "fork-ts-checker-webpack-plugin": "4.1.1",
+    "fork-ts-checker-webpack-plugin": "4.1.3",
     "global-modules": "2.0.0",
     "globby": "8.0.2",
     "gzip-size": "5.1.1",
@@ -79,8 +79,8 @@
     "text-table": "0.2.0"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3",
-    "jest": "25.2.1"
+    "cross-env": "^7.0.2",
+    "jest": "25.4.0"
   },
   "scripts": {
     "test": "cross-env FORCE_COLOR=true jest"
