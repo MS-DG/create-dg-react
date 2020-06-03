@@ -20,13 +20,13 @@ function formatter(results) {
   let output = '\n';
   let hasErrors = false;
 
-  results.forEach(result => {
+  results.forEach((result) => {
     let messages = result.warnings;
     if (messages.length === 0) {
       return;
     }
 
-    messages = messages.map(message => {
+    messages = messages.map((message) => {
       let messageType;
       if (message.severity === 'error') {
         messageType = 'error';
@@ -51,11 +51,11 @@ function formatter(results) {
 
     // if there are error messages, we want to show only errors
     if (hasErrors) {
-      messages = messages.filter(m => m[2] === 'error');
+      messages = messages.filter((m) => m[2] === 'error');
     }
 
     // add color to rule keywords
-    messages.forEach(m => {
+    messages.forEach((m) => {
       m[4] = m[2] === 'error' ? chalk.red(m[4]) : chalk.yellow(m[4]);
       m.splice(2, 1);
     });
@@ -85,14 +85,14 @@ function formatter(results) {
  */
 function linter(content, options, context, callback) {
   const lintOptions = Object.assign({}, options, {
-    files: context.resourcePath,
+    files: context.resourcePath.replace(/\\/g, '/'),
     // formatter: 'string',
     formatter,
     // require('@dragongate/react-dev-utils/eslintFormatter'),
   });
   stylelint
     .lint(lintOptions)
-    .then(result => {
+    .then((result) => {
       if (result.errored && result.output) {
         const error = Error(result.output);
         context.emitWarning(error);
@@ -100,7 +100,7 @@ function linter(content, options, context, callback) {
       return callback(null, content);
       // return result.results[0];
     })
-    .catch(error => {
+    .catch((error) => {
       return callback(error);
     });
 
@@ -114,7 +114,7 @@ function linter(content, options, context, callback) {
  * @param {string|buffer} content = the content to be linted
  * @returns {object} the result of the callback
  */
-module.exports = function(content) {
+module.exports = function (content) {
   const callback = this.async();
   const loaderOptions = loaderUtils.getOptions(this);
   const options = Object.assign({}, defaultOptions, loaderOptions);

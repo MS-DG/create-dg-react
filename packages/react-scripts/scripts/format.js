@@ -48,7 +48,7 @@ const ignoreFile = fs.existsSync(path.join(paths.appPath, '.gitignore'))
   ? path.join(paths.appPath, '.gitignore')
   : undefined;
 
-let inputFiles = argv.filter(s => s && !s.startsWith('-'));
+let inputFiles = argv.filter((s) => s && !s.startsWith('-'));
 if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
   inputFiles = listStaged(process.env.CHANGED_SINCE);
   if (inputFiles.length > 0) {
@@ -77,7 +77,9 @@ let rulesMeta;
 function printResults(engine, results) {
   const formatter = engine.getFormatter(); //visualstudio
   //relative path
-  results.forEach(m => (m.filePath = path.relative(process.cwd(), m.filePath)));
+  results.forEach(
+    (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
+  );
   const output = formatter(results, {
     get rulesMeta() {
       if (!rulesMeta) {
@@ -136,11 +138,11 @@ function getFilesGlob(p, type) {
   } else if (p instanceof Array) {
     switch (type) {
       case 'eslint':
-        return p.filter(p =>
+        return p.filter((p) =>
           ['.ts', '.tsx', '.js', '.jsx'].includes(path.extname(p))
         );
       case 'stylelint':
-        return p.filter(p =>
+        return p.filter((p) =>
           ['.scss', '.css', '.md', '.jsx', '.tsx', '.html'].includes(
             path.extname(p)
           )
@@ -179,7 +181,7 @@ function prettierCli(type, f) {
 function prettierCheckSingleFile(file, content) {
   return prettier
     .getFileInfo(file, { ignorePath: path.join(root, '.prettierignore') })
-    .then(info => {
+    .then((info) => {
       if (!info.ignored) {
         const options = prettier.resolveConfig.sync(file, { useCache: true });
         options.filepath = file;
@@ -213,12 +215,12 @@ function lintCheckSingleFile(file, content) {
         code: content,
         fix: false,
         formatter: 'string',
-        codeFilename: file,
+        codeFilename: file.replace(/\\/g, '/'),
         config: stylelintConfig,
         ignorePath: ignoreFile,
         cache: true,
       })
-      .then(linted => {
+      .then((linted) => {
         if (!linted.output) {
           return true;
         }
@@ -282,14 +284,14 @@ function runStylelint(p, fix) {
   );
   return stylelint
     .lint({
-      files: p,
+      files: p.replace(/\\/g, '/'),
       fix: !!fix,
       formatter: 'string',
       config: stylelintConfig,
       ignorePath: ignoreFile,
       cache: true,
     })
-    .then(linted => {
+    .then((linted) => {
       clearLine();
       if (!linted.output) {
         return;
@@ -321,13 +323,13 @@ function run() {
       )
     );
     Promise.all(
-      staged.map(f => {
+      staged.map((f) => {
         const content = getStagedContent(f);
         return Promise.resolve(lintCheckSingleFile(f, content))
           .then(() => prettierCheckSingleFile(f, content))
           .then(() => console.log(chalk.green('√'), chalk.dim.gray(f)));
       })
-    ).catch(error => {
+    ).catch((error) => {
       if (error) {
         console.log(error);
       }
@@ -336,8 +338,8 @@ function run() {
     });
   } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
     Promise.resolve(prettierCli('write', getFilesGlob(inputFiles, 'prettier')))
-      .then(result => eslintFix(getFilesGlob(inputFiles, 'eslint')) && result)
-      .then(result =>
+      .then((result) => eslintFix(getFilesGlob(inputFiles, 'eslint')) && result)
+      .then((result) =>
         runStylelint(getFilesGlob(inputFiles, 'stylelint'), true).then(() => {
           if (!result) {
             return Promise.reject(result);
@@ -345,7 +347,7 @@ function run() {
         })
       )
       .then(() => console.log(chalk.green('√'), 'All files are formatted!'))
-      .catch(err => {
+      .catch((err) => {
         if (err) {
           console.debug(err);
         }
