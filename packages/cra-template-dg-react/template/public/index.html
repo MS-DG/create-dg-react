@@ -26,6 +26,12 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>
+      if (navigator.userAgent === 'ReactSnap') {
+        // react snap 避免预渲染css冲突
+        window.FabricConfig = { mergeStyles: { namespace: 'React_Snap' } };
+      }
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
