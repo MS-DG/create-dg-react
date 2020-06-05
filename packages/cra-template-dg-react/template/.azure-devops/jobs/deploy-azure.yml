@@ -38,5 +38,6 @@ jobs:
             - ${{ if and(parameters.TEAMS_WEBHOOK, parameters.TEAMS_MESSAGE) }}:
                 - powershell: Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body "$env:MESSAGE_BODY" -Uri ${{parameters.TEAMS_WEBHOOK}}
                   displayName: post messsage to Teams
+                  continueOnError: true
                   env:
                     MESSAGE_BODY: '{"text":"${{parameters.TEAMS_MESSAGE}}"}'

@@ -215,7 +215,7 @@ function lintCheckSingleFile(file, content) {
         code: content,
         fix: false,
         formatter: 'string',
-        codeFilename: file.replace(/\\/g, '/'),
+        codeFilename: file,
         config: stylelintConfig,
         ignorePath: ignoreFile,
         cache: true,
@@ -284,7 +284,9 @@ function runStylelint(p, fix) {
   );
   return stylelint
     .lint({
-      files: p.replace(/\\/g, '/'),
+      files: Array.isArray(p)
+        ? p.map((s) => s.replace(/\\/g, '/'))
+        : p.replace(/\\/g, '/'),
       fix: !!fix,
       formatter: 'string',
       config: stylelintConfig,
