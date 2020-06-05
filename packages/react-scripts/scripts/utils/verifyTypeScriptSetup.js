@@ -62,9 +62,17 @@ function verifyTypeScriptSetup() {
   // Ensure typescript is installed
   let ts;
   try {
+    // TODO: Remove this hack once `globalThis` issue is resolved
+    // https://github.com/jsdom/jsdom/issues/2961
+    const globalThisWasDefined = !!global.globalThis;
+
     ts = require(resolve.sync('typescript', {
       basedir: paths.appNodeModules,
     }));
+
+    if (!globalThisWasDefined && !!global.globalThis) {
+      delete global.globalThis;
+    }
   } catch (_) {
     console.error(
       chalk.bold.red(
@@ -135,7 +143,7 @@ function verifyTypeScriptSetup() {
   };
 
   const formatDiagnosticHost = {
-    getCanonicalFileName: fileName => fileName,
+    getCanonicalFileName: (fileName) => fileName,
     getCurrentDirectory: ts.sys.getCurrentDirectory,
     getNewLine: () => os.EOL,
   };
@@ -160,7 +168,7 @@ function verifyTypeScriptSetup() {
     // Calling this function also mutates the tsconfig above,
     // adding in "include" and "exclude", but the compilerOptions remain untouched
     let result;
-    parsedTsConfig = immer(readTsConfig, config => {
+    parsedTsConfig = immer(readTsConfig, (config) => {
       result = ts.parseJsonConfigFileContent(
         config,
         ts.sys,
@@ -247,7 +255,7 @@ function verifyTypeScriptSetup() {
           'file:'
         )
       );
-      messages.forEach(message => {
+      messages.forEach((message) => {
         console.warn('  - ' + message);
       });
       console.warn();
