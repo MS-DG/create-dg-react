@@ -134,6 +134,9 @@ You can adjust various development and production settings by setting environmen
 
 > Note: You must create custom environment variables beginning with `REACT_APP_`. Any other variables except `NODE_ENV` will be ignored. Changing any environment variables will require you to restart the development server if it is running.
 
+> ALL `REACT_APP_*` and `NODE_ENV` will inject to the scss variables:
+> such as `$NODE_ENV`, `$REACT_APP_MY_CONF`
+
 .env files should be checked into source control (with the exclusion of .env\*.local).
 
 - `.env`: Default.

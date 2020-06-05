@@ -141,6 +141,8 @@ module.exports = function (webpackEnv) {
       },
     ].filter(Boolean);
     if (preProcessor) {
+      const GlobalScss = path.join(paths.appSrc, '_global.scss');
+      const hasGlobalScss = fs.existsSync(GlobalScss);
       loaders.push(
         {
           loader: require.resolve('resolve-url-loader'),
@@ -153,7 +155,7 @@ module.exports = function (webpackEnv) {
           options: {
             sourceMap: true,
             // sass loader
-            prependData: function () {
+            prependData: function (loaderContext) {
               var values = '';
               for (const key in process.env) {
                 if (
@@ -162,12 +164,21 @@ module.exports = function (webpackEnv) {
                   key === 'NODE_ENV'
                 ) {
                   var value = process.env[key];
-                  if (value && /[\;\:\&\$]/g.test(value)) {
-                    values += '$' + key + ': "' + process.env[key] + '";\n';
+                  if (value && /[;:&$]/g.test(value)) {
+                    values +=
+                      '$' + key + ': "' + process.env[key] + '" !default;\n';
                   } else {
-                    values += '$' + key + ': ' + process.env[key] + ';\n';
+                    values +=
+                      '$' + key + ': ' + process.env[key] + ' !default;\n';
                   }
                 }
+              }
+              if (hasGlobalScss) {
+                const resourcePath = loaderContext.resourcePath;
+                const relativeGlobal = path
+                  .relative(path.dirname(resourcePath), GlobalScss)
+                  .replace(/\\/g, '/');
+                values += '@import "' + relativeGlobal + '";';
               }
               return values;
             },
