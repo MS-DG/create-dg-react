@@ -28,14 +28,9 @@ const verifyPackageTree = require('./utils/verifyPackageTree');
 if (process.env.SKIP_PREFLIGHT_CHECK !== 'true') {
   verifyPackageTree();
 }
-// TODO: Remove this hack once `globalThis` issue is resolved
-// https://github.com/jsdom/jsdom/issues/2961
-const globalThisWasDefined = !!global.globalThis;
-if (!globalThisWasDefined && !!global.globalThis) {
-  delete global.globalThis;
-}
-// const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
-// verifyTypeScriptSetup();
+
+const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
+verifyTypeScriptSetup();
 // @remove-on-eject-end
 
 const jest = require('jest');
