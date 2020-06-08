@@ -210,7 +210,9 @@ function verifyTypeScriptSetup() {
 
     if (suggested != null) {
       if (parsedCompilerOptions[option] === undefined) {
-        appTsConfig.compilerOptions[option] = suggested;
+        if (firstTimeSetup) {
+          appTsConfig.compilerOptions[option] = suggested;
+        }
         messages.push(
           `${coloredOption} to be ${chalk.bold(
             'suggested'
