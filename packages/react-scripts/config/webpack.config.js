@@ -164,7 +164,7 @@ module.exports = function (webpackEnv) {
                   key === 'NODE_ENV'
                 ) {
                   var value = process.env[key];
-                  if (value && /[;:&$]/g.test(value)) {
+                  if (value && /[;:\\.&$]/g.test(value)) {
                     values +=
                       '$' + key + ': "' + process.env[key] + '" !default;\n';
                   } else {
