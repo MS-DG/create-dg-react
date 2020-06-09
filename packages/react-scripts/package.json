@@ -98,7 +98,7 @@
     "typescript": "^3.9.5"
   },
   "optionalDependencies": {
-    "@dragongate/eslint-plugin": "^1.0.13",
+    "@dragongate/eslint-plugin": "^1.0.14",
     "fsevents": "2.1.3"
   },
   "peerDependencies": {
