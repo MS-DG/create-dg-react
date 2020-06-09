@@ -49,7 +49,7 @@
     "dotenv-expand": "5.1.0",
     "eslint": "^7.2.0",
     "eslint-loader": "4.0.2",
-    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-import": "2.21.1",
     "eslint-plugin-jest": "^23.13.2",
     "eslint-plugin-jsdoc": "^27.0.4",
     "eslint-plugin-jsx-a11y": "6.2.3",
