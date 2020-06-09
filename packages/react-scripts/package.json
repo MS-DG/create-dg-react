@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.9.3",
+  "version": "3.9.4",
   "description": "Configuration and scripts for DG-React App.",
   "repository": {
     "type": "git",
