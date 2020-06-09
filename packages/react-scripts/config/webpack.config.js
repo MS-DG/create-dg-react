@@ -61,6 +61,27 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+const scssValidateCache = {};
+function encodeScssValue(value) {
+  if (scssValidateCache[value]) {
+    return scssValidateCache[value];
+  }
+  const sass = require('sass');
+
+  try {
+    sass.renderSync({ data: `$c : ${value} !default;` });
+    return (scssValidateCache[value] = value);
+    // eslint-disable-next-line no-empty
+  } catch (e) {}
+
+  try {
+    sass.renderSync({ data: `$c : "${value}" !default;` });
+    return (scssValidateCache[value] = `"${value}"`);
+    // eslint-disable-next-line no-empty
+  } catch (e) {}
+
+  return false;
+}
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function (webpackEnv) {
@@ -163,13 +184,12 @@ module.exports = function (webpackEnv) {
                   key === 'PUBLIC_URL' ||
                   key === 'NODE_ENV'
                 ) {
-                  var value = process.env[key];
-                  if (value && /[;:\\.&$]/g.test(value)) {
-                    values +=
-                      '$' + key + ': "' + process.env[key] + '" !default;\n';
+                  const value = process.env[key];
+                  const encodedValue = encodeScssValue(value);
+                  if (!encodedValue) {
+                    console.error('invalidate scss value', key, value);
                   } else {
-                    values +=
-                      '$' + key + ': ' + process.env[key] + ' !default;\n';
+                    values += `$${key} : ${encodedValue} !default;\n`;
                   }
                 }
               }
