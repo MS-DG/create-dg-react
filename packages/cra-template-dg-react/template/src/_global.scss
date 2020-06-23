@@ -1,3 +1,41 @@
 // You can define shareable configuration and mixins or functions in this file.
 // it will be avaliabe All scss files and scss modlues.
 // Don NOT define any class in this file
+
+
+// 基础字体大小
+$base-font-size: $REACT_APP_BASE_FONT_SIZE;
+
+// $design-width: 1600;
+
+/**
+* covert number to `rem`
+* all number with units will skip
+* ```scss
+.test{
+  font-size: rem(24 * 2); // Simple
+  padding: rem(5 10); // Multiple values
+  text-shadow: rem(0 1) #eee, rem(-1) 0 #eee; // Alternate use
+  border-bottom: rem(1 solid black); // Multiple mixed values
+  box-shadow: rem(0 0 2 #ccc, inset 0 0 5 #eee); // Comma-separated values
+  margin: rem(1px); // will be `1px` without modified
+}
+* ```
+*/
+@function rem($values...) {
+  $result: ();
+  $separator: list-separator($values);
+  @each $value in $values {
+    @if type-of($value) == "number" and unitless($value) and $value != 0 {
+      $result: append($result, $value / $base-font-size * 1rem, $separator);
+    } @else if type-of($value) == "list" {
+      $value-separator: list-separator($value);
+      $value: rem($value...);
+      $value: append($value, null, $value-separator);
+      $result: append($result, $value, $separator);
+    } @else {
+      $result: append($result, $value, $separator);
+    }
+  }
+  @return if(length($result) == 1, nth($result, 1), $result);
+}
