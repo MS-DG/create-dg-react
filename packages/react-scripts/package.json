@@ -62,7 +62,7 @@
     "fs-extra": "^9.0.0",
     "html-webpack-plugin": "4.3.0",
     "identity-obj-proxy": "3.0.0",
-    "jest": "26.0.1",
+    "jest": "26.1.0",
     "jest-circus": "26.0.1",
     "jest-junit": "^10.0.0",
     "jest-resolve": "26.0.1",
