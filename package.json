@@ -41,7 +41,7 @@
     "prettier": "2.0.5",
     "strip-ansi": "^6.0.0",
     "svg-term-cli": "^2.1.1",
-    "tempy": "^0.5.0",
+    "tempy": "^0.6.0",
     "wait-for-localhost": "^3.1.0"
   },
   "husky": {
