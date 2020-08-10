@@ -1,0 +1,301 @@
+#  purge and preload cdn.azure.cn
+parameters:
+  dependsOn: []
+  condition: succeeded()
+  NAME: "cdn_preload_purge"
+  SOURCE_PATH: "$(Agent.BuildDirectory)/drop"
+  CDN_DOMAIN: ""
+  CDN_KEYID: ""
+  CDN_KEYVALUE: ""
+  CDN_SUBSCRIPTIONID: ""
+
+jobs:
+  - deployment: ${{ parameters.NAME }} # name of the deployment job, A-Z, a-z, 0-9, and underscore
+    # friendly name to display in the UI
+    # displayName: upload to ${{coalesce(parameters.STORAGE, variables.STORAGE) }}:${{ coalesce(parameters.CONTAINER_NAME,variables.CONTAINER_NAME) }}/${{ parameters.BLOB_PREFIX }}
+    pool: # see pool schema
+      vmImage: "windows-2019"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    cancelTimeoutInMinutes: 5 # how much time to give 'run always even if cancelled tasks' before killing them
+    environment: azure-cdn-preload # target environment name and optionally a resource-name to record the deployment history; format: <environment-name>.<resource-name>
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - ? ${{ if and(parameters.CDN_DOMAIN, parameters.CDN_KEYID, parameters.CDN_KEYVALUE, parameters.CDN_SUBSCRIPTIONID) }}
+              : - powershell: |
+                    function getAllDeployFiles($folderPath, $rootPath)
+                    {   
+                        $list = New-Object System.Collections.ArrayList($null)
+                        $files = [System.IO.Directory]::GetFiles($folderPath)
+                        #$regStr = "^.+\.(html|js|css)$"
+                        #$regStr = "^.+\.(html)$"
+                        #$files = [System.Linq.Enumerable]::Where($files, [Func[string, bool]]{param($fPath); [System.Text.RegularExpressions.Regex]::IsMatch($fPath, $regStr)})
+                        foreach ($file in $files)
+                        {
+                            $relativePath = $file.SubString($rootPath.Length)
+                            $i = $list.Add("https://" + "$env:CDN_DOMAIN" + $relativePath.Replace("\", "/"))
+                        } 
+
+                        $subFolders = [System.IO.Directory]::GetDirectories($folderPath);
+                        if ($subFolders -ne $null)
+                        {
+                            foreach ($subFolder in $subFolders)
+                            {
+                                [array]$subFiles = getAllDeployFiles $subFolder $rootPath
+                                if ($subFiles -ne $null -and $subFiles.Count -gt 0)
+                                {
+                                    $j = $list.AddRange($subFiles)
+                                }
+                            }
+                        }
+
+                        return $list;
+                    }
+
+                    function CalculateAuthorizationHeader($requestUrl, $requestTime, $httpMethod)
+                    {
+                        $requestUri = New-Object System.Uri($requestUrl)
+                        $hashContentBuilder = New-Object System.Text.StringBuilder
+                        $t = $hashContentBuilder.Append($requestUri.AbsolutePath.ToLowerInvariant())
+                        $t = $hashContentBuilder.Append([System.Environment]::NewLine)
+                        
+                        $queryStrings = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query) 
+                        $sortedParameterNames = New-Object System.Collections.Generic.List[string]
+                        [array]$pnames = $queryStrings.AllKeys
+                        $t = $sortedParameterNames.AddRange($pnames)
+                        $t = $sortedParameterNames.Sort();
+                        $result = [System.String]::Join(", ", [System.Linq.Enumerable]::Select($sortedParameterNames, [Func[string, string]]{param($p); return [System.String]::Format("{0}:{1}", $p, $queryStrings[$p])}));
+                        if ($result -ne $null)
+                        {
+                            $t = $hashContentBuilder.Append($result)
+                            $t = $hashContentBuilder.Append([System.Environment]::NewLine)
+                        }
+
+                        $t = $hashContentBuilder.Append($requestTime);
+                        $t = $hashContentBuilder.Append([System.Environment]::NewLine);
+                        $t = $hashContentBuilder.Append($httpMethod.ToUpper());
+                        $hashContent = $hashContentBuilder.ToString();
+
+                        $myhmacsha256 = New-Object System.Security.Cryptography.HMACSHA256($null)
+                        $myhmacsha256.Key = [System.Text.Encoding]::UTF8.GetBytes($env:CDN_KEYVALUE)
+                        $byteArray = [System.Text.Encoding]::UTF8.GetBytes($hashContent);
+                        $hashedValue = $myhmacsha256.ComputeHash($byteArray);
+
+                        $sbinary = "";
+                        for ($i = 0; $i -lt $hashedValue.Length; $i++)
+                        {
+                            $sbinary += $hashedValue[$i].ToString("X2");
+                        }
+
+                        return "AzureCDN "+ $env:CDN_KEYID +":" + $sbinary;
+                    }
+
+                    function GetCDNEndpointId()
+                    {
+                        $requestTime = [System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                        $requestUrl = [System.String]::Format("https://restapi.cdn.azure.cn/subscriptions/{0}/endpoints?apiVersion=1.0", $env:CDN_SUBSCRIPTIONID)
+                        $httpMethod = "GET"
+                        $signature = CalculateAuthorizationHeader $requestUrl $requestTime $httpMethod
+                        $param = @{
+                            Uri     = $requestUrl
+                            Headers = @{ 
+                                        "x-azurecdn-request-date" = $requestTime
+                                        "Authorization" = $signature
+                                        }
+                            Method  = $httpMethod
+                            ContentType = 'application/json' 
+                        }
+
+                        $ret = Invoke-RestMethod @param
+                        
+                        if ($ret -eq $null -or $ret.Length -eq 0) 
+                        {
+                            [System.Console]::WriteLine("not found cdn endpoints")
+                            return $null
+                        }
+
+                        $ep = [System.Linq.Enumerable]::FirstOrDefault($ret, [Func[object, bool]]{param($endpoint); $endpoint.Settings.CustomDomain -eq $env:CDN_DOMAIN})
+                        if ($ep -ne $null)
+                        {
+                            return $ep.EndpointId;
+                        }
+
+                        [System.Console]::WriteLine("not found cdn endpoints")
+                        return $null;
+                    }
+
+                    function PurgesCDNRootFolderRequest($endpointId)
+                    {
+                        $requestUrl = [System.String]::Format("https://restapi.cdn.azure.cn/subscriptions/{0}/endpoints/{1}/purges?apiVersion=1.0", $env:CDN_SUBSCRIPTIONID, $endpointId)
+                        $requestTime = [System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                        $httpMethod = "POST";
+
+                        $signature = CalculateAuthorizationHeader $requestUrl $requestTime $httpMethod
+
+                        $req = @{
+                            Directories = @("https://$env:CDN_DOMAIN/")
+                        }
+
+                        $jsonContent = ConvertTo-Json $req
+                        $param = @{
+                            Uri     = $requestUrl
+                            Headers = @{ 
+                                        "x-azurecdn-request-date" = $requestTime
+                                            "Authorization" = $signature
+                                        }
+                            Method  = $httpMethod
+                            Body = $jsonContent
+                            ContentType = 'application/json' 
+                        }
+
+                        $result = Invoke-RestMethod @param
+                        if ($result.Succeeded -eq $false) {
+                            Write-Error "CDN Purge failed:$result.ErrorInfo.Type, $result.ErrorInfo.Message"
+                            return $false
+                        }
+                        
+                        [System.Console]::WriteLine([String]::Format("Purge:{0}:{1}",$endpointId,$result.AsyncInfo.TaskTrackId))
+                        return $result.AsyncInfo.TaskTrackId
+                    }
+
+                    function CheckPurge($endpointId, $purgeId)
+                    {
+                        $status = $true
+                        $maxTimes = 20
+                        while ($maxTimes -gt 0)
+                        {
+                            $purgeResult = GetPurgesStatusRequest $endpointId $purgeId
+                            if($purgeResult.Succeeded -ne $null -and $purgeResult.Succeeded -eq $false) 
+                            {
+                                Write-Error "Check CDN Purge status failed:$result.ErrorInfo.Type, $result.ErrorInfo.Message"
+                                return $false
+                            }
+
+                            $running = $false
+                            foreach($dirStatus in $purgeResult.Directories)
+                            {
+                                [System.Console]::WriteLine([String]::Format("{0}:{1}",$dirStatus.Url,$dirStatus.Status))
+                                if($dirStatus.Status -eq "Running")
+                                {
+                                    $running = $true
+                                    break
+                                }
+                                
+                                $status = $status -and ($dirStatus.Status -eq "Succeed")
+                            }
+
+                            if ($running -eq $true)
+                            {
+                                Start-Sleep -Seconds 30
+                                $maxTimes -= 1
+                            }
+                            else
+                            {
+                                return $status
+                            }
+                        }
+
+                        [System.Console]::WriteLine("CDN Purge overtime...")
+                        return $false
+                    }
+
+                    function GetPurgesStatusRequest($endpointId, $purgeId)
+                    {
+                        $requestUrl = [System.String]::Format("https://restapi.cdn.azure.cn/subscriptions/{0}/endpoints/{1}/purges/{2}?apiVersion=1.0", $env:CDN_SUBSCRIPTIONID, $endpointId, $purgeId)
+                        $requestTime = [System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                        $httpMethod = "GET";
+
+                        $signature = CalculateAuthorizationHeader $requestUrl $requestTime $httpMethod
+                        $param = @{
+                            Uri     = $requestUrl
+                            Headers = @{ 
+                                        "x-azurecdn-request-date" = $requestTime
+                                            "Authorization" = $signature
+                                        }
+                            Method  = $httpMethod
+                            #ContentType = 'application/json' 
+                        }
+
+                        $result = Invoke-RestMethod @param
+                        return $result
+                    }
+
+                    function SendCDNPreloadRequest($endpointId, $urls)
+                    {
+                        $requestUrl = [System.String]::Format("https://restapi.cdn.azure.cn/subscriptions/{0}/endpoints/{1}/preloads?apiVersion=1.0", $env:CDN_SUBSCRIPTIONID, $endpointId)
+                        $requestTime = [System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                        $httpMethod = "POST";
+
+                        $signature = CalculateAuthorizationHeader $requestUrl $requestTime $httpMethod
+                        $sIndex = 0
+                        $batNum = 20
+                        $ret = $true;
+                        while ($sIndex -lt $urls.Length)
+                        {
+                            $eIndex = $sIndex + $batNum - 1
+                            if ($eIndex -ge $urls.Length)
+                            {
+                                $eIndex = $urls.Length - 1
+                            }
+
+                            $req = @{
+                                Files = $urls[$sIndex..$eIndex]
+                            }
+
+                            $jsonContent = ConvertTo-Json $req
+                            $param = @{
+                                Uri     = $requestUrl
+                                Headers = @{ 
+                                            "x-azurecdn-request-date" = $requestTime
+                                                "Authorization" = $signature
+                                            }
+                                Method  = $httpMethod
+                                Body = $jsonContent
+                                ContentType = 'application/json' 
+                            }
+
+                            $result = Invoke-RestMethod @param
+                            $sIndex = $eIndex + 1
+                            $ret = $ret -and $result.Succeeded
+                        }
+
+                        return $ret
+                    }
+
+                    [System.Reflection.Assembly]::LoadWithPartialName("System.Web")
+                    Try
+                    {
+                        # use tls 1.2
+                        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls -bor [System.Net.SecurityProtocolType]::Ssl3
+                        
+                        $files = getAllDeployFiles $env:DEPLOY_FOLDER $env:DEPLOY_FOLDER
+                        $endpointId = GetCDNEndpointId
+                        if ($endpointId -eq $null)
+                        {
+                          Write-Warning "not found cdn endpoint, preload failed"
+                        }
+                        else
+                        {
+                          [System.Console]::WriteLine("cdn purge for endpoint:" + $endpointId)
+                          $purgeId = PurgesCDNRootFolderRequest $endpointId
+                          $purged = CheckPurge $endpointId $purgeId
+                          [System.Console]::WriteLine("cdn preload sending:" + $purged)
+                          [System.Console]::WriteLine("cdn preload for endpoint:" + $endpointId)
+                          $ret = SendCDNPreloadRequest $endpointId $files
+                          [System.Console]::WriteLine("cdn preload sending:" + $ret)
+                        }
+                    }
+                    Catch [System.Exception]
+                    {
+                        Write-Error $_.Exception
+                    }
+                  displayName: CDN preload
+                  continueOnError: true
+                  env:
+                    CDN_DOMAIN: "${{parameters.CDN_DOMAIN}}"
+                    CDN_KEYID: "${{parameters.CDN_KEYID}}"
+                    CDN_KEYVALUE: "${{parameters.CDN_KEYVALUE}}"
+                    CDN_SUBSCRIPTIONID: "${{parameters.CDN_SUBSCRIPTIONID}}"
+                    DEPLOY_FOLDER: "${{parameters.SOURCE_PATH}}"

@@ -8,6 +8,10 @@ variables:
   AZURE_SUBSCRIPTION: "" # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
   STORAGE: "" # must be lowercase or number
   TEAMS_WEBHOOK: "" # send messages in teams webhook
+  CDN_DOMAIN: "" # CDN domain in cdn.auzre.cn
+  CDN_KEYID: "$(CDNKEYID)"
+  CDN_KEYVALUE: "$(CDNKEYVALUE)"
+  CDN_SUBSCRIPTIONID: "$(CDNSUBSCRIPTIONID)"
 
 trigger:
   batch: true # batch changes if true (the default); start a new build for every push if false
@@ -43,3 +47,12 @@ jobs:
         > $(Build.SourceVersionMessage)
         >
         > created by `$(Build.RequestedFor)`
+
+  - template: ./jobs/cdn-azure-cn.yml
+    parameters:
+      dependsOn: [web_deploy]
+      NAME: "cn_cdn_preload"
+      CDN_DOMAIN: "${{variables.CDN_DOMAIN}}"
+      CDN_KEYID: "${{variables.CDN_KEYID}}"
+      CDN_KEYVALUE: "${{variables.CDN_KEYVALUE}}"
+      CDN_SUBSCRIPTIONID: "${{variables.CDN_SUBSCRIPTIONID}}"
