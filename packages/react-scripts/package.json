@@ -63,7 +63,7 @@
     "html-webpack-plugin": "4.3.0",
     "identity-obj-proxy": "3.0.0",
     "jest": "26.2.2",
-    "jest-circus": "26.2.2",
+    "jest-circus": "26.3.0",
     "jest-junit": "^11.0.1",
     "jest-resolve": "26.2.2",
     "jest-watch-typeahead": "0.6.0",
