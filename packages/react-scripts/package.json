@@ -30,7 +30,7 @@
   },
   "types": "./lib/react-app.d.ts",
   "dependencies": {
-    "@babel/core": "7.11.1",
+    "@babel/core": "7.11.4",
     "@dragongate/eslint-config": "^5.0.11",
     "@dragongate/react-dev-utils": "^10.0.15",
     "@dragongate/stylelint-config": "^0.1.4",
