@@ -81,7 +81,6 @@ module.exports = {
       // If adding a typescript-eslint version of an existing ESLint rule,
       // make sure to disable the ESLint rule here.
       rules: {
-        'import/no-unassigned-import': 'off',
         // TypeScript's `noFallthroughCasesInSwitch` option is more robust (#6906)
         'default-case': 'off',
         // 'tsc' already handles this (https://github.com/typescript-eslint/typescript-eslint/issues/291)
@@ -93,7 +92,6 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'warn',
         'no-array-constructor': 'off',
         '@typescript-eslint/no-array-constructor': 'warn',
-        '@typescript-eslint/no-namespace': 'error',
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': [
           'warn',
@@ -148,7 +146,6 @@ module.exports = {
             ],
           },
         ],
-        '@typescript-eslint/interface-name-prefix': ['warn', 'never'],
         '@typescript-eslint/ban-types': [
           'error',
           {
@@ -164,7 +161,6 @@ module.exports = {
             },
           },
         ],
-        '@typescript-eslint/class-name-casing': 'error',
         '@typescript-eslint/triple-slash-reference': [
           'error',
           {
@@ -353,13 +349,9 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/tree/master/docs/rules
     'import/first': 'error',
     'import/no-amd': 'error',
+    'import/no-anonymous-default-export': 'warn',
     'import/no-webpack-loader-syntax': 'error',
-    'import/no-self-import': 'error',
-    'import/no-useless-path-segments': 'warn',
-    'import/no-deprecated': 'error',
-    'import/no-duplicates': 'warn',
-    'import/no-unassigned-import': 'warn',
-    // 'import/no-extraneous-dependencies': 'error',
+
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
     'react/forbid-foreign-prop-types': ['warn', { allowInPropTypes: true }],
     'react/jsx-no-comment-textnodes': 'warn',
@@ -388,7 +380,6 @@ module.exports = {
     'react/style-prop-object': 'warn',
 
     // https://github.com/evcohen/eslint-plugin-jsx-a11y/tree/master/docs/rules
-    'jsx-a11y/accessible-emoji': 'warn',
     'jsx-a11y/alt-text': 'warn',
     'jsx-a11y/anchor-has-content': 'warn',
     'jsx-a11y/anchor-is-valid': [
@@ -476,128 +467,5 @@ module.exports = {
         exceptions: ['*'],
       },
     ],
-    /**
-     * teams config
-     */
-    // eqeqeq: ["error", "smart"],
-    // "max-classes-per-file": "error",
-    // "max-lines-per-function": [
-    //   "error",
-    //     {
-    //       max: 60,
-    //       skipComments: true,
-    //       skipBlankLines: true
-    //     }
-    // ],
-    // "max-depth": ["error", 4],
-    // "max-len": [
-    //   "error",
-    //   {
-    //     code: 120,
-    //     ignoreComments: true,
-    //     ignoreStrings: true,
-    //     ignoreTemplateLiterals: true,
-    //     ignoreRegExpLiterals: true
-    //   }
-    // ],
-    // "new-parens": "error",
-    // "max-lines": [
-    //   "error",
-    //   {
-    //     max: 1000,
-    //     skipComments: true,
-    //     skipBlankLines: true
-    //   }
-    // ],
-    // "no-caller": "error",
-    // "no-cond-assign": "error",
-    // "no-duplicate-case": "error",
-    // "no-unused-expressions": [
-    //   "error",
-    //   {
-    //     allowShortCircuit: true,
-    //     allowTernary: true
-    //   }
-    // ],
-    // "react-hooks/rules-of-hooks": "error",
-    // "react-hooks/exhaustive-deps": "error",
-    // "use-isnan": "error",
-    // "no-restricted-globals": [
-    //   "error",
-    //   {
-    //     name: "global",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "history",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "location",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "navigator",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "setTimeout",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "window",
-    //     message:
-    //       "Do not use global window APIs. Use the proper wrappers (e.g. 'host') instead."
-    //   },
-    //   {
-    //     name: "fdescribe",
-    //     message: "Focused tests should not be checked in."
-    //   },
-    //   {
-    //     name: "fit",
-    //     message: "Focused tests should not be checked in."
-    //   },
-    //   {
-    //     name: "html",
-    //     message: "Any html (DOM) modifying functions are not allowed."
-    //   }
-    // ],
-    // "no-restricted-properties": [
-    //   "error",
-    //   {
-    //     object: "test",
-    //     property: "only",
-    //     message: "Focused tests should not be checked in."
-    //   },
-    //   {
-    //     object: "describe",
-    //     property: "only",
-    //     message: "Focused tests should not be checked in."
-    //   },
-    //   {
-    //     object: "it",
-    //     property: "only",
-    //     message: "Focused tests should not be checked in."
-    //   }
-    // ],
-    // "no-sparse-arrays": "error",
-    // "no-template-curly-in-string": "error",
-    // "no-throw-literal": "error",
-    // "no-eval": "error",
-    // "no-implied-eval": "error",
-    // "no-invalid-regexp": "error",
-    // "no-labels": "error",
-    // "no-multiple-empty-lines": "error",
-    // "no-new-wrappers": "error",
-    // "no-redeclare": "error",
-    // "no-restricted-syntax": [
-    //   "error",
-    //   "MemberExpression[object.name='document'][property.name='write']"
-    // ],
   },
 };

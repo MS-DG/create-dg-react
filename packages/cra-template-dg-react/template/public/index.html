@@ -27,14 +27,14 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script>
-      window.FabricConfig = { mergeStyles: { defaultPrefix: 'DG' } };
-      if (navigator.userAgent === 'ReactSnap') {
+      window.FabricConfig = { mergeStyles: { defaultPrefix: "DG" } };
+      if (navigator.userAgent === "ReactSnap") {
         // react snap 标记预渲染Style 并再重新render后清除
         // TODO: reuse the StyleSheets
         window.snapSaveState = function () {
-          document.head.querySelectorAll('style[data-merge-styles]').forEach(function (s) {
-            s.setAttribute('data-prerender', true);
-            s.removeAttribute('data-merge-styles');
+          document.head.querySelectorAll("style[data-merge-styles]").forEach(function (s) {
+            s.setAttribute("data-prerender", true);
+            s.removeAttribute("data-merge-styles");
           });
         };
       }
