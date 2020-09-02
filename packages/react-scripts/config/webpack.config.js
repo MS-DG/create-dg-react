@@ -15,26 +15,26 @@ const resolve = require('resolve');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const InlineChunkHtmlPlugin = require('@dragongate/react-dev-utils/InlineChunkHtmlPlugin');
+const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const InterpolateHtmlPlugin = require('@dragongate/react-dev-utils/InterpolateHtmlPlugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const WatchMissingNodeModulesPlugin = require('@dragongate/react-dev-utils/WatchMissingNodeModulesPlugin');
-const ModuleScopePlugin = require('@dragongate/react-dev-utils/ModuleScopePlugin');
-const getCSSModuleLocalIdent = require('@dragongate/react-dev-utils/getCSSModuleLocalIdent');
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
-const ModuleNotFoundPlugin = require('@dragongate/react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin = require('@dragongate/react-dev-utils/ForkTsCheckerWebpackPlugin');
-const typescriptFormatter = require('@dragongate/react-dev-utils/typescriptFormatter');
+const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 // @remove-on-eject-begin
 // const eslint = require('eslint');
-const getCacheIdentifier = require('@dragongate/react-dev-utils/getCacheIdentifier');
+const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
 const stylelintConfig = require('./stylelint');
@@ -232,7 +232,7 @@ module.exports = function (webpackEnv) {
       // require.resolve('webpack-dev-server/client') + '?/',
       // require.resolve('webpack/hot/dev-server'),
       isEnvDevelopment &&
-        require.resolve('@dragongate/react-dev-utils/webpackHotDevClient'),
+        require.resolve('../patch-inject/webpackHotDevClient'),
       // Finally, this is your app's code:
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
@@ -417,7 +417,7 @@ module.exports = function (webpackEnv) {
               options: {
                 cache: true,
                 formatter: require.resolve(
-                  '@dragongate/react-dev-utils/eslintFormatter'
+                  'react-dev-utils/eslintFormatter'
                 ),
                 cwd: path.dirname(paths.appSrc),
                 eslintPath: require.resolve('eslint'),
@@ -509,7 +509,7 @@ module.exports = function (webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
-                    '@dragongate/react-dev-utils',
+                    'react-dev-utils',
                     '@dragongate/react-scripts',
                   ]
                 ),
@@ -563,7 +563,7 @@ module.exports = function (webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
-                    '@dragongate/react-dev-utils',
+                    'react-dev-utils',
                     '@dragongate/react-scripts',
                   ]
                 ),
@@ -785,31 +785,36 @@ module.exports = function (webpackEnv) {
         }),
       // TypeScript type checking
       useTypeScript &&
-        new ForkTsCheckerWebpackPlugin({
-          typescript: resolve.sync('typescript', {
-            basedir: paths.appNodeModules,
-          }),
-          async: isEnvDevelopment,
-          useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
-          resolveModuleNameModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          resolveTypeReferenceDirectiveModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          tsconfig: paths.appTsConfig,
-          reportFiles: [
-            '**',
-            '!**/__tests__/**',
-            '!**/?(*.)(spec|test).*',
-            '!**/src/setupProxy.*',
-            '!**/src/setupTests.*',
-          ],
-          silent: true,
-          // The formatter is invoked directly in WebpackDevServerUtils during development
-          formatter: isEnvProduction ? typescriptFormatter : undefined,
+      new ForkTsCheckerWebpackPlugin({
+        typescript: resolve.sync('typescript', {
+          basedir: paths.appNodeModules,
         }),
+        async: isEnvDevelopment,
+        checkSyntacticErrors: true,
+        resolveModuleNameModule: process.versions.pnp
+          ? `${__dirname}/pnpTs.js`
+          : undefined,
+        resolveTypeReferenceDirectiveModule: process.versions.pnp
+          ? `${__dirname}/pnpTs.js`
+          : undefined,
+        tsconfig: paths.appTsConfig,
+        reportFiles: [
+          // This one is specifically to match during CI tests,
+          // as micromatch doesn't match
+          // '../cra-template-typescript/template/src/App.tsx'
+          // otherwise.
+          '../**/src/**/*.{ts,tsx}',
+          '!../**/src/**/?(*.)(spec|test).*',
+          '**/src/**/*.{ts,tsx}',
+          '!**/src/**/__tests__/**',
+          '!**/src/**/?(*.)(spec|test).*',
+          '!**/src/setupProxy.*',
+          '!**/src/setupTests.*',
+        ],
+        silent: true,
+        // The formatter is invoked directly in WebpackDevServerUtils during development
+        formatter: isEnvProduction ? typescriptFormatter : undefined,
+      }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

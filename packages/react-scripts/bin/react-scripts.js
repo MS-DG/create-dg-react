@@ -15,7 +15,7 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-const spawn = require('@dragongate/react-dev-utils/crossSpawn');
+const spawn = require('react-dev-utils/crossSpawn');
 const args = process.argv.slice(2);
 const scripts = ['build', 'eject', 'start', 'test', 'format'];
 const scriptIndex = args.findIndex(x => scripts.includes(x));

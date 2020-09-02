@@ -8,10 +8,10 @@
 // @remove-on-eject-end
 'use strict';
 
-const errorOverlayMiddleware = require('@dragongate/react-dev-utils/errorOverlayMiddleware');
-const evalSourceMapMiddleware = require('@dragongate/react-dev-utils/evalSourceMapMiddleware');
-const noopServiceWorkerMiddleware = require('@dragongate/react-dev-utils/noopServiceWorkerMiddleware');
-const ignoredFiles = require('@dragongate/react-dev-utils/ignoredFiles');
+const errorOverlayMiddleware = require('react-dev-utils/errorOverlayMiddleware');
+const evalSourceMapMiddleware = require('react-dev-utils/evalSourceMapMiddleware');
+const noopServiceWorkerMiddleware = require('react-dev-utils/noopServiceWorkerMiddleware');
+const ignoredFiles = require('react-dev-utils/ignoredFiles');
 const paths = require('./paths');
 const fs = require('fs');
 
@@ -112,7 +112,7 @@ module.exports = function(proxy, allowedHost) {
       // We do this in development to avoid hitting the production cache if
       // it used the same host and port.
       // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
-      app.use(noopServiceWorkerMiddleware());
+      app.use(noopServiceWorkerMiddleware('/'));
     },
   };
 };

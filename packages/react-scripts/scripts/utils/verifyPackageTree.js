@@ -8,7 +8,7 @@
 
 'use strict';
 
-const chalk = require('@dragongate/react-dev-utils/chalk');
+const chalk = require('react-dev-utils/chalk');
 const fs = require('fs');
 const semver = require('semver');
 const path = require('path');

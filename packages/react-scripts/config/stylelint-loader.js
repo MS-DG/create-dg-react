@@ -13,7 +13,7 @@ const defaultOptions = {
 };
 
 /**
- * align with `@dragongate/react-dev-utils/eslintFormatter`
+ * align with `react-dev-utils/eslintFormatter`
  * @param {stylelint.LintResult[]} results
  */
 function formatter(results) {
@@ -88,7 +88,7 @@ function linter(content, options, context, callback) {
     files: context.resourcePath.replace(/\\/g, '/'),
     // formatter: 'string',
     formatter,
-    // require('@dragongate/react-dev-utils/eslintFormatter'),
+    // require('react-dev-utils/eslintFormatter'),
   });
   stylelint
     .lint(lintOptions)

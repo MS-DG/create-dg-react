@@ -35,7 +35,6 @@
   "dependencies": {
     "@babel/core": "7.11.4",
     "@dragongate/eslint-config": "^5.0.11",
-    "@dragongate/react-dev-utils": "^10.0.17",
     "@dragongate/stylelint-config": "^0.1.4",
     "@svgr/webpack": "5.4.0",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
@@ -79,7 +78,8 @@
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.2",
     "prettier": "^2.0.2",
-    "react-app-polyfill": "^1.0.4",
+    "react-app-polyfill": "^1.0.6",
+    "react-dev-utils": "^10.2.1",
     "resolve": "1.17.0",
     "resolve-url-loader": "3.1.1",
     "sass": "^1.26.10",

@@ -13,7 +13,7 @@
 process.on('unhandledRejection', err => {
     throw err;
 });
-const chalk = require('@dragongate/react-dev-utils/chalk');
+const chalk = require('react-dev-utils/chalk');
 const execSync = require('child_process').execSync;
 const createGitHooks = require('./utils/createGitHooks');
 

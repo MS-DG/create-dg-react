@@ -16,12 +16,12 @@ process.on('unhandledRejection', err => {
 
 const fs = require('fs-extra');
 const path = require('path');
-const chalk = require('@dragongate/react-dev-utils/chalk');
+const chalk = require('react-dev-utils/chalk');
 const execSync = require('child_process').execSync;
-const spawn = require('@dragongate/react-dev-utils/crossSpawn');
+const spawn = require('react-dev-utils/crossSpawn');
 const {
   defaultBrowsers,
-} = require('@dragongate/react-dev-utils/browsersHelper');
+} = require('react-dev-utils/browsersHelper');
 const os = require('os');
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
 const createGitHooks = require('./utils/createGitHooks');
