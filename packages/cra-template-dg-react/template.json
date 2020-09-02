@@ -2,12 +2,17 @@
   "$schema": "https://schemastore.azurewebsites.net/schemas/json/package.json",
   "dependencies": {
     "@testing-library/react": "latest",
-    "@testing-library/dom": "latest",
     "@testing-library/jest-dom": "latest",
     "@testing-library/user-event": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/jest": "latest",
     "rxjs": "latest",
     "i18next": "latest",
     "react-i18next": "latest"
+  },
+  "devDependencies": {
+    "typescript": "@latest"
   },
   "scripts": {
     "format": "react-scripts format",
@@ -17,7 +22,10 @@
   },
   "prettier": "@dragongate/eslint-config/prettier",
   "eslintConfig": {
-    "extends": ["@dragongate/eslint-config", "plugin:@dragongate/strict"]
+    "extends": [
+      "@dragongate/eslint-config",
+      "plugin:@dragongate/strict"
+    ]
   },
   "stylelint": {
     "extends": "@dragongate/stylelint-config"
