@@ -28,6 +28,9 @@
     "dg": "./bin/react-scripts.js",
     "react-scripts": "./bin/react-scripts.js"
   },
+  "scripts": {
+    "postinstall": "node ./scripts/init-githook.js"
+  },
   "types": "./lib/react-app.d.ts",
   "dependencies": {
     "@babel/core": "7.11.4",
