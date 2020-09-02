@@ -176,7 +176,7 @@ module.exports = function (webpackEnv) {
           options: {
             sourceMap: true,
             // sass loader
-            prependData: function (loaderContext) {
+            additionalData: function (content,loaderContext) {
               var values = '';
               for (const key in process.env) {
                 if (
@@ -200,7 +200,7 @@ module.exports = function (webpackEnv) {
                   .replace(/\\/g, '/');
                 values += '@import "' + relativeGlobal + '";';
               }
-              return values;
+              return values + content;
             },
           },
         }
