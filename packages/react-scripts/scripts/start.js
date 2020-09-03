@@ -41,7 +41,7 @@ const {
   createCompiler,
   prepareProxy,
   prepareUrls,
-} = require('../patch-inject/WebpackDevServerUtils');
+} = require('../utils/WebpackDevServerUtils');
 const openBrowser = require('react-dev-utils/openBrowser');
 const paths = require('../config/paths');
 const configFactory = require('../config/webpack.config');
