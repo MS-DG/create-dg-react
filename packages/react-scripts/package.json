@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.10.0",
+  "version": "3.10.1",
   "description": "Configuration and scripts for DG-React App.",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
   "types": "./lib/react-app.d.ts",
   "dependencies": {
     "@babel/core": "7.11.4",
-    "@dragongate/eslint-config": "^5.0.11",
+    "@dragongate/eslint-config": "^5.0.12",
     "@dragongate/stylelint-config": "^0.1.4",
     "@svgr/webpack": "5.4.0",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
@@ -96,11 +96,11 @@
     "workbox-webpack-plugin": "5.1.3"
   },
   "devDependencies": {
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "typescript": "^4.0.2",
-    "@types/react":"^16.9.49",
-    "@types/react-dom":"^16.9.8"
+    "typescript": "^4.0.2"
   },
   "optionalDependencies": {
     "@dragongate/eslint-plugin": "^1.0.14",
