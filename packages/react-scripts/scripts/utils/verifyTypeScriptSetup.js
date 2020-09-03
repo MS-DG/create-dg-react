@@ -17,6 +17,7 @@ const os = require('os');
 const prettier = require('prettier');
 const immer = require('react-dev-utils/immer').produce;
 const globby = require('react-dev-utils/globby').sync;
+
 function writeJson(fileName, object) {
   fs.writeFileSync(
     fileName,
@@ -94,8 +95,8 @@ function verifyTypeScriptSetup() {
     console.error(
       chalk.bold(
         'If you are not trying to use TypeScript, please remove the ' +
-          chalk.cyan('tsconfig.json') +
-          ' file from your package root (and any TypeScript files).'
+        chalk.cyan('tsconfig.json') +
+        ' file from your package root (and any TypeScript files).'
       )
     );
     console.error();
@@ -142,7 +143,7 @@ function verifyTypeScriptSetup() {
   };
 
   const formatDiagnosticHost = {
-    getCanonicalFileName: (fileName) => fileName,
+    getCanonicalFileName: fileName => fileName,
     getCurrentDirectory: ts.sys.getCurrentDirectory,
     getNewLine: () => os.EOL,
   };
@@ -167,7 +168,7 @@ function verifyTypeScriptSetup() {
     // Calling this function also mutates the tsconfig above,
     // adding in "include" and "exclude", but the compilerOptions remain untouched
     let result;
-    parsedTsConfig = immer(readTsConfig, (config) => {
+    parsedTsConfig = immer(readTsConfig, config => {
       result = ts.parseJsonConfigFileContent(
         config,
         ts.sys,
@@ -210,9 +211,7 @@ function verifyTypeScriptSetup() {
 
     if (suggested != null) {
       if (parsedCompilerOptions[option] === undefined) {
-        if (firstTimeSetup) {
-          appTsConfig.compilerOptions[option] = suggested;
-        }
+        appTsConfig.compilerOptions[option] = suggested;
         messages.push(
           `${coloredOption} to be ${chalk.bold(
             'suggested'
@@ -225,7 +224,7 @@ function verifyTypeScriptSetup() {
         `${coloredOption} ${chalk.bold(
           valueToCheck == null ? 'must not' : 'must'
         )} be ${valueToCheck == null ? 'set' : chalk.cyan.bold(value)}` +
-          (reason != null ? ` (${reason})` : '')
+        (reason != null ? ` (${reason})` : '')
       );
     }
   }
@@ -256,7 +255,7 @@ function verifyTypeScriptSetup() {
           'file:'
         )
       );
-      messages.forEach((message) => {
+      messages.forEach(message => {
         console.warn('  - ' + message);
       });
       console.warn();
