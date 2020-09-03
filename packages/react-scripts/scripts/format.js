@@ -31,14 +31,13 @@ const defaultGlob = {
 };
 const argv = process.argv.slice(2);
 
+const isCIMode = (process.env.CI &&
+  (typeof process.env.CI !== 'string' ||
+    process.env.CI.toLowerCase() !== 'false'));
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
-const isStrict =
-  argv.indexOf('--strict') !== -1 ||
-  (process.env.CI &&
-    (typeof process.env.CI !== 'string' ||
-      process.env.CI.toLowerCase() !== 'false'));
+const isStrict = argv.indexOf('--strict') !== -1 || isCIMode;
 
 // 是否查询staged
 // format # 环境变量 GIT_AUTHOR_DATE 存在
@@ -75,7 +74,7 @@ let rulesMeta;
  * @param {eslint.LintResult[]} results The results to print.
  */
 function printResults(engine, results) {
-  const formatter = engine.getFormatter(); //visualstudio
+  const formatter = engine.getFormatter(isCIMode ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
   //relative path
   results.forEach(
     (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
@@ -214,7 +213,7 @@ function lintCheckSingleFile(file, content) {
       .lint({
         code: content,
         fix: false,
-        formatter: 'string',
+        formatter: isCIMode ? 'string' : 'unix',
         codeFilename: file,
         config: stylelintConfig,
         ignorePath: ignoreFile,
@@ -288,7 +287,7 @@ function runStylelint(p, fix) {
         ? p.map((s) => s.replace(/\\/g, '/'))
         : p.replace(/\\/g, '/'),
       fix: !!fix,
-      formatter: 'string',
+      formatter: isCIMode ? 'string' : 'unix',
       config: stylelintConfig,
       ignorePath: ignoreFile,
       cache: true,
