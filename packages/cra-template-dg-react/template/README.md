@@ -59,7 +59,7 @@ Warnings also need to be fixed befor git-push.
 
 All config rules is in shared npm packages, and **should not** be modified in local.
 
-It's all to update `"@dragongate/react-scripts"` and `@dragongate/eslint-plugin`.
+It's all to update `"@dragongate/react-scripts"`.
 
 ### prettier
 
