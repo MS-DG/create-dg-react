@@ -29,7 +29,7 @@
     "react-scripts": "./bin/react-scripts.js"
   },
   "scripts": {
-    "postinstall": "node ./scripts/init-githook.js"
+    "install": "node ./scripts/init-githook.js"
   },
   "types": "./lib/react-app.d.ts",
   "dependencies": {
