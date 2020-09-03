@@ -27,9 +27,9 @@ function isInGitRepository() {
 }
 
 
-module.exports = function () {
-    if (isInGitRepository()) {
-        createGitHooks();
-        console.log(chalk.green('git hooks are installed'));
-    }
-};
+// module.exports = function () {
+if (isInGitRepository()) {
+    createGitHooks();
+    console.log(chalk.green('git hooks are installed'));
+}
+// };
