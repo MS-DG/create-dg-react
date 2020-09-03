@@ -1,8 +1,8 @@
-# cra-template-typescript
+# cra-template-dg-react
 
-This is the official TypeScript template for [Create React App](https://github.com/facebook/create-react-app).
+This is the official TypeScript template for DG
 
-To use this template, add `--template typescript` when creating a new app.
+To use this template, add `--template dg-react` when creating a new app.
 
 For example:
 
