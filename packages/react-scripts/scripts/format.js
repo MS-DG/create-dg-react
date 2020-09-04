@@ -161,7 +161,7 @@ function getFilesGlob(p, type) {
  */
 function prettierCli(type, f) {
   const result = spawn.sync(
-    'node',
+    process.execPath,
     [
       require.resolve('prettier/bin-prettier'),
       `--${type || 'check'}`,
