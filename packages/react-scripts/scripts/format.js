@@ -31,13 +31,13 @@ const defaultGlob = {
 };
 const argv = process.argv.slice(2);
 
-const isCIMode = (process.env.CI &&
+const isCI = (process.env.CI &&
   (typeof process.env.CI !== 'string' ||
     process.env.CI.toLowerCase() !== 'false'));
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
-const isStrict = argv.indexOf('--strict') !== -1 || isCIMode;
+const isStrict = argv.indexOf('--strict') !== -1 || isCI;
 
 // 是否查询staged
 // format # 环境变量 GIT_AUTHOR_DATE 存在
@@ -65,6 +65,7 @@ const eslintCli = new eslint.CLIEngine({
   baseConfig: eslintConfig,
   ignorePath: ignoreFile,
   cache: true,
+  cwd: root,
 });
 let rulesMeta;
 
@@ -74,7 +75,7 @@ let rulesMeta;
  * @param {eslint.LintResult[]} results The results to print.
  */
 function printResults(engine, results) {
-  const formatter = engine.getFormatter(isCIMode ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
+  const formatter = engine.getFormatter(isCI ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
   //relative path
   results.forEach(
     (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
@@ -213,7 +214,7 @@ function lintCheckSingleFile(file, content) {
       .lint({
         code: content,
         fix: false,
-        formatter: isCIMode ? 'string' : 'unix',
+        formatter: isCI ? 'string' : 'unix',
         codeFilename: file,
         config: stylelintConfig,
         ignorePath: ignoreFile,
@@ -287,7 +288,7 @@ function runStylelint(p, fix) {
         ? p.map((s) => s.replace(/\\/g, '/'))
         : p.replace(/\\/g, '/'),
       fix: !!fix,
-      formatter: isCIMode ? 'string' : 'unix',
+      formatter: isCI ? 'string' : 'unix',
       config: stylelintConfig,
       ignorePath: ignoreFile,
       cache: true,
@@ -337,7 +338,7 @@ function run() {
       errorAndTry('Staged files format check fail!');
       process.exit(1);
     });
-  } else if (isFix || (!isCheck && process.env.CI !== 'false')) {
+  } else if (isFix || (!isCheck && !isCI)) {
     Promise.resolve(prettierCli('write', getFilesGlob(inputFiles, 'prettier')))
       .then((result) => eslintFix(getFilesGlob(inputFiles, 'eslint')) && result)
       .then((result) =>
