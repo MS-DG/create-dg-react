@@ -43,6 +43,8 @@ const printHostingInstructions = require('react-dev-utils/printHostingInstructio
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
+const logger = require('../scripts/utils/logger');
+
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
@@ -85,15 +87,15 @@ checkBrowsers(paths.appPath, isInteractive)
       if (warnings.length) {
         console.log(chalk.yellow('Compiled with warnings.\n'));
         console.log(warnings.join('\n\n'));
-        console.log(
+        logger.warn(
           '\nSearch for the ' +
-            chalk.underline(chalk.yellow('keywords')) +
-            ' to learn more about each warning.'
+          chalk.underline(chalk.yellow('keywords')) +
+          ' to learn more about each warning.'
         );
         console.log(
           'To ignore, add ' +
-            chalk.cyan('// eslint-disable-next-line {rule-id}') +
-            ' to the line before.\n'
+          chalk.cyan('// eslint-disable-next-line {rule-id}') +
+          ' to the line before.\n'
         );
       } else {
         console.log(chalk.green('Compiled successfully.\n'));
@@ -124,14 +126,14 @@ checkBrowsers(paths.appPath, isInteractive)
     err => {
       const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
       if (tscCompileOnError) {
-        console.log(
+        logger.error(
           chalk.yellow(
             'Compiled with the following type errors (you may want to check these before deploying your app):\n'
           )
         );
         printBuildError(err);
       } else {
-        console.log(chalk.red('Failed to compile.\n'));
+        logger.error(chalk.red('Failed to compile.\n'));
         printBuildError(err);
         process.exit(1);
       }
@@ -139,7 +141,7 @@ checkBrowsers(paths.appPath, isInteractive)
   )
   .catch(err => {
     if (err && err.message) {
-      console.log(err.message);
+      logger.error(err.message);
     }
     process.exit(1);
   });
@@ -201,10 +203,10 @@ function build(previousFileSizes) {
           process.env.CI.toLowerCase() !== 'false') &&
         messages.warnings.length
       ) {
-        console.log(
+        console.warn(
           chalk.yellow(
             '\nTreating warnings as errors because process.env.CI = true.\n' +
-              'Most CI servers set it automatically.\n'
+            'Most CI servers set it automatically.\n'
           )
         );
         return reject(new Error(messages.warnings.join('\n\n')));

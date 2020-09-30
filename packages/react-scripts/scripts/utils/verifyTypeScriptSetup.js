@@ -17,6 +17,7 @@ const os = require('os');
 const prettier = require('prettier');
 const immer = require('react-dev-utils/immer').produce;
 const globby = require('react-dev-utils/globby').sync;
+const logger = require('./logger');
 
 function writeJson(fileName, object) {
   fs.writeFileSync(
@@ -185,7 +186,7 @@ function verifyTypeScriptSetup() {
     parsedCompilerOptions = result.options;
   } catch (e) {
     if (e && e.name === 'SyntaxError') {
-      console.error(
+      logger.error(
         chalk.red.bold(
           'Could not parse',
           chalk.cyan('tsconfig.json') + '.',
@@ -194,7 +195,7 @@ function verifyTypeScriptSetup() {
       );
     }
 
-    console.log(e && e.message ? `${e.message}` : '');
+    logger.error(e && e.message ? `${e.message}` : '');
     process.exit(1);
   }
 

@@ -6,6 +6,7 @@ const stylelint = require('stylelint');
 const chalk = require('chalk');
 const stripAnsi = require('strip-ansi');
 const table = require('text-table');
+const logger = require("../scripts/utils/logger");
 
 const defaultOptions = {
   displayOutput: true,
@@ -124,7 +125,7 @@ module.exports = function (content) {
   try {
     return linter(content, options, this, callback);
   } catch (error) {
-    console.error('[stylelint-loader] error = ', error.stack);
+    logger.error('[stylelint-loader] error = ', error.stack);
     return callback(error);
   }
 };

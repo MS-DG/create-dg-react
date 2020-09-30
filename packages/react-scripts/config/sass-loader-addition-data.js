@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
+const logger = require('../scripts/utils/logger');
+
 
 const GlobalScss = path.join(paths.appSrc, '_global.scss');
 const hasGlobalScss = fs.existsSync(GlobalScss);
@@ -39,7 +41,7 @@ module.exports = function (content, loaderContext) {
             const value = process.env[key];
             const encodedValue = encodeScssValue(value);
             if (!encodedValue) {
-                console.error('invalidate scss value', key, value);
+                logger.error('invalidate scss value', key, value);
             } else {
                 values += `$${key} : ${encodedValue} !default;\n`;
             }

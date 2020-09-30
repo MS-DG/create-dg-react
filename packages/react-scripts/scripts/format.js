@@ -22,6 +22,8 @@ const stylelintConfig = require('../config/stylelint');
 const eslintConfig = require('../config/eslint');
 const paths = require('../config/paths');
 
+const logger = require('./utils/logger');
+
 const root = path.dirname(paths.appSrc);
 
 const defaultGlob = {
@@ -98,7 +100,7 @@ function printResults(engine, results) {
 }
 
 function errorAndTry(message) {
-  console.error(`
+  logger.error(`
  ${chalk.yellow(message)}
  Try ${chalk.bold.cyan('npm run format')} to auto-fix them.
 `);
@@ -186,7 +188,7 @@ function prettierCheckSingleFile(file, content) {
         const options = prettier.resolveConfig.sync(file, { useCache: true });
         options.filepath = file;
         if (!prettier.check(content, options)) {
-          console.error(
+          logger.error(
             `${chalk.red('[×]prettier')}:`,
             chalk.yellow.bold(file)
           );
@@ -225,7 +227,7 @@ function lintCheckSingleFile(file, content) {
           return true;
         }
         // clearLine();
-        console.error(linted.output.trimRight());
+        logger.error(linted.output.trimRight());
         if (linted.errored) {
           return Promise.reject(false);
         } else if (isStrict) {
@@ -353,7 +355,7 @@ function run() {
         if (err) {
           console.debug(err);
         }
-        console.error(chalk.yellow(`\nSome files can't be auto fixed!\n`));
+        logger.error(chalk.yellow(`\nSome files can't be auto fixed!\n`));
         process.exit(1);
       });
   } else {
