@@ -37,7 +37,7 @@
     "lerna-changelog": "~1.0.1",
     "lint-staged": "^10.2.7",
     "meow": "^7.0.1",
-    "multimatch": "^4.0.0",
+    "multimatch": "^5.0.0",
     "prettier": "2.1.2",
     "strip-ansi": "^6.0.0",
     "svg-term-cli": "^2.1.1",
