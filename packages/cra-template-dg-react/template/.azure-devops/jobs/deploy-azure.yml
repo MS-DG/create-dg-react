@@ -10,7 +10,7 @@ parameters:
   CONTAINER_NAME: $web # the container name default is $web
   SOURCE_PATH: "$(Agent.BuildDirectory)/drop"
   TEAMS_WEBHOOK: ""
-  TEAMS_MESSAGE: ""
+  MESSAGE: ""
 
 jobs:
   - deployment: ${{ parameters.NAME }} # name of the deployment job, A-Z, a-z, 0-9, and underscore
@@ -35,9 +35,21 @@ jobs:
                 blobPrefix: ${{ parameters.BLOB_PREFIX }}
                 sourcePath: "${{ parameters.SOURCE_PATH }}"
                 destination: AzureBlob
-            - ${{ if and(parameters.TEAMS_WEBHOOK, parameters.TEAMS_MESSAGE) }}:
+            - ${{ if and(parameters.TEAMS_WEBHOOK, parameters.MESSAGE) }}:
                 - powershell: Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body "$env:MESSAGE_BODY" -Uri ${{parameters.TEAMS_WEBHOOK}}
                   displayName: post messsage to Teams
                   continueOnError: true
                   env:
-                    MESSAGE_BODY: '{"text":"${{parameters.TEAMS_MESSAGE}}"}'
+                    MESSAGE_BODY: '{"text":"${{parameters.MESSAGE}}"}'
+
+            # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20request%20threads/create?view=azure-devops-rest-6.0
+            - powershell: |
+                Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body "$env:MESSAGE" -Uri "$env:API" -Headers @{
+                  Authorization="Bearer $(System.AccessToken)"
+                }
+              displayName: Comment PR
+              continueOnError: true
+              condition: eq(variables['Build.Reason'], 'PullRequest')
+              env:
+                API: "$(System.CollectionUri)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=6.0"
+                MESSAGE: '{"comments":[{"parentCommentId":0,"content":"${{parameters.MESSAGE}}","commentType":3}],"status":2}'

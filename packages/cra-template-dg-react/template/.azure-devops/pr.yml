@@ -60,7 +60,7 @@ jobs:
       CONTAINER_NAME: build
       BLOB_PREFIX: $(Build.BuildID)
       TEAMS_WEBHOOK: ${{variables.TEAMS_WEBHOOK}}
-      TEAMS_MESSAGE: |
+      MESSAGE: |
         **[$(Build.Repository.Name) PR#$(System.PullRequest.PullRequestId)]($(System.PullRequest.SourceRepositoryURI)/pullrequest/$(System.PullRequest.PullRequestId)) build Success!**
         > $(Build.SourceVersionMessage)
         >
