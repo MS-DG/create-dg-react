@@ -19,9 +19,7 @@ const path = require('path');
 const chalk = require('react-dev-utils/chalk');
 const execSync = require('child_process').execSync;
 const spawn = require('react-dev-utils/crossSpawn');
-const {
-  defaultBrowsers,
-} = require('react-dev-utils/browsersHelper');
+const { defaultBrowsers } = require('react-dev-utils/browsersHelper');
 const os = require('os');
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
 const createGitHooks = require('./utils/createGitHooks');
@@ -97,7 +95,7 @@ function tryOpenCode() {
     return false;
   }
 }
-module.exports = function(
+module.exports = function (
   appPath,
   appName,
   verbose,

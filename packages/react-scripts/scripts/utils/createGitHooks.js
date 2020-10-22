@@ -81,9 +81,7 @@ npm run ${hook} --if-present --silent
 function createGitHooks(hooks) {
   hooks = hooks || ['pre-commit', 'pre-push', 'commit-msg'];
   console.log(`create git hooks ${hooks.join(',')}`);
-  const gitDir = execSync('git rev-parse --absolute-git-dir')
-    .toString()
-    .trim();
+  const gitDir = execSync('git rev-parse --absolute-git-dir').toString().trim();
   hooks.forEach(hook => {
     const script = getHookScript(hook);
     const filename = path.join(gitDir, 'hooks', hook);

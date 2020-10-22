@@ -62,7 +62,7 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
       ...(modules.jestAliases || {}),
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
-      (ext) => !ext.includes('mjs')
+      ext => !ext.includes('mjs')
     ),
     watchPlugins: [
       'jest-watch-typeahead/filename',
@@ -94,7 +94,7 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
     'watchPathIgnorePatterns',
   ];
   if (overrides) {
-    supportedKeys.forEach((key) => {
+    supportedKeys.forEach(key => {
       if (Object.prototype.hasOwnProperty.call(overrides, key)) {
         if (Array.isArray(config[key]) || typeof config[key] !== 'object') {
           // for arrays or primitive types, directly override the config key
@@ -129,13 +129,13 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
             '\nOut of the box, Create React App only supports overriding ' +
               'these Jest options:\n\n' +
               supportedKeys
-                .map((key) => chalk.bold('  \u2022 ' + key))
+                .map(key => chalk.bold('  \u2022 ' + key))
                 .join('\n') +
               '.\n\n' +
               'These options in your package.json Jest configuration ' +
               'are not currently supported by Create React App:\n\n' +
               unsupportedKeys
-                .map((key) => chalk.bold('  \u2022 ' + key))
+                .map(key => chalk.bold('  \u2022 ' + key))
                 .join('\n') +
               '\n\nIf you wish to override other Jest options, you need to ' +
               'eject from the default setup. You can do so by running ' +

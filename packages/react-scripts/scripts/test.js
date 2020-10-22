@@ -16,7 +16,7 @@ process.env.PUBLIC_URL = '';
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   throw err;
 });
 
@@ -37,7 +37,7 @@ const jest = require('jest');
 const execSync = require('child_process').execSync;
 const argv = process.argv.slice(2);
 let jestArgv = argv.filter(
-  (a) =>
+  a =>
     !(
       ['nowatch', 'staged', 'ci'].includes(a) ||
       a.startsWith('--nowatch') ||
@@ -57,13 +57,13 @@ const isCI =
       process.env.CI.toLowerCase() !== 'false'));
 
 // no watch mode
-const nowatch = argv.some((a) => a === 'nowatch' || a === '--nowatch');
+const nowatch = argv.some(a => a === 'nowatch' || a === '--nowatch');
 
 // for git commit staged
 // test staged
 // test --staged
 const isStaged =
-  process.env.STAGED || argv.some((a) => a === 'staged' || a === '--staged');
+  process.env.STAGED || argv.some(a => a === 'staged' || a === '--staged');
 
 if (isCI) {
   // CI build
@@ -131,15 +131,15 @@ const path = require('path');
 const paths = require('../config/paths');
 // specify test files: --testmatch=test, use multiple pairs to specify multiple matches.
 const testMatchArg = argv
-  .filter((a) => a.startsWith('--testmatch'))
-  .map((a) => a.substring(12));
+  .filter(a => a.startsWith('--testmatch'))
+  .map(a => a.substring(12));
 const testMatch =
   testMatchArg.length > 0 ? testMatchArg.join(',') : 'test,spec';
 jestArgv.push(
   '--config',
   JSON.stringify(
     createJestConfig(
-      (relativePath) => path.resolve(__dirname, '..', relativePath),
+      relativePath => path.resolve(__dirname, '..', relativePath),
       path.resolve(paths.appSrc, '..'),
       false,
       testMatch
@@ -172,9 +172,9 @@ function resolveJestDefaultEnvironment(name) {
   });
 }
 
-const env = (
-  argv.find((a) => a.startsWith('--env=')) || '--env=jsdom'
-).substring(6);
+const env = (argv.find(a => a.startsWith('--env=')) || '--env=jsdom').substring(
+  6
+);
 
 let resolvedEnv;
 try {

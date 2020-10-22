@@ -33,9 +33,10 @@ const defaultGlob = {
 };
 const argv = process.argv.slice(2);
 
-const isCI = (process.env.CI &&
+const isCI =
+  process.env.CI &&
   (typeof process.env.CI !== 'string' ||
-    process.env.CI.toLowerCase() !== 'false'));
+    process.env.CI.toLowerCase() !== 'false');
 const isFix = argv.indexOf('--fix') !== -1;
 const isCheck = argv.indexOf('--check') !== -1;
 // 严格模式，warning作为错误处理
@@ -49,7 +50,7 @@ const ignoreFile = fs.existsSync(path.join(paths.appPath, '.gitignore'))
   ? path.join(paths.appPath, '.gitignore')
   : undefined;
 
-let inputFiles = argv.filter((s) => s && !s.startsWith('-'));
+let inputFiles = argv.filter(s => s && !s.startsWith('-'));
 if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
   inputFiles = listStaged(process.env.CHANGED_SINCE);
   if (inputFiles.length > 0) {
@@ -80,7 +81,9 @@ let rulesMeta;
  * @returns {Promise<eslint.LintResult>}
  */
 function printResults(engine, results) {
-  const formatter = engine.loadFormatter(isCI ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
+  const formatter = engine.loadFormatter(
+    isCI ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'
+  ); //visualstudio
   //relative path
   // results.forEach(
   //   (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
@@ -90,15 +93,13 @@ function printResults(engine, results) {
     let warningCount = 0;
     let fixableErrorCount = 0;
     let fixableWarningCount = 0;
-    res.forEach(
-      (m) => {
-        m.filePath = path.relative(process.cwd(), m.filePath);
-        errorCount += m.errorCount;
-        warningCount += m.warningCount;
-        fixableErrorCount += m.fixableErrorCount;
-        fixableWarningCount += m.fixableWarningCount;
-      }
-    );
+    res.forEach(m => {
+      m.filePath = path.relative(process.cwd(), m.filePath);
+      errorCount += m.errorCount;
+      warningCount += m.warningCount;
+      fixableErrorCount += m.fixableErrorCount;
+      fixableWarningCount += m.fixableWarningCount;
+    });
     const output = f.format(res, {
       get rulesMeta() {
         if (!rulesMeta) {
@@ -118,9 +119,9 @@ function printResults(engine, results) {
       errorCount,
       warningCount,
       fixableErrorCount,
-      fixableWarningCount
-    }
-  })
+      fixableWarningCount,
+    };
+  });
   // return formatter.then((f) => {
   //   const output = f.format(results, {
   //     get rulesMeta() {
@@ -180,11 +181,11 @@ function getFilesGlob(p, type) {
   } else if (p instanceof Array) {
     switch (type) {
       case 'eslint':
-        return p.filter((p) =>
+        return p.filter(p =>
           ['.ts', '.tsx', '.js', '.jsx'].includes(path.extname(p))
         );
       case 'stylelint':
-        return p.filter((p) =>
+        return p.filter(p =>
           ['.scss', '.css', '.md', '.jsx', '.tsx', '.html'].includes(
             path.extname(p)
           )
@@ -223,15 +224,12 @@ function prettierCli(type, f) {
 function prettierCheckSingleFile(file, content) {
   return prettier
     .getFileInfo(file, { ignorePath: path.join(root, '.prettierignore') })
-    .then((info) => {
+    .then(info => {
       if (!info.ignored) {
         const options = prettier.resolveConfig.sync(file, { useCache: true });
         options.filepath = file;
         if (!prettier.check(content, options)) {
-          logger.error(
-            `${chalk.red('[×]prettier')}:`,
-            chalk.yellow.bold(file)
-          );
+          logger.error(`${chalk.red('[×]prettier')}:`, chalk.yellow.bold(file));
           return Promise.reject(false);
         }
       }
@@ -247,7 +245,7 @@ function lintCheckSingleFile(file, content) {
       if (r.errorCount || r.warningCount) {
         return Promise.reject(r);
       }
-    })
+    });
     // if (res.errorCount || res.warningCount) {
     //   printResults(eslintCli, res);
     //   return Promise.reject(false);
@@ -267,7 +265,7 @@ function lintCheckSingleFile(file, content) {
         ignorePath: ignoreFile,
         cache: true,
       })
-      .then((linted) => {
+      .then(linted => {
         if (!linted.output) {
           return true;
         }
@@ -289,10 +287,13 @@ function eslintFix(p) {
     return true;
   }
   process.stdout.write(chalk.gray('fixing eslint ...'));
-  const esCli = new eslint.ESLint(Object.assign({}, eslintOptions, { fix: true }));
+  const esCli = new eslint.ESLint(
+    Object.assign({}, eslintOptions, { fix: true })
+  );
   const res = esCli.lintFiles(p);
   clearLine();
-  return res.then(r => eslint.ESLint.outputFixes(r))
+  return res
+    .then(r => eslint.ESLint.outputFixes(r))
     .then(() => printResults(esCli, res))
     .then(r => {
       if (
@@ -301,7 +302,7 @@ function eslintFix(p) {
       ) {
         return Promise.reject(r);
       }
-      return true
+      return true;
     });
 }
 
@@ -315,11 +316,11 @@ function eslintCheck(p) {
     .then(ignorefiles => p.filter((v, i) => !ignorefiles[i]))
     .then(files => eslintCli.lintFiles(files))
     .then(res => printResults(eslintCli, res))
-    .then((r) => {
+    .then(r => {
       if (r.errorCount !== 0 || (isStrict && r.warningCount !== 0)) {
-        return Promise.reject(r)
+        return Promise.reject(r);
       }
-    })
+    });
 }
 
 /**
@@ -336,7 +337,7 @@ function runStylelint(p, fix) {
   return stylelint
     .lint({
       files: Array.isArray(p)
-        ? p.map((s) => s.replace(/\\/g, '/'))
+        ? p.map(s => s.replace(/\\/g, '/'))
         : p.replace(/\\/g, '/'),
       fix: !!fix,
       formatter: isCI ? 'string' : 'unix',
@@ -344,7 +345,7 @@ function runStylelint(p, fix) {
       ignorePath: ignoreFile,
       cache: true,
     })
-    .then((linted) => {
+    .then(linted => {
       clearLine();
       if (!linted.output) {
         return;
@@ -376,13 +377,13 @@ function run() {
       )
     );
     Promise.all(
-      staged.map((f) => {
+      staged.map(f => {
         const content = getStagedContent(f);
         return Promise.resolve(lintCheckSingleFile(f, content))
           .then(() => prettierCheckSingleFile(f, content))
           .then(() => console.log(chalk.green('√'), chalk.dim.gray(f)));
       })
-    ).catch((error) => {
+    ).catch(error => {
       if (error) {
         console.log(error);
       }
@@ -391,8 +392,8 @@ function run() {
     });
   } else if (isFix || (!isCheck && !isCI)) {
     Promise.resolve(prettierCli('write', getFilesGlob(inputFiles, 'prettier')))
-      .then((result) => result && eslintFix(getFilesGlob(inputFiles, 'eslint')))
-      .then((result) =>
+      .then(result => result && eslintFix(getFilesGlob(inputFiles, 'eslint')))
+      .then(result =>
         runStylelint(getFilesGlob(inputFiles, 'stylelint'), true).then(() => {
           if (!result) {
             return Promise.reject(result);
@@ -400,7 +401,7 @@ function run() {
         })
       )
       .then(() => console.log(chalk.green('√'), 'All files are formatted!'))
-      .catch((err) => {
+      .catch(err => {
         if (err) {
           console.debug(err);
         }
@@ -408,17 +409,15 @@ function run() {
         process.exit(1);
       });
   } else {
-    if (
-      !prettierCli('check', getFilesGlob(inputFiles, 'prettier'))
-    ) {
+    if (!prettierCli('check', getFilesGlob(inputFiles, 'prettier'))) {
       isFail = true;
       errorAndTry('Some files have code format issues!');
     } else {
-      eslintCheck(getFilesGlob(inputFiles, 'eslint')).then(
-        () => runStylelint(getFilesGlob(inputFiles, 'stylelint'))
-      ).then(() =>
-        console.log(chalk.green('√'), 'All files use good code style!')
-      )
+      eslintCheck(getFilesGlob(inputFiles, 'eslint'))
+        .then(() => runStylelint(getFilesGlob(inputFiles, 'stylelint')))
+        .then(() =>
+          console.log(chalk.green('√'), 'All files use good code style!')
+        )
         .catch(() => {
           errorAndTry('Some files have code format issues!');
           process.exit(1);
