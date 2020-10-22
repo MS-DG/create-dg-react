@@ -13,6 +13,7 @@ const fs = require('fs');
 const semver = require('semver');
 const path = require('path');
 const logger = require('../utils/logger');
+const paths = require('../../config/paths');
 
 /**
  * check scripts version
@@ -26,15 +27,31 @@ function verifyReactScriptVersion() {
     requireVersion &&
     !semver.satisfies(ownPackageJson.version, requireVersion)
   ) {
-    logger.error(ownPackageJson.name, 'was not matched');
+    const installCmd = fs.existsSync(paths.yarnLockFile)
+      ? '`yarn install`'
+      : fs.existsSync(paths.npmLockFile)
+      ? '`npm ci`'
+      : '`npm i`';
+    console.log();
     logger.error(
-      'required',
-      requireVersion,
-      'but installed',
-      ownPackageJson.version,
-      'was not found'
+      '\t',
+      chalk.bold(ownPackageJson.name),
+      'version was not matched with package.json'
     );
-    logger.error('please update your local packages');
+    logger.error(
+      '\t',
+      chalk.bold.yellow(requireVersion),
+      'was required, but',
+      chalk.red(ownPackageJson.version),
+      'was installed'
+    );
+    console.log(
+      '\t',
+      'Run',
+      chalk.bold.cyan(installCmd),
+      'to reinstall your local packages!'
+    );
+    console.log();
     process.exit(1);
   }
 }
