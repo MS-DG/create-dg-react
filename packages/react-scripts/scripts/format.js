@@ -62,41 +62,81 @@ if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
     console.log();
   }
 }
-const eslintCli = new eslint.CLIEngine({
+
+const eslintOptions = {
   useEslintrc: false,
   baseConfig: eslintConfig,
   ignorePath: ignoreFile,
   cache: true,
   cwd: root,
-});
+};
+const eslintCli = new eslint.ESLint(eslintOptions);
 let rulesMeta;
 
 /**
  * Outputs the results of the linting.
- * @param {eslint.CLIEngine} engine The CLIEngine to use.
- * @param {eslint.LintResult[]} results The results to print.
+ * @param {eslint.ESLint} engine The CLIEngine to use.
+ * @param {Promise<eslint.LintResult[]>} results The results to print.
+ * @returns {Promise<eslint.LintResult>}
  */
 function printResults(engine, results) {
-  const formatter = engine.getFormatter(isCI ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
+  const formatter = engine.loadFormatter(isCI ? 'codeframe' : isStaged ? 'unix' : 'visualstudio'); //visualstudio
   //relative path
-  results.forEach(
-    (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
-  );
-  const output = formatter(results, {
-    get rulesMeta() {
-      if (!rulesMeta) {
-        rulesMeta = {};
-        for (const [ruleId, rule] of engine.getRules()) {
-          rulesMeta[ruleId] = rule.meta;
-        }
+  // results.forEach(
+  //   (m) => (m.filePath = path.relative(process.cwd(), m.filePath))
+  // );
+  return Promise.all([formatter, results]).then(([f, res]) => {
+    let errorCount = 0;
+    let warningCount = 0;
+    let fixableErrorCount = 0;
+    let fixableWarningCount = 0;
+    res.forEach(
+      (m) => {
+        m.filePath = path.relative(process.cwd(), m.filePath);
+        errorCount += m.errorCount;
+        warningCount += m.warningCount;
+        fixableErrorCount += m.fixableErrorCount;
+        fixableWarningCount += m.fixableWarningCount;
       }
-      return rulesMeta;
-    },
-  });
-  if (output) {
-    process.stderr.write(output);
-  }
-  return true;
+    );
+    const output = f.format(res, {
+      get rulesMeta() {
+        if (!rulesMeta) {
+          rulesMeta = {};
+          for (const [ruleId, rule] of engine.getRules()) {
+            rulesMeta[ruleId] = rule.meta;
+          }
+        }
+        return rulesMeta;
+      },
+    });
+    if (output) {
+      process.stderr.write(output);
+    }
+
+    return {
+      errorCount,
+      warningCount,
+      fixableErrorCount,
+      fixableWarningCount
+    }
+  })
+  // return formatter.then((f) => {
+  //   const output = f.format(results, {
+  //     get rulesMeta() {
+  //       if (!rulesMeta) {
+  //         rulesMeta = {};
+  //         for (const [ruleId, rule] of engine.getRules()) {
+  //           rulesMeta[ruleId] = rule.meta;
+  //         }
+  //       }
+  //       return rulesMeta;
+  //     },
+  //   });
+  //   if (output) {
+  //     process.stderr.write(output);
+  //   }
+  // })
 }
 
 function errorAndTry(message) {
@@ -202,11 +242,16 @@ function lintCheckSingleFile(file, content) {
   // process.stdout.write(chalk.gray(`lint: ${chalk.gray(file)}`));
   const ext = path.extname(file);
   if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
-    const res = eslintCli.executeOnText(content, file);
-    if (res.errorCount || res.warningCount) {
-      printResults(eslintCli, res.results);
-      return Promise.reject(false);
-    }
+    const res = eslintCli.lintText(content, { filePath: file });
+    return printResults(eslintCli, res).then(r => {
+      if (r.errorCount || r.warningCount) {
+        return Promise.reject(r);
+      }
+    })
+    // if (res.errorCount || res.warningCount) {
+    //   printResults(eslintCli, res);
+    //   return Promise.reject(false);
+    // }
   }
 
   if (
@@ -244,22 +289,20 @@ function eslintFix(p) {
     return true;
   }
   process.stdout.write(chalk.gray('fixing eslint ...'));
-  const eslintCli = new eslint.CLIEngine({
-    fix: true,
-    useEslintrc: false,
-    baseConfig: eslintConfig,
-    ignorePath: ignoreFile,
-    cache: true,
-    cwd: root,
-  });
-  const res = eslintCli.executeOnFiles(p);
-  eslint.CLIEngine.outputFixes(res);
+  const esCli = new eslint.ESLint(Object.assign({}, eslintOptions, { fix: true }));
+  const res = esCli.lintFiles(p);
   clearLine();
-  printResults(eslintCli, res.results);
-  return (
-    res.errorCount === res.fixableErrorCount &&
-    res.warningCount === res.fixableWarningCount
-  );
+  return res.then(r => eslint.ESLint.outputFixes(r))
+    .then(() => printResults(esCli, res))
+    .then(r => {
+      if (
+        r.errorCount !== r.fixableErrorCount ||
+        r.warningCount !== r.fixableWarningCount
+      ) {
+        return Promise.reject(r);
+      }
+      return true
+    });
 }
 
 function eslintCheck(p) {
@@ -267,10 +310,16 @@ function eslintCheck(p) {
     return true;
   }
   process.stdout.write(chalk.gray('checking eslint ...'));
-  const res = eslintCli.executeOnFiles(p);
   clearLine();
-  printResults(eslintCli, res.results);
-  return res.errorCount == 0 && (!isStrict || res.warningCount == 0);
+  return Promise.all(p.map(f => eslintCli.isPathIgnored(f)))
+    .then(ignorefiles => p.filter((v, i) => !ignorefiles[i]))
+    .then(files => eslintCli.lintFiles(files))
+    .then(res => printResults(eslintCli, res))
+    .then((r) => {
+      if (r.errorCount !== 0 || (isStrict && r.warningCount !== 0)) {
+        return Promise.reject(r)
+      }
+    })
 }
 
 /**
@@ -342,7 +391,7 @@ function run() {
     });
   } else if (isFix || (!isCheck && !isCI)) {
     Promise.resolve(prettierCli('write', getFilesGlob(inputFiles, 'prettier')))
-      .then((result) => eslintFix(getFilesGlob(inputFiles, 'eslint')) && result)
+      .then((result) => result && eslintFix(getFilesGlob(inputFiles, 'eslint')))
       .then((result) =>
         runStylelint(getFilesGlob(inputFiles, 'stylelint'), true).then(() => {
           if (!result) {
@@ -360,16 +409,16 @@ function run() {
       });
   } else {
     if (
-      !eslintCheck(getFilesGlob(inputFiles, 'eslint')) ||
       !prettierCli('check', getFilesGlob(inputFiles, 'prettier'))
     ) {
       isFail = true;
       errorAndTry('Some files have code format issues!');
     } else {
-      runStylelint(getFilesGlob(inputFiles, 'stylelint'))
-        .then(() =>
-          console.log(chalk.green('√'), 'All files use good code style!')
-        )
+      eslintCheck(getFilesGlob(inputFiles, 'eslint')).then(
+        () => runStylelint(getFilesGlob(inputFiles, 'stylelint'))
+      ).then(() =>
+        console.log(chalk.green('√'), 'All files use good code style!')
+      )
         .catch(() => {
           errorAndTry('Some files have code format issues!');
           process.exit(1);

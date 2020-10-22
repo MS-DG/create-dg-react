@@ -13,6 +13,15 @@ const fs = require('fs');
 const semver = require('semver');
 const path = require('path');
 
+/**
+ * check scripts version
+ */
+function verifyReactScriptVersion(){
+  const ownPackageJson = require('../../package.json');
+  const requireVersion = process.env.npm_package_devDependencies__dragongate_react_scripts||process.env.npm_package_dependencies__dragongate_react_scripts;
+  return semver.compare(ownPackageJson.version, requireVersion) >= 0;
+}
+
 // We assume that having wrong versions of these
 // in the tree will likely break your setup.
 // This is a relatively low-effort way to find common issues.
@@ -161,3 +170,5 @@ function verifyPackageTree() {
 }
 
 module.exports = verifyPackageTree;
+
+module.exports = verifyReactScriptVersion;
