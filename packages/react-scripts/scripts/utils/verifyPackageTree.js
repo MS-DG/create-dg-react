@@ -19,37 +19,25 @@ const paths = require('../../config/paths');
  * check scripts version
  */
 function verifyReactScriptVersion() {
-  const ownPackageJson = require('../../package.json');
+  const ownPkg = require('../../package.json');
   const requireVersion =
     process.env.npm_package_devDependencies__dragongate_react_scripts ||
     process.env.npm_package_dependencies__dragongate_react_scripts;
-  if (
-    requireVersion &&
-    !semver.satisfies(ownPackageJson.version, requireVersion)
-  ) {
+  if (requireVersion && !semver.satisfies(ownPkg.version, requireVersion)) {
     const installCmd = fs.existsSync(paths.yarnLockFile)
       ? '`yarn install`'
       : fs.existsSync(paths.npmLockFile)
       ? '`npm ci`'
       : '`npm i`';
     console.log();
+    logger.error(`  ${chalk.bold(ownPkg.name)} version was not matched.`);
     logger.error(
-      '\t',
-      chalk.bold(ownPackageJson.name),
-      'version was not matched with package.json'
-    );
-    logger.error(
-      '\t',
-      chalk.bold.yellow(requireVersion),
-      'was required, but',
-      chalk.red(ownPackageJson.version),
-      'was installed'
+      ` Version${chalk.bold.yellow(
+        requireVersion
+      )} is required, but V${chalk.red(ownPkg.version)} was installed`
     );
     console.log(
-      '\t',
-      'Run',
-      chalk.bold.cyan(installCmd),
-      'to reinstall your local packages!'
+      `  Run ${chalk.bold.cyan(installCmd)} to reinstall your local packages!`
     );
     console.log();
     process.exit(1);
