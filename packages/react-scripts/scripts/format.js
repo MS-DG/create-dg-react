@@ -311,6 +311,10 @@ function eslintCheck(p) {
     return true;
   }
   process.stdout.write(chalk.gray('checking eslint ...'));
+
+  if (typeof p === "string") {
+    p = [p];
+  }
   clearLine();
   return Promise.all(p.map(f => eslintCli.isPathIgnored(f)))
     .then(ignorefiles => p.filter((v, i) => !ignorefiles[i]))
