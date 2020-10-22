@@ -24,7 +24,7 @@ function verifyReactScriptVersion() {
     process.env.npm_package_dependencies__dragongate_react_scripts;
   if (
     requireVersion &&
-    semver.compare(ownPackageJson.version, requireVersion) < 0
+    !semver.satisfies(ownPackageJson.version, requireVersion)
   ) {
     logger.error(ownPackageJson.name, 'was not matched');
     logger.error(

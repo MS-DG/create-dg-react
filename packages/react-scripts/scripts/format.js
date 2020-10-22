@@ -312,7 +312,7 @@ function eslintCheck(p) {
   }
   process.stdout.write(chalk.gray('checking eslint ...'));
 
-  if (typeof p === "string") {
+  if (typeof p === 'string') {
     p = [p];
   }
   clearLine();
