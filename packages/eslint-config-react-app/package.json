@@ -28,14 +28,14 @@
     "eslint-plugin-jest": ">=23.x",
     "eslint-plugin-jsdoc": ">=30.x",
     "eslint-plugin-jsx-a11y": ">=6.x",
-    "eslint-plugin-lodash": ">=6.x",
     "eslint-plugin-prettier": ">=3.x",
     "eslint-plugin-react": ">=7.x",
     "eslint-plugin-react-hooks": "*",
-    "eslint-plugin-security": ">=1.x"
+    "eslint-plugin-security": ">=1.x",
+    "eslint-plugin-testing-library": "^3.9.0"
   },
   "dependencies": {
-    "confusing-browser-globals": "^1.0.9",
-    "eslint-config-prettier": "^6.7.0"
+    "confusing-browser-globals": "^1.0.10",
+    "eslint-config-prettier": "^6.12.0"
   }
 }

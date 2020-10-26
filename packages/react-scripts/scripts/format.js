@@ -65,7 +65,7 @@ if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
 }
 
 const eslintOptions = {
-  useEslintrc: false,
+  // useEslintrc: false,
   baseConfig: eslintConfig,
   ignorePath: ignoreFile,
   cache: true,
