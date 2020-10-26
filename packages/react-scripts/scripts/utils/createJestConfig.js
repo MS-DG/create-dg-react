@@ -68,8 +68,8 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
       'jest-watch-typeahead/filename',
       'jest-watch-typeahead/testname',
     ],
+    resetMocks: true,
   };
-
   if (rootDir) {
     config.rootDir = rootDir;
   }
@@ -89,6 +89,7 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
     'resetModules',
     'restoreMocks',
     'snapshotSerializers',
+    'testMatch',
     'transform',
     'transformIgnorePatterns',
     'watchPathIgnorePatterns',

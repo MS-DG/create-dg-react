@@ -25,44 +25,18 @@ const restrictedGlobals = require('confusing-browser-globals');
 const prettierConfig = require('./prettier');
 
 module.exports = {
-  root: true,
-
+  // root: true,
+  extends: [require.resolve('./base')],
   parser: 'babel-eslint',
-
   plugins: [
     'import',
     'jsx-a11y',
     'react',
     'react-hooks',
     'prettier',
-    'jest',
     'jsdoc',
-    'lodash',
     'security',
   ],
-
-  env: {
-    browser: true,
-    commonjs: true,
-    es6: true,
-    jest: true,
-    node: true,
-  },
-
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-
   overrides: [
     {
       files: ['**/*.ts?(x)'],
@@ -267,9 +241,7 @@ module.exports = {
     'no-obj-calls': 'warn',
     'no-octal': 'warn',
     'no-octal-escape': 'warn',
-    // TODO: Remove this option in the next major release of CRA.
-    // https://eslint.org/docs/user-guide/migrating-to-6.0.0#-the-no-redeclare-rule-is-now-more-strict-by-default
-    'no-redeclare': ['warn', { builtinGlobals: false }],
+    'no-redeclare': 'warn',
     'no-regex-spaces': 'warn',
     'no-restricted-syntax': ['warn', 'WithStatement'],
     'no-script-url': 'warn',
@@ -365,8 +337,6 @@ module.exports = {
         ignore: [],
       },
     ],
-    'react/jsx-uses-react': 'warn',
-    'react/jsx-uses-vars': 'warn',
     'react/no-danger-with-children': 'warn',
     // Disabled because of undesirable warnings
     // See https://github.com/facebook/create-react-app/issues/5204 for
@@ -375,7 +345,6 @@ module.exports = {
     'react/no-direct-mutation-state': 'warn',
     'react/no-is-mounted': 'warn',
     'react/no-typos': 'error',
-    'react/react-in-jsx-scope': 'error',
     'react/require-render-return': 'error',
     'react/style-prop-object': 'warn',
 
@@ -417,7 +386,6 @@ module.exports = {
     'jsdoc/check-indentation': 'warn',
 
     'security/detect-pseudoRandomBytes': 'error',
-    'lodash/chaining': ['error', 'never'],
     'arrow-body-style': 'error',
     'arrow-parens': ['error', 'as-needed'],
     complexity: ['error', 20],

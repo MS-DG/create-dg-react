@@ -25,5 +25,12 @@
   "files": [
     "template",
     "template.json"
-  ]
+  ],
+  "eslintConfig": {
+    "extends": [
+      "@dragongate/eslint-config",
+      "@dragongate/eslint-config/jest",
+      "plugin:@dragongate/strict"
+    ]
+  }
 }
