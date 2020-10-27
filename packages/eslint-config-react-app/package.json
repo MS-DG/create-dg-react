@@ -17,6 +17,8 @@
   "files": [
     "index.js",
     "react.js",
+    "jest.js",
+    "base.js",
     "prettier.js"
   ],
   "peerDependencies": {
