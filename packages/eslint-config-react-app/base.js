@@ -12,36 +12,36 @@
 // to ensure that user-provided configs don't need this boilerplate.
 
 module.exports = {
-    root: true,
+  root: true,
 
-    parser: 'babel-eslint',
+  parser: 'babel-eslint',
 
-    plugins: ['react'],
+  plugins: ['react'],
 
-    env: {
-        browser: true,
-        commonjs: true,
-        es6: true,
-        jest: true,
-        node: true,
+  env: {
+    browser: true,
+    commonjs: true,
+    es6: true,
+    jest: true,
+    node: true,
+  },
+
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
     },
+  },
 
-    parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: 'module',
-        ecmaFeatures: {
-            jsx: true,
-        },
+  settings: {
+    react: {
+      version: 'detect',
     },
+  },
 
-    settings: {
-        react: {
-            version: 'detect',
-        },
-    },
-
-    rules: {
-        'react/jsx-uses-vars': 'warn',
-        'react/jsx-uses-react': 'warn',
-    },
+  rules: {
+    'react/jsx-uses-vars': 'warn',
+    'react/jsx-uses-react': 'warn',
+  },
 };
