@@ -406,8 +406,8 @@ function run() {
       )
       .then(() => console.log(chalk.green('√'), 'All files are formatted!'))
       .catch(err => {
-        if (err) {
-          console.debug(err);
+        if (err instanceof Error) {
+          console.error(err);
         }
         logger.error(chalk.yellow(`\nSome files can't be auto fixed!\n`));
         process.exit(1);
