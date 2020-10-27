@@ -308,7 +308,7 @@ function eslintFix(p) {
 
 function eslintCheck(p) {
   if (!p || !p.length) {
-    return true;
+    return Promise.resolve(true);
   }
   process.stdout.write(chalk.gray('checking eslint ...'));
 
