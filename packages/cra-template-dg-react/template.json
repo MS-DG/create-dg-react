@@ -4,9 +4,6 @@
     "@testing-library/react": "latest",
     "@testing-library/jest-dom": "latest",
     "@testing-library/user-event": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "@types/jest": "latest",
     "rxjs": "latest",
     "i18next": "latest",
     "react-i18next": "latest"
@@ -16,6 +13,9 @@
     "@storybook/addon-links": "latest",
     "@storybook/preset-create-react-app": "latest",
     "@storybook/react": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/jest": "latest",
     "typescript": "latest"
   },
   "scripts": {
