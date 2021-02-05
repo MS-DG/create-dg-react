@@ -15,7 +15,6 @@
     "@storybook/react": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/jest": "latest",
     "typescript": "latest"
   },
   "scripts": {
