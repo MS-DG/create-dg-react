@@ -43,9 +43,7 @@ module.exports = (resolve, rootDir, isEjecting, fileMatch) => {
     testEnvironment: 'jsdom',
     testRunner: require.resolve('jest-circus/runner'),
     transform: {
-      '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': isEjecting
-        ? '<rootDir>/node_modules/babel-jest'
-        : resolve('config/jest/babelTransform.js'),
+      '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': resolve('config/jest/babelTransform.js'),
       '^.+\\.css$': resolve('config/jest/cssTransform.js'),
       '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)': resolve(
         'config/jest/fileTransform.js'

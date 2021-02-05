@@ -110,8 +110,8 @@ function verifyTypeScriptSetup() {
     console.error(
       chalk.bold(
         'If you are not trying to use TypeScript, please remove the ' +
-          chalk.cyan('tsconfig.json') +
-          ' file from your package root (and any TypeScript files).'
+        chalk.cyan('tsconfig.json') +
+        ' file from your package root (and any TypeScript files).'
       )
     );
     console.error();
@@ -223,14 +223,6 @@ function verifyTypeScriptSetup() {
   if (appTsConfig.compilerOptions == null) {
     appTsConfig.compilerOptions = {};
     firstTimeSetup = true;
-  } else {
-    // This is bug fix code of https://github.com/facebook/create-react-app/issues/9868
-    // Bellow code release variable from non-extensible and freeze status.
-    appTsConfig.compilerOptions = JSON.parse(JSON.stringify(appTsConfig.compilerOptions));
-
-    // Original appTsConfig.compilerOptions status
-    // Object.isExtensible(appTsConfig.compilerOptions) output: false
-    // Object.isFrozen(appTsConfig.compilerOptions) output: true
   }
 
   for (const option of Object.keys(compilerOptions)) {
@@ -241,7 +233,9 @@ function verifyTypeScriptSetup() {
 
     if (suggested != null) {
       if (parsedCompilerOptions[option] === undefined) {
-        appTsConfig.compilerOptions[option] = suggested;
+        appTsConfig = immer(appTsConfig, config => {
+          config.compilerOptions[option] = suggested;
+        });
         messages.push(
           `${coloredOption} to be ${chalk.bold(
             'suggested'
@@ -249,19 +243,23 @@ function verifyTypeScriptSetup() {
         );
       }
     } else if (parsedCompilerOptions[option] !== valueToCheck) {
-      appTsConfig.compilerOptions[option] = value;
+      appTsConfig = immer(appTsConfig, config => {
+        config.compilerOptions[option] = value;
+      });
       messages.push(
         `${coloredOption} ${chalk.bold(
           valueToCheck == null ? 'must not' : 'must'
         )} be ${valueToCheck == null ? 'set' : chalk.cyan.bold(value)}` +
-          (reason != null ? ` (${reason})` : '')
+        (reason != null ? ` (${reason})` : '')
       );
     }
   }
 
   // tsconfig will have the merged "include" and "exclude" by this point
   if (parsedTsConfig.include == null) {
-    appTsConfig.include = ['src'];
+    appTsConfig = immer(appTsConfig, config => {
+      config.include = ['src'];
+    });
     messages.push(
       `${chalk.cyan('include')} should be ${chalk.cyan.bold('src')}`
     );
