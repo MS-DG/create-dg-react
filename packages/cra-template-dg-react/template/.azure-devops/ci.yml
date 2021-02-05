@@ -31,8 +31,7 @@ jobs:
       - template: ./steps/build.yml
         parameters:
           BUILD_ENV: ${{variables['Build.SourceBranchName']}}
-          PUBLISH_BUILD: true
-          PUBLISH_TEST: true
+      - template: ./steps/publish-results.yml
 
   - template: ./jobs/deploy-azure.yml
     parameters:

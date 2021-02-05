@@ -2,7 +2,6 @@
 variables:
   AZURE_SUBSCRIPTION: "" # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#use-a-service-connection
   STORAGE: "" # must be lowercase or number
-  TEAMS_WEBHOOK: "" # send messages in teams webhook
 
 trigger: none # will disable CI builds entirely
 pr:
@@ -17,8 +16,9 @@ jobs:
       - template: ./steps/build.yml
         parameters:
           BUILD_ENV: ${{variables['Build.SourceBranchName']}}
-          PUBLISH_BUILD: true
-          PUBLISH_TEST: true
+      - script: npm run build-storybook --if-present
+        displayName: build storybook
+      - template: ./steps/publish-results.yml
 
   # check in Mac/Win/Linux with different node versions to avoid breaking cross platform dev
   - job: compatibility_check
@@ -50,12 +50,6 @@ jobs:
     parameters:
       NAME: "pr_test_deploy"
       dependsOn: [pr_build, compatibility_check]
-      condition: not(failed())
-      # |
-      #   and(
-      #     in(dependencies.pr_build.result, 'Succeeded', 'SucceededWithIssues'),
-      #     in(dependencies.compatibility_check.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-      #   )
       AZURE_SUBSCRIPTION: "${{variables.AZURE_SUBSCRIPTION}}"
       CONTAINER_NAME: build
       BLOB_PREFIX: $(Build.BuildID)
@@ -66,4 +60,4 @@ jobs:
         >
         > created by `$(Build.RequestedFor)`.
         Following is the preview URL
-        **[http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/](http://$(STORAGE)--build--$(Build.BuildID).dg-app.com/)**
+        **[https://$(STORAGE)--build--$(Build.BuildID).dg-app.com/](https://$(STORAGE)--build--$(Build.BuildID).dg-app.com/)**

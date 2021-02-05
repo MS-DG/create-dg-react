@@ -1,0 +1,25 @@
+# publish results
+# publish tests result and build results
+
+parameters:
+  testResultsFiles: "junit.xml" # wether publish build packages
+  buildResultsPath: "build" # wether report test results
+
+steps:
+  - ${{ if parameters.testResultsFiles }}:
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: "JUnit"
+          testResultsFiles: ${{ parameters.testResultsFiles }}
+          mergeTestResults: true
+          testRunTitle: "Jest Test"
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+
+  - ${{ if parameters.buildResultsPath }}:
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: drop"
+        inputs:
+          PathtoPublish: ${{parameters.buildResultsPath}}
