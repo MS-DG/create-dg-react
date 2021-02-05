@@ -12,12 +12,18 @@
     "react-i18next": "latest"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "latest",
+    "@storybook/addon-links": "latest",
+    "@storybook/preset-create-react-app": "latest",
+    "@storybook/react": "latest",
     "typescript": "latest"
   },
   "scripts": {
     "format": "react-scripts format",
+    "build-storybook": "build-storybook -s public -o build/storybook",
+    "storybook": "start-storybook -p 6006 -s public",
     "pre-commit": "react-scripts format staged && react-scripts test --changedSince=HEAD",
-    "pre-push": "react-scripts format --check --strict && react-scripts test nowatch",
+    "pre-push": "react-scripts format --check --strict && start-storybook --smoke-test --ci && react-scripts test nowatch",
     "preinstall": "npx azure-devops-auth"
   },
   "prettier": "@dragongate/eslint-config/prettier",
