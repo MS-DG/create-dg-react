@@ -27,7 +27,7 @@ const prettierConfig = require('./prettier');
 module.exports = {
   // root: true,
   extends: [require.resolve('./base')],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   plugins: [
     'import',
     'jsx-a11y',

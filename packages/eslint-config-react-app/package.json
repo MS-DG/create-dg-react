@@ -24,7 +24,7 @@
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": ">=4.x",
     "@typescript-eslint/parser": ">=4.x",
-    "babel-eslint": ">=10.x",
+    "@babel/eslint-parser": ">=7.x",
     "eslint": ">=7.x",
     "eslint-plugin-import": ">=2.x",
     "eslint-plugin-jest": ">=23.x",
