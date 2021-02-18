@@ -25,9 +25,7 @@ const restrictedGlobals = require('confusing-browser-globals');
 const prettierConfig = require('./prettier');
 
 module.exports = {
-  // root: true,
   extends: [require.resolve('./base')],
-  parser: '@babel/eslint-parser',
   plugins: [
     'import',
     'jsx-a11y',
@@ -39,7 +37,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['**/*.ts?(x)'],
+      files: ['*.ts?(x)'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2018,

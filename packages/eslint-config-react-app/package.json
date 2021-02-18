@@ -22,9 +22,7 @@
     "prettier.js"
   ],
   "peerDependencies": {
-    "@babel/eslint-parser": ">=7.x",
     "@typescript-eslint/eslint-plugin": ">=4.x",
-    "@typescript-eslint/parser": ">=4.x",
     "eslint": ">=7.x",
     "eslint-plugin-import": ">=2.x",
     "eslint-plugin-jest": ">=23.x",
@@ -37,6 +35,8 @@
     "eslint-plugin-testing-library": "^3.9.0"
   },
   "dependencies": {
+    "@babel/eslint-parser": "7.12.13",
+    "@typescript-eslint/parser": "^4.8.2",
     "confusing-browser-globals": "^1.0.10",
     "eslint-config-prettier": "^6.15.0"
   }

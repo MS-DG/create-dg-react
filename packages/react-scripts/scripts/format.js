@@ -64,12 +64,16 @@ if (inputFiles.length === 0 && !isStaged && process.env.CHANGED_SINCE) {
   }
 }
 
+/**
+ * @type {eslint.ESLint.Options}
+ */
 const eslintOptions = {
   // useEslintrc: false,
   baseConfig: eslintConfig,
   ignorePath: ignoreFile,
   cache: true,
   cwd: root,
+  resolvePluginsRelativeTo: process.cwd(),
 };
 const eslintCli = new eslint.ESLint(eslintOptions);
 let rulesMeta;
@@ -288,7 +292,7 @@ function eslintFix(p) {
   }
   process.stdout.write(chalk.gray('fixing eslint ...'));
   const esCli = new eslint.ESLint(
-    Object.assign({}, eslintOptions, { fix: true })
+    Object.assign({}, eslintOptions, { fix: true, fixTypes: ["problem", "layout"] })
   );
   const res = esCli.lintFiles(p);
   clearLine();
