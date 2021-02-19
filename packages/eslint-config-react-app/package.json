@@ -35,7 +35,7 @@
     "eslint-plugin-testing-library": "^3.9.0"
   },
   "dependencies": {
-    "@babel/eslint-parser": "7.12.13",
+    "@babel/eslint-parser": "7.12.17",
     "@typescript-eslint/parser": "^4.8.2",
     "confusing-browser-globals": "^1.0.10",
     "eslint-config-prettier": "^6.15.0"
