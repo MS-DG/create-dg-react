@@ -197,7 +197,7 @@ function init() {
   checkForLatestVersion()
     .catch(() => {
       try {
-        return execSync('npm view create-react-app version').toString().trim();
+        return execSync('npm view create-dg-react version').toString().trim();
       } catch (e) {
         return null;
       }
@@ -207,15 +207,15 @@ function init() {
         console.log();
         console.error(
           chalk.yellow(
-            `You are running \`create-react-app\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
+            `You are running \`create-dg-react\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
               'We no longer support global installation of Create React App.'
           )
         );
         console.log();
         console.log(
           'Please remove any global installs with one of the following commands:\n' +
-            '- npm uninstall -g create-react-app\n' +
-            '- yarn global remove create-react-app'
+            '- npm uninstall -g create-dg-react\n' +
+            '- yarn global remove create-dg-react'
         );
         console.log();
         console.log(
@@ -247,7 +247,7 @@ function createApp(name, verbose, version, template, useNpm, usePnp) {
       )
     );
     // Fall back to latest supported react-scripts on Node 4
-    version = 'react-scripts@0.9.x';
+    // version = 'react-scripts@0.9.x';
   }
 
   const root = path.resolve(name);
@@ -292,7 +292,7 @@ function createApp(name, verbose, version, template, useNpm, usePnp) {
         );
       }
       // Fall back to latest supported react-scripts for npm 3
-      version = 'react-scripts@0.9.x';
+      // version = 'react-scripts@0.9.x';
     }
   } else if (usePnp) {
     const yarnInfo = checkYarnVersion();
@@ -451,7 +451,7 @@ function run(
       .then(({ isOnline, packageInfo, templateInfo }) => {
         let packageVersion = semver.coerce(packageInfo.version);
 
-        const templatesVersionMinimum = '3.3.0';
+        const templatesVersionMinimum = '3.1.0';
 
         // Assume compatibility if we can't test the version.
         if (!semver.valid(packageVersion)) {
@@ -575,7 +575,7 @@ function run(
 }
 
 function getInstallPackage(version, originalDirectory) {
-  let packageToInstall = 'react-scripts';
+  let packageToInstall = '@dragongate/react-scripts';
   const validSemver = semver.valid(version);
   if (validSemver) {
     packageToInstall += `@${validSemver}`;
@@ -625,7 +625,7 @@ function getInstallPackage(version, originalDirectory) {
 }
 
 function getTemplateInstallPackage(template, originalDirectory) {
-  let templateToInstall = 'cra-template';
+  let templateToInstall = 'cra-template-dg-react';
   if (template) {
     if (template.match(/^file:/)) {
       templateToInstall = `file:${path.resolve(
