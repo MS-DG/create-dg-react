@@ -780,12 +780,17 @@ module.exports = function (webpackEnv) {
         extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
         formatter: require.resolve('react-dev-utils/eslintFormatter'),
         eslintPath: require.resolve('eslint'),
+        failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
         context: paths.appSrc,
         cache: true,
+        cacheLocation: path.resolve(
+          paths.appNodeModules,
+          '.cache/.eslintcache'
+        ),
         // ESLint class options
         cwd: paths.appPath,
         resolvePluginsRelativeTo: __dirname,
-        baseConfig: eslintConfig,
+        baseConfig: eslintConfig
       }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.

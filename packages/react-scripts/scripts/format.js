@@ -292,7 +292,7 @@ function eslintFix(p) {
   }
   process.stdout.write(chalk.gray('fixing eslint ...'));
   const esCli = new eslint.ESLint(
-    Object.assign({}, eslintOptions, { fix: true})
+    Object.assign({}, eslintOptions, { fix: true })
   );
   const res = esCli.lintFiles(p);
   clearLine();
