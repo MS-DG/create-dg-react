@@ -1,6 +1,6 @@
 {
   "name": "@dragongate/eslint-config",
-  "version": "5.1.5",
+  "version": "5.1.6",
   "publishConfig": {
     "access": "public"
   },
