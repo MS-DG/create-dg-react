@@ -23,16 +23,9 @@
 // To use them, explicitly reference them, e.g. `window.name` or `window.status`.
 
 const prettierConfigBase = require('eslint-config-prettier');
-const prettierConfigRect = require('eslint-config-prettier/react');
-const prettierConfigBabel = require('eslint-config-prettier/babel');
-// const prettierConfigTS = require("eslint-config-prettier/@typescript-eslint");
-const prettierConfigStandard = require('eslint-config-prettier/standard');
 const react = require('./react');
 Object.assign(
   react.rules,
   prettierConfigBase.rules,
-  prettierConfigBabel.rules,
-  prettierConfigRect.rules,
-  prettierConfigStandard.rules
 );
 module.exports = react;
