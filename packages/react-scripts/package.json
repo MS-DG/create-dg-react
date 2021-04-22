@@ -33,7 +33,7 @@
   },
   "types": "./lib/react-app.d.ts",
   "dependencies": {
-    "@babel/core": "7.13.15",
+    "@babel/core": "7.13.16",
     "@dragongate/eslint-config": "^5.1.6",
     "@dragongate/stylelint-config": "^0.1.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
