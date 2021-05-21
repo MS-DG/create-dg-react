@@ -6,14 +6,14 @@ import "@testing-library/jest-dom";
 
 if (document) {
   document.createRange = () =>
-    (({
+    ({
       setStart: () => {},
       setEnd: () => {},
       commonAncestorContainer: {
         nodeName: "BODY",
         ownerDocument: document,
       },
-    } as any) as Range);
+    } as unknown as Range);
 }
 
 window.HTMLMediaElement.prototype.load = () => {};
