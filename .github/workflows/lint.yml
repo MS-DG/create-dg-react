@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install
-        run: yarn --no-progress --non-interactive --no-lockfile
+        run: yarn
       - name: Alex
         run: yarn alex
       - name: test-format
