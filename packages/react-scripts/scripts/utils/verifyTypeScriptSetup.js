@@ -110,8 +110,8 @@ function verifyTypeScriptSetup() {
     console.error(
       chalk.bold(
         'If you are not trying to use TypeScript, please remove the ' +
-        chalk.cyan('tsconfig.json') +
-        ' file from your package root (and any TypeScript files).'
+          chalk.cyan('tsconfig.json') +
+          ' file from your package root (and any TypeScript files).'
       )
     );
     console.error();
@@ -250,7 +250,7 @@ function verifyTypeScriptSetup() {
         `${coloredOption} ${chalk.bold(
           valueToCheck == null ? 'must not' : 'must'
         )} be ${valueToCheck == null ? 'set' : chalk.cyan.bold(value)}` +
-        (reason != null ? ` (${reason})` : '')
+          (reason != null ? ` (${reason})` : '')
       );
     }
   }

@@ -24,8 +24,5 @@
 
 const prettierConfigBase = require('eslint-config-prettier');
 const react = require('./react');
-Object.assign(
-  react.rules,
-  prettierConfigBase.rules,
-);
+Object.assign(react.rules, prettierConfigBase.rules);
 module.exports = react;
