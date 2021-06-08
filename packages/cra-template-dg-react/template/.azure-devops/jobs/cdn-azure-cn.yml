@@ -23,8 +23,8 @@ jobs:
       runOnce:
         deploy:
           steps:
-            - ? ${{ if and(parameters.CDN_DOMAIN, parameters.CDN_KEYID, parameters.CDN_KEYVALUE, parameters.CDN_SUBSCRIPTIONID) }}
-              : - powershell: |
+            - ${{ if and(parameters.CDN_DOMAIN, parameters.CDN_KEYID, parameters.CDN_KEYVALUE, parameters.CDN_SUBSCRIPTIONID) }}:
+                - powershell: |
                     function getAllDeployFiles($folderPath, $rootPath)
                     {   
                         $list = New-Object System.Collections.ArrayList($null)
